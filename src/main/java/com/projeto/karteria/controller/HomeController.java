@@ -3,11 +3,16 @@ package com.projeto.karteria.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller 
+@Controller
 public class HomeController {
 
-    @GetMapping("/") // Mapeia a rota raiz (http://localhost:8080/)
-    public String index() {
-        return "index";
+    @GetMapping("/")
+    public String showIndexPage() {
+        return "index"; // Página inicial pública
+    }
+
+    @GetMapping("/dashboard")
+    public String showDashboard() {
+        return "dashboard"; // Página principal após o login
     }
 }

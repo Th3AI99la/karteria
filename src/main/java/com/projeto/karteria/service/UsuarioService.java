@@ -1,47 +1,37 @@
 package com.projeto.karteria.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // CREATE
-    public Usuario criarUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // Método para o Spring Security buscar o usuário no login
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return usuarioRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o e-mail: " + email));
     }
 
-    // READ (All)
-    public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
-    }
-
-    // READ (by Id)
-    public Optional<Usuario> buscarPorId(Long id) {
-        return usuarioRepository.findById(id);
-    }
-
-    // UPDATE
-    public Usuario atualizarUsuario(Long id, Usuario usuarioDetails) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado com o id: " + id));
-        
-        usuario.setNome(usuarioDetails.getNome());
-        usuario.setEmail(usuarioDetails.getEmail());
-        usuario.setSenha(usuarioDetails.getSenha());
-        usuario.setTelefone(usuarioDetails.getTelefone());
-        
-        return usuarioRepository.save(usuario);
-    }
-
-    // DELETE
-    public void deletarUsuario(Long id) {
-        usuarioRepository.deleteById(id);
+    // Método para registrar um novo usuário
+    public void registerUser(Usuario usuario) {
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+            throw new IllegalStateException("E-mail já cadastrado.");
+        }
+        usuario.setSenha(passwordEncoder.encode(usuario.getPassword()));
+        usuarioRepository.save(usuario);
     }
 }
