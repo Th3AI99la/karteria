@@ -1,4 +1,4 @@
-package com.projeto.config; 
+package com.projeto.karteria.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +19,11 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    //#################################################################
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UsuarioService usuarioService) throws Exception {
-        // ... o resto do seu código de configuração do HttpSecurity ...
+        
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
