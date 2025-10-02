@@ -5,6 +5,12 @@
 
 /* === CONTAINER E CARD === */
 /* Esta seção define o fundo gradiente e o card central do formulário. */
+
+
+html[data-theme="dark"] .text-muted {
+    color: var(--text-secondary) !important;
+}
+
 .form-container {
   min-height: 100vh;
   display: flex;
