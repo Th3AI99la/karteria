@@ -72,26 +72,30 @@
 .theme-toggle-form:hover { border-color: var(--brand-primary); transform: scale(1.1) rotate(15deg); }
 .theme-toggle-form i { font-size: 1rem; color: var(--text-primary); }
 
-/* === GRUPOS DE INPUT - LAYOUT TRADICIONAL === */
-/* ESTA É A SEÇÃO PRINCIPAL QUE FOI ALTERADA. */
+/* === GRUPOS DE INPUT - LAYOUT LADO A LADO === */
 
 .input-group {
-    position: relative;
+    /* Esta classe volta a ser apenas um espaçador */
     margin-bottom: var(--space-lg);
 }
 
-/* O .input-wrapper continua útil para posicionar o ícone */
-.input-wrapper {
-    position: relative;
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: var(--space-xs);
 }
 
-/* RÓTULO (LABEL) - Agora posicionado de forma estática acima do campo */
 .input-label {
-    display: block; /* Garante que o rótulo ocupe sua própria linha */
+    flex: 0 0 110px;
     font-weight: 600;
-    font-size: 0.9rem;
     color: var(--text-secondary);
-    margin-bottom: var(--space-xs); /* Espaço entre o rótulo e o campo de input */
+    text-align: right;
+}
+
+.input-wrapper {
+    position: relative;
+    flex: 1;
 }
 
 /* ÍCONE - Continua posicionado de forma absoluta, mas dentro do campo */

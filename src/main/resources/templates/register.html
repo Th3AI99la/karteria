@@ -29,30 +29,37 @@
             <div th:if="${registrationError}" class="alert alert-danger" data-aos="fade-in" data-aos-delay="300"><i class="fas fa-exclamation-circle"></i> <span th:text="${registrationError}"></span></div>
             
             <form th:action="@{/register}" th:object="${usuario}" method="post" id="registerForm" data-aos="fade-up" data-aos-delay="400" novalidate>
+  
                 <div class="input-group">
-                    <div class="input-wrapper">
-                        <i class="input-icon fas fa-user"></i>
-                        <input type="text" id="nome" th:field="*{nome}" class="form-input" required placeholder="Seu nome completo" autocomplete="name" minlength="2">
-                        <label for="nome" class="input-label">Nome Completo</label>
+                    <div class="form-row">
+                        <label for="nome" class="input-label">Nome Completo:</label>
+                        <div class="input-wrapper">
+                            <i class="input-icon fas fa-user"></i>
+                            <input type="text" id="nome" th:field="*{nome}" class="form-input" required placeholder="Seu nome completo" autocomplete="name" minlength="2">
+                        </div>
                     </div>
                     <div class="error-message" id="nomeError"></div>
                 </div>
                 
                 <div class="input-group">
-                    <div class="input-wrapper">
-                        <i class="input-icon fas fa-envelope"></i>
-                        <input type="email" id="email" th:field="*{email}" class="form-input" required placeholder="seu@email.com" autocomplete="email">
-                        <label for="email" class="input-label">E-mail</label>
+                    <div class="form-row">
+                        <label for="email" class="input-label">E-mail:</label>
+                        <div class="input-wrapper">
+                            <i class="input-icon fas fa-envelope"></i>
+                            <input type="email" id="email" th:field="*{email}" class="form-input" required placeholder="seu@email.com" autocomplete="email">
+                        </div>
                     </div>
                     <div class="error-message" id="emailError"></div>
                 </div>
                 
                 <div class="input-group">
-                    <div class="input-wrapper">
-                        <i class="input-icon fas fa-lock"></i>
-                        <input type="password" id="senha" th:field="*{senha}" class="form-input" required placeholder="Crie uma senha forte" autocomplete="new-password" minlength="6">
-                        <label for="senha" class="input-label">Senha</label>
-                        <button type="button" class="position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent me-3" id="togglePassword" aria-label="Mostrar senha"><i class="fas fa-eye text-muted"></i></button>
+                    <div class="form-row">
+                        <label for="senha" class="input-label">Senha:</label>
+                        <div class="input-wrapper">
+                            <i class="input-icon fas fa-lock"></i>
+                            <input type="password" id="senha" th:field="*{senha}" class="form-input" required placeholder="Crie uma senha forte" autocomplete="new-password" minlength="6">
+                            <button type="button" class="position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent me-3" id="togglePassword" aria-label="Mostrar senha"><i class="fas fa-eye text-muted"></i></button>
+                        </div>
                     </div>
                     <div class="error-message" id="senhaError"></div>
                     <div class="mt-2">
