@@ -1,5 +1,6 @@
 package com.projeto.karteria.model;
 
+import java.time.LocalDateTime; 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,9 @@ public class Usuario implements UserDetails {
 
     @OneToMany(mappedBy = "anunciante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Anuncio> anuncios;
+
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
 
     // --- Getters e Setters Manuais ---
     public Long getId() {
@@ -84,12 +88,27 @@ public class Usuario implements UserDetails {
         this.anuncios = anuncios;
     }
 
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    // --- UserDetails ---
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.tipo == null) {
+        if (this.tipo == null)
             return Collections.emptyList();
-        }
-        // Retorna uma lista com a "autoridade" baseada no tipo do usuário
         return Collections.singletonList(new SimpleGrantedAuthority(this.tipo.name()));
     }
 

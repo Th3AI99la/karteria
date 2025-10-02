@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" data-theme="dark">
+<head th:insert="~{fragments/_header :: header(pageTitle='Criar Nova Senha')}"></head>
+<body class="form-container-page">
+    <div class="card-modern" style="max-width: 500px; width: 90%;" data-aos="fade-up">
+        <div class="text-center mb-4">
+            <h2 class="section-title">Crie uma Nova Senha</h2>
+            <p class="section-subtitle" style="margin-bottom: 0;">Sua nova senha deve ser diferente da anterior.</p>
+        </div>
+        <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+        <form th:action="@{/resetar-senha}" method="post">
+            <input type="hidden" name="token" th:value="${token}" />
+            <div class="mb-3">
+                <label for="novaSenha" class="form-label">Nova Senha</label>
+                <input type="password" id="novaSenha" name="novaSenha" class="form-control" required minlength="6">
+            </div>
+            <div class="mb-3">
+                <label for="confirmarSenha" class="form-label">Confirme a Nova Senha</label>
+                <input type="password" id="confirmarSenha" name="confirmarSenha" class="form-control" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary-karteria btn-lg">Salvar Nova Senha</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true });</script>
+</body>
+</html>

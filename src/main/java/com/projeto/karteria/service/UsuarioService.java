@@ -1,5 +1,8 @@
 package com.projeto.karteria.service;
 
+import java.time.LocalDateTime; // Adicionado
+import java.util.UUID; // Adicionado
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +33,37 @@ public class UsuarioService implements UserDetailsService {
             throw new IllegalStateException("E-mail já cadastrado.");
         }
         usuario.setSenha(passwordEncoder.encode(usuario.getPassword()));
+        usuarioRepository.save(usuario);
+    }
+
+    // --- Reset de senha ---
+    public String createPasswordResetTokenForUser(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));
+        
+        String token = UUID.randomUUID().toString();
+        usuario.setResetToken(token);
+        // Token expira em 1 hora
+        usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(1));
+        
+        usuarioRepository.save(usuario);
+        return token;
+    }
+
+    public Usuario validatePasswordResetToken(String token) {
+        Usuario usuario = usuarioRepository.findByResetToken(token)
+                .orElse(null);
+
+        if (usuario == null || usuario.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            return null; // Token inválido ou expirado
+        }
+        return usuario;
+    }
+
+    public void changeUserPassword(Usuario usuario, String newPassword) {
+        usuario.setSenha(passwordEncoder.encode(newPassword));
+        usuario.setResetToken(null); // Limpa o token após o uso
+        usuario.setResetTokenExpiry(null);
         usuarioRepository.save(usuario);
     }
 }
