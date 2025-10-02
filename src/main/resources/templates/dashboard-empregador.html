@@ -7,8 +7,19 @@
     <div th:insert="~{fragments/_navbar :: navbar}"></div>
 
     <div class="container" style="padding-top: 80px;">
-        <h1>Dashboard do <span class="brand-text">Empregador</span></h1>
-        <p class="lead text-secondary">Aqui você poderá criar e gerenciar seus anúncios.</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Dashboard do <span class="brand-text">Empregador</span></h1>
+            
+            <a th:href="@{/anuncios/novo}" class="btn btn-primary-karteria btn-lg">
+                <i class="bi bi-plus-circle-fill me-2"></i> Publicar Vaga
+            </a>
+        </div>
+        
+        <p class="lead text-secondary">Abaixo estão os anúncios que você publicou.</p>
+        
+        <div class="alert alert-secondary text-center mt-4" role="alert">
+            Você ainda não publicou nenhuma vaga.
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

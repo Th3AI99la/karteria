@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/_base :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title th:text="${anuncio.titulo}">Detalhes do Anúncio</title>
+</head>
+<body>
+<div id="content" class="w-100 vh-100 d-flex flex-column">
+    <div th:replace="~{fragments/_navbar :: navbar}"></div>
+
+    <div class="container mt-5 flex-grow-1">
+        <div class="card p-4">
+            <div class="card-body">
+                <h1 class="brand-text" th:text="${anuncio.titulo}">Título do Anúncio</h1>
+                <h5 class="card-subtitle mb-3 text-muted" th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}">R$ 150,00</h5>
+                
+                <hr>
+
+                <h5 class="mt-4">Descrição</h5>
+                <p th:text="${anuncio.descricao}">Descrição completa do serviço...</p>
+
+                <h5 class="mt-4">Localização</h5>
+                <p><i class="bi bi-geo-alt-fill me-2"></i><span th:text="${anuncio.localizacao}">Localização</span></p>
+
+                <h5 class="mt-4">Publicado por</h5>
+                <p><i class="bi bi-person-fill me-2"></i><span th:text="${anuncio.anunciante.nome}">Nome do Empregador</span></p>
+
+                <div class="d-grid gap-2 mt-5">
+                    <form th:action="@{/candidatar/{id}(id=${anuncio.id})}" method="post">
+                        <button type="submit" class="btn btn-primary-karteria btn-lg w-100">
+                            <i class="bi bi-check-lg me-2"></i>Quero me candidatar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

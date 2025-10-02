@@ -1,43 +1,51 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/_base :: layout(~{::title}, ~{::#content})}">
-<head>
-    <title>Criar Novo Anúncio</title>
-</head>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+
+<head th:insert="~{fragments/_header :: header(pageTitle='Publicar Nova Vaga')}"></head>
+
 <body>
-<div id="content" class="w-100 vh-100 d-flex flex-column">
-    <div th:replace="~{fragments/_navbar :: navbar}"></div>
+    <div th:insert="~{fragments/_navbar :: navbar}"></div>
 
-    <div class="container mt-5 flex-grow-1">
-        <h1 class="brand-text">Publicar um Novo Anúncio</h1>
-        <p class="lead text-secondary">Preencha os detalhes abaixo para encontrar o colaborador ideal.</p>
-
-        <div class="card p-4 mt-4">
-            <form th:action="@{/anuncios/salvar}" th:object="${anuncio}" method="post">
-                <div class="mb-3">
-                    <label for="titulo" class="form-label">Título do Anúncio</label>
-                    <input type="text" th:field="*{titulo}" id="titulo" class="form-control" placeholder="Ex: Eletricista para reparo rápido" required>
-                </div>
-                <div class="mb-3">
-                    <label for="descricao" class="form-label">Descrição Detalhada</label>
-                    <textarea th:field="*{descricao}" id="descricao" class="form-control" rows="4" placeholder="Descreva o serviço, o que precisa ser feito, etc." required></textarea>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="valor" class="form-label">Valor (R$)</label>
-                        <input type="number" th:field="*{valor}" id="valor" class="form-control" step="0.01" placeholder="150.00" required>
+    <div class="container" style="padding-top: 80px;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card p-4">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4 brand-text">Detalhes da Vaga</h2>
+                        
+                        <form th:action="@{/anuncios/salvar}" th:object="${anuncio}" method="post">
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">Título da Vaga</label>
+                                <input type="text" th:field="*{titulo}" id="titulo" class="form-control form-control-lg" placeholder="Ex: Eletricista para reparo rápido" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição Detalhada</label>
+                                <textarea th:field="*{descricao}" id="descricao" class="form-control" rows="5" placeholder="Descreva o serviço, o que precisa ser feito, requisitos, etc." required></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="valor" class="form-label">Valor Oferecido (R$)</label>
+                                    <input type="number" th:field="*{valor}" id="valor" class="form-control" step="0.01" placeholder="150.00" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="localizacao" class="form-label">Localização (Bairro, Cidade)</label>
+                                    <input type="text" th:field="*{localizacao}" id="localizacao" class="form-control" placeholder="Ex: Setor Bueno, Goiânia-GO" required>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary-karteria btn-lg">Publicar Vaga</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="localizacao" class="form-label">Localização</label>
-                        <input type="text" th:field="*{localizacao}" id="localizacao" class="form-control" placeholder="Ex: Setor Bueno, Goiânia-GO" required>
-                    </div>
                 </div>
-                <div class="d-grid mt-3">
-                    <button type="submit" class="btn btn-primary-karteria btn-lg">Publicar Anúncio</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/animations.js}"></script>
 </body>
 </html>
