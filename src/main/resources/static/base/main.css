@@ -64,3 +64,16 @@ body {
     color: white;
     font-weight: bold;
 }
+
+/* Estado inicial: o elemento está invisível e ligeiramente deslocado para baixo */
+.fade-in-on-load {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Estado final: o elemento se torna totalmente visível e volta à sua posição original */
+.fade-in-on-load.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
