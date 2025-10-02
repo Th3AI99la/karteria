@@ -14,32 +14,31 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-
-
 @Entity
 @Table(name = "anuncios")
 public class Anuncio {
 
-    @Enumerated(EnumType.STRING)
-    private StatusAnuncio status;
-        
+    // --- Chave Primária ---
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
     private Long id;
+
+    // --- Campos de Dados ---
     private String titulo;
     private String descricao;
     private BigDecimal valor;
     private String localizacao;
     private LocalDateTime dataPostagem;
 
+    @Enumerated(EnumType.STRING)
+    private StatusAnuncio status;
+
+    // --- Relacionamentos ---
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "anunciante_id")
     private Usuario anunciante;
 
-    // --- Getters e Setters Manuais ---
-
-
+    // --- Getters e Setters ---
     public Long getId() {
         return id;
     }
@@ -88,14 +87,6 @@ public class Anuncio {
         this.dataPostagem = dataPostagem;
     }
 
-    public Usuario getAnunciante() {
-        return anunciante;
-    }
-
-    public void setAnunciante(Usuario anunciante) {
-        this.anunciante = anunciante;
-    }
-
     public StatusAnuncio getStatus() {
         return status;
     }
@@ -104,4 +95,11 @@ public class Anuncio {
         this.status = status;
     }
 
+    public Usuario getAnunciante() {
+        return anunciante;
+    }
+
+    public void setAnunciante(Usuario anunciante) {
+        this.anunciante = anunciante;
+    }
 }

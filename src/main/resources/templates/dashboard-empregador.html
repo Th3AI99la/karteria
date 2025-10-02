@@ -12,7 +12,10 @@
         </div>
         <p class="lead text-secondary">Abaixo estão os anúncios que você publicou.</p>
 
-        <div th:if="${sucesso}" class="alert alert-success" th:text="${sucesso}"></div>
+        <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${sucesso}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
         <div class="card mt-4">
             <div class="card-body">
@@ -24,7 +27,7 @@
                         <tr>
                             <th>Título</th>
                             <th>Status</th>
-                            <th>Data de Publicação</th>
+                            <th>Data</th>
                             <th class="text-end">Ações</th>
                         </tr>
                     </thead>
@@ -34,25 +37,41 @@
                             <td>
                                 <span th:text="${anuncio.status}" 
                                       th:classappend="${anuncio.status.name() == 'ATIVO'} ? 'text-success' : 'text-warning'" 
-                                      class="fw-bold">ATIVO</span>
+                                      class="fw-bold"></span>
                             </td>
-                            <td th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy HH:mm')}">02/10/2025 03:00</td>
+                            <td th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy')}">02/10/2025</td>
                             <td class="text-end">
-                                <a th:href="@{/anuncios/editar/{id}(id=${anuncio.id})}" class="btn btn-sm btn-outline-info">
-                                    <i class="bi bi-pencil-fill"></i> Editar
-                                </a>
-                                <form th:action="@{/anuncios/status/{id}(id=${anuncio.id})}" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-sm"
-                                            th:classappend="${anuncio.status.name() == 'ATIVO'} ? 'btn-outline-warning' : 'btn-outline-success'">
-                                        <i th:classappend="${anuncio.status.name() == 'ATIVO'} ? 'bi-pause-circle-fill' : 'bi-play-circle-fill'"></i>
-                                        <span th:text="${anuncio.status.name() == 'ATIVO'} ? 'Pausar' : 'Ativar'"></span>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
+                                        <i class="bi bi-people-fill me-1"></i> Candidatos (0)
                                     </button>
-                                </form>
-                                <form th:action="@{/anuncios/apagar/{id}(id=${anuncio.id})}" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja apagar este anúncio?');">
-                                        <i class="bi bi-trash-fill"></i> Apagar
-                                    </button>
-                                </form>
+                                    <a th:href="@{/anuncios/editar/{id}(id=${anuncio.id})}" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-pencil-fill"></i> Editar
+                                    </a>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Mais
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <form th:action="@{/anuncios/status/{id}(id=${anuncio.id})}" method="post" class="d-inline">
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i th:classappend="${anuncio.status.name() == 'ATIVO'} ? 'bi-pause-circle-fill' : 'bi-play-circle-fill'"></i>
+                                                        <span th:text="${anuncio.status.name() == 'ATIVO'} ? ' Pausar' : ' Reativar'"></span>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form th:action="@{/anuncios/apagar/{id}(id=${anuncio.id})}" method="post" class="d-inline">
+                                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Tem certeza que deseja apagar este anúncio permanentemente?');">
+                                                        <i class="bi bi-trash-fill"></i> Apagar
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

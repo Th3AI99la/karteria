@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
 
-<head th:insert="~{fragments/_header :: header(pageTitle='Publicar Nova Vaga')}"></head>
+<head th:insert="~{fragments/_header :: header(pageTitle=${anuncio.id == null ? 'Publicar Nova Vaga' : 'Editar Vaga'})}"></head>
 
 <body>
     <div th:insert="~{fragments/_navbar :: navbar}"></div>
@@ -11,32 +11,41 @@
             <div class="col-lg-8">
                 <div class="card p-4">
                     <div class="card-body">
-                        <h2 class="card-title text-center mb-4 brand-text">Detalhes da Vaga</h2>
+                        <h2 class="card-title text-center mb-4 brand-text" 
+                            th:text="${anuncio.id == null ? 'Detalhes da Nova Vaga' : 'Editando Vaga'}"></h2>
                         
                         <form th:action="@{/anuncios/salvar}" th:object="${anuncio}" method="post">
+                            
+                            <input type="hidden" th:field="*{id}" />
+
                             <div class="mb-3">
                                 <label for="titulo" class="form-label">Título da Vaga</label>
-                                <input type="text" th:field="*{titulo}" id="titulo" class="form-control form-control-lg" placeholder="Ex: Eletricista para reparo rápido" required>
+                                <input type="text" th:field="*{titulo}" id="titulo" class="form-control form-control-lg" required>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="descricao" class="form-label">Descrição Detalhada</label>
-                                <textarea th:field="*{descricao}" id="descricao" class="form-control" rows="5" placeholder="Descreva o serviço, o que precisa ser feito, requisitos, etc." required></textarea>
+                                <textarea th:field="*{descricao}" id="descricao" class="form-control" rows="5" required></textarea>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="valor" class="form-label">Valor Oferecido (R$)</label>
-                                    <input type="number" th:field="*{valor}" id="valor" class="form-control" step="0.01" placeholder="150.00" required>
+                                    <input type="number" th:field="*{valor}" id="valor" class="form-control" step="0.01" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="localizacao" class="form-label">Localização (Bairro, Cidade)</label>
-                                    <input type="text" th:field="*{localizacao}" id="localizacao" class="form-control" placeholder="Ex: Setor Bueno, Goiânia-GO" required>
+                                    <input type="text" th:field="*{localizacao}" id="localizacao" class="form-control" required>
                                 </div>
                             </div>
                             
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary-karteria btn-lg">Publicar Vaga</button>
+                            <div class="d-flex justify-content-end align-items-center mt-4 gap-2">
+                                <a th:href="@{/home}" class="btn btn-secondary">Cancelar</a>
+                                
+                                <button type="submit" class="btn btn-primary-karteria btn-lg">
+                                    <i th:classappend="${anuncio.id == null ? 'bi-check-lg' : 'bi-save-fill'}" class="me-2"></i>
+                                    <span th:text="${anuncio.id == null ? 'Publicar Vaga' : 'Salvar Alterações'}"></span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -46,6 +55,5 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/animations.js}"></script>
 </body>
 </html>
