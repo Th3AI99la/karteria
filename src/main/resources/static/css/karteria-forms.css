@@ -177,11 +177,12 @@
 /* === BOTÃO DE SENHA E FORÇA === */
 #togglePassword {
   color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
 }
 #togglePassword:hover {
   color: var(--brand-primary);
 }
-
 /* === BOTÕES DE RÁDIO (TIPO DE USUÁRIO) === */
 .radio-group {
   border: none;
