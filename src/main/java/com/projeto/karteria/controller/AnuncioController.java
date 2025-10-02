@@ -2,18 +2,20 @@ package com.projeto.karteria.controller;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired; // <-- IMPORT NECESSÁRIO
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.projeto.karteria.model.Anuncio;
+import com.projeto.karteria.model.Anuncio; // <-- IMPORT NECESSÁRIO
+import com.projeto.karteria.model.StatusAnuncio;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
 import com.projeto.karteria.repository.UsuarioRepository;
@@ -22,39 +24,79 @@ import com.projeto.karteria.repository.UsuarioRepository;
 @RequestMapping("/anuncios")
 public class AnuncioController {
 
-    @Autowired
-    private AnuncioRepository anuncioRepository;
+    @Autowired private AnuncioRepository anuncioRepository;
+    @Autowired private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    // Método para MOSTRAR a página do formulário
     @GetMapping("/novo")
-    @PreAuthorize("hasAuthority('EMPREGADOR')") // Apenas Empregadores podem ver esta página
+    @PreAuthorize("hasAuthority('EMPREGADOR')")
     public String showAnuncioForm(Model model) {
         model.addAttribute("anuncio", new Anuncio());
         return "anuncio-form";
     }
 
-    // Método para SALVAR os dados do formulário
     @PostMapping("/salvar")
-    @PreAuthorize("hasAuthority('EMPREGADOR')") // Apenas Empregadores podem executar esta ação
+    @PreAuthorize("hasAuthority('EMPREGADOR')")
     public String salvarAnuncio(@ModelAttribute Anuncio anuncio, Authentication authentication, RedirectAttributes redirectAttributes) {
-        // Pega o usuário que está logado
         String email = authentication.getName();
-        Usuario usuarioLogado = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("Usuário logado não encontrado."));
+        Usuario usuarioLogado = usuarioRepository.findByEmail(email).orElseThrow();
 
-        // Associa o usuário ao anúncio e define a data
-        anuncio.setAnunciante(usuarioLogado);
-        anuncio.setDataPostagem(LocalDateTime.now());
+        if (anuncio.getId() == null) {
+            anuncio.setAnunciante(usuarioLogado);
+            anuncio.setDataPostagem(LocalDateTime.now());
+            anuncio.setStatus(StatusAnuncio.ATIVO); // Agora funciona
+            redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
+        } else {
+            Anuncio anuncioExistente = anuncioRepository.findById(anuncio.getId()).orElseThrow();
+            anuncio.setAnunciante(anuncioExistente.getAnunciante());
+            anuncio.setDataPostagem(anuncioExistente.getDataPostagem());
+            anuncio.setStatus(anuncioExistente.getStatus()); // Agora funciona
+            redirectAttributes.addFlashAttribute("sucesso", "Vaga atualizada com sucesso!");
+        }
 
-        // Salva o anúncio no banco de dados
         anuncioRepository.save(anuncio);
-        
-        // Adiciona uma mensagem de sucesso para ser exibida no dashboard
-        redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
+        return "redirect:/home";
+    }
 
-        return "redirect:/home"; // Redireciona para a home (que levará ao dashboard)
+    @GetMapping("/editar/{id}")
+    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    public String showEditForm(@PathVariable Long id, Model model, Authentication authentication) {
+        Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
+        if (!anuncio.getAnunciante().getEmail().equals(authentication.getName())) {
+            return "redirect:/home";
+        }
+        model.addAttribute("anuncio", anuncio);
+        return "anuncio-form";
+    }
+
+    @PostMapping("/apagar/{id}")
+    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    public String apagarAnuncio(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+        Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
+        if (!anuncio.getAnunciante().getEmail().equals(authentication.getName())) {
+            return "redirect:/home";
+        }
+        anuncioRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("sucesso", "Vaga apagada com sucesso.");
+        return "redirect:/home";
+    }
+    
+    @PostMapping("/status/{id}")
+    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    public String alterarStatusAnuncio(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+        Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
+        if (!anuncio.getAnunciante().getEmail().equals(authentication.getName())) {
+            return "redirect:/home";
+        }
+
+        if (anuncio.getStatus() == StatusAnuncio.ATIVO) { // Agora funciona
+            anuncio.setStatus(StatusAnuncio.PAUSADO); // Agora funciona
+            redirectAttributes.addFlashAttribute("sucesso", "Vaga pausada.");
+        } else if (anuncio.getStatus() == StatusAnuncio.PAUSADO) { // Agora funciona
+            anuncio.setStatus(StatusAnuncio.ATIVO); // Agora funciona
+            redirectAttributes.addFlashAttribute("sucesso", "Vaga reativada.");
+        }
+        
+        anuncioRepository.save(anuncio);
+        return "redirect:/home";
     }
 }
