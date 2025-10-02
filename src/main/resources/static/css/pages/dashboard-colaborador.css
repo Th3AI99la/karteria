@@ -1,0 +1,50 @@
+/* Estilos específicos para o Dashboard do Colaborador */
+
+.dashboard-header {
+    border-bottom: 1px solid var(--border-medium);
+    padding-bottom: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.anuncio-card-colab {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-normal);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.anuncio-card-colab:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--brand-primary);
+}
+
+.anuncio-card-colab .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.anuncio-card-colab .card-footer {
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-light);
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.85rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-xl);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-2xl);
+    border: 2px dashed var(--border-medium);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    color: var(--brand-primary);
+    opacity: 0.6;
+}
