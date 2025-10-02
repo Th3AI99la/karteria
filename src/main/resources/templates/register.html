@@ -1,49 +1,81 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<head th:insert="~{fragments/_header :: header(pageTitle='Crie sua Conta - Karteria')}"></head>
+    <link rel="stylesheet" th:href="@{/css/login-custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    
+    <title>Registro - Karteria</title>
+</head>
 
-<body class="d-flex align-items-center justify-content-center vh-100">
-    <div class="card p-5" style="width: 28rem; border-radius: 1rem;">
-        <div class="card-body">
-            <h2 class="card-title text-center mb-4 brand-text">Crie sua Conta</h2>
+<body>
+    <main id="container">
+        <!-- ID alterado para 'login_form' para reutilizar o CSS -->
+        <form id="login_form" th:action="@{/register}" th:object="${usuario}" method="post">
             
-            <div th:if="${registrationError}" class="alert alert-danger" th:text="${registrationError}"></div>
+            <div id="form_header">
+                <h1>Registro</h1>
+                <i id="mode_icon" class="fa-solid fa-moon"></i>
+            </div>
 
-            <form th:action="@{/register}" th:object="${usuario}" method="post" class="mt-4">
-                <div class="mb-3">
-                    <label for="nome" class="form-label">Nome Completo:</label>
-                    <input type="text" th:field="*{nome}" id="nome" class="form-control form-control-lg" required>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email:</label>
-                    <input type="email" th:field="*{email}" id="email" class="form-control form-control-lg" required>
-                </div>
-                <div class="mb-3">
-                    <label for="senha" class="form-label">Senha:</label>
-                    <input type="password" th:field="*{senha}" id="senha" class="form-control form-control-lg" required>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label">Eu sou:</label>
-                    <div class="form-check">
-                        <input type="radio" th:field="*{tipo}" value="EMPREGADOR" id="tipoEmpregador" class="form-check-input" required>
-                        <label class="form-check-label" for="tipoEmpregador">Empregador (Quero contratar)</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="radio" th:field="*{tipo}" value="COLABORADOR" id="tipoColaborador" class="form-check-input" required>
-                        <label class="form-check-label" for="tipoColaborador">Colaborador (Quero trabalhar)</label>
+            <div th:if="${registrationError}" class="alert alert-danger">
+                 <span th:text="${registrationError}"></span>
+            </div>
+
+            <div id="inputs">
+                <div class="input-box">
+                    <label for="nome">Nome Completo</label>
+                    <div class="input-field">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="nome" th:field="*{nome}" required placeholder="Seu nome completo">
                     </div>
                 </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary-karteria btn-lg">Registrar</button>
-                </div>
-            </form>
-            <hr class="my-4">
-            <p class="text-center text-secondary">Já tem uma conta? <a th:href="@{/login}">Faça login</a>.</p>
-        </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/animations.js}"></script>
+                <div class="input-box">
+                    <label for="email">E-mail</label>
+                    <div class="input-field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" th:field="*{email}" required placeholder="seu@email.com">
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="senha">Senha</label>
+                    <div class="input-field">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="password" id="senha" th:field="*{senha}" required placeholder="Crie uma senha forte">
+                    </div>
+                </div>
+                
+                <!-- Usando fieldset para agrupar os botões de rádio -->
+                <fieldset class="input-box radio-group">
+                    <legend>Eu sou:</legend>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" id="empregador" th:field="*{tipo}" value="EMPREGADOR" required>
+                            <label for="empregador">Empregador</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="colaborador" th:field="*{tipo}" value="COLABORADOR" required>
+                            <label for="colaborador">Colaborador</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button type="submit" id="login_button">
+                Registrar
+            </button>
+            
+            <div class="signup-link">
+                Já tem uma conta? <a th:href="@{/login}">Faça o login</a>.
+            </div>
+        </form>
+    </main>
+
+    <script type="text/javascript" th:src="@{/js/form-dark-mode.js}"></script>
 </body>
 </html>
