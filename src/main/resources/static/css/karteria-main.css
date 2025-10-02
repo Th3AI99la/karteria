@@ -2,7 +2,7 @@
    KARTERIA - CSS PRINCIPAL MODERNIZADO
    ======================================== */
 
-/* === RESET E BASE === */
+/* === RESET E ESTILOS GLOBAIS === */
 * {
     margin: 0;
     padding: 0;
@@ -22,7 +22,7 @@ body {
     overflow-x: hidden;
 }
 
-/* === BOOTSTRAP CUSTOMIZATIONS === */
+/* === CUSTOMIZAÇÃO DE COMPONENTES BOOTSTRAP === */
 .btn-primary-karteria {
     background: var(--gradient-primary);
     border: none;
@@ -79,7 +79,51 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-/* === LAYOUT PRINCIPAL === */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+/* === ESTRUTURA DAS SEÇÕES === */
+.section-padding {
+    padding: var(--space-3xl) 0;
+    display: flex;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-sm);
+}
+
+.section-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto var(--space-2xl);
+}
+
+/* === SEÇÃO HERO (PRINCIPAL) === */
 .hero-section {
     min-height: 100vh;
     display: flex;
@@ -134,7 +178,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* === CARDS E COMPONENTES === */
+/* === COMPONENTES GERAIS (CARDS, ÍCONES) === */
 .card-modern {
     background: var(--bg-secondary);
     border-radius: var(--radius-xl);
@@ -172,6 +216,13 @@ body {
     margin-bottom: var(--space-lg);
     color: white;
     font-size: 1.5rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-top: var(--space-2xl);
 }
 
 /* === NAVEGAÇÃO === */
@@ -233,15 +284,6 @@ body {
     width: 100%;
 }
 
-/* === FOOTER === */
-.footer-modern {
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-light);
-    padding: var(--space-2xl) 0 var(--space-xl);
-    margin-top: var(--space-3xl);
-}
-
-/* === THEME TOGGLE === */
 .theme-toggle {
     background: var(--bg-secondary);
     border: 2px solid var(--border-medium);
@@ -269,48 +311,15 @@ body {
     transition: all var(--transition-normal);
 }
 
-/* === SEÇÕES === */
-.section-padding {
-    padding: var(--space-3xl) 0;
+/* === RODAPÉ === */
+.footer-modern {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-light);
+    padding: var(--space-2xl) 0 var(--space-xl);
+    margin-top: var(--space-3xl);
 }
 
-.section-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: var(--space-2xl);
-    position: relative;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: var(--gradient-primary);
-    border-radius: var(--radius-sm);
-}
-
-.section-subtitle {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    color: var(--text-secondary);
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto var(--space-2xl);
-}
-
-/* === GRID RESPONSIVO === */
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-xl);
-    margin-top: var(--space-2xl);
-}
-
-/* === LOADING E ESTADOS === */
+/* === ANIMAÇÕES E ESTADOS === */
 .loading-spinner {
     width: 40px;
     height: 40px;
@@ -380,7 +389,6 @@ body {
     }
 }
 
-/* === FOCUS STATES === */
 .btn-primary-karteria:focus,
 .btn-outline-secondary:focus,
 .theme-toggle:focus {
@@ -388,7 +396,7 @@ body {
     outline-offset: 2px;
 }
 
-/* === SCROLLBAR CUSTOMIZATION === */
+/* === SCROLLBAR E SELEÇÃO === */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -406,7 +414,6 @@ body {
     background: var(--brand-primary);
 }
 
-/* === SELECTION === */
 ::selection {
     background: var(--brand-primary);
     color: white;
