@@ -49,3 +49,18 @@ body {
     color: var(--cor-primaria) !important;
     font-weight: bold;
 }
+
+/* Estilos para os botões de escolha de perfil */
+.btn-empregador {
+    background-color: var(--cor-empregador);
+    border-color: var(--cor-empregador);
+    color: white;
+    font-weight: bold;
+}
+
+.btn-colaborador {
+    background-color: var(--cor-colaborador);
+    border-color: var(--cor-colaborador);
+    color: white;
+    font-weight: bold;
+}
