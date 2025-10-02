@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/karteria-colors.css}">
     <link rel="stylesheet" th:href="@{/css/karteria-main.css}">
-    <link rel="stylesheet" th:href="@{/css/pages/dashboard-empregador.css}"> <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/pages/dashboard-empregador.css}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
 <body>
@@ -49,7 +50,30 @@
                  </a>
             </div>
             <div th:unless="${#lists.isEmpty(anunciosDoUsuario)}" class="row g-4">
+                <div th:each="anuncio : ${anunciosDoUsuario}" class="col-lg-4 col-md-6">
+                    <div class="anuncio-card" data-aos="fade-up">
+                         <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title fw-bold" th:text="${anuncio.titulo}"></h5>
+                                <span class="badge" th:text="${anuncio.status}" th:classappend="${anuncio.status.name() == 'ATIVO'} ? 'text-bg-success' : 'text-bg-warning'"></span>
+                            </div>
+                            <h6 class="card-subtitle mb-3 text-muted" th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}"></h6>
+                            <p class="card-text text-secondary small flex-grow-1"><i class="fas fa-map-marker-alt me-2"></i><span th:text="${anuncio.localizacao}"></span></p>
+                            <div class="anuncio-card-actions d-flex gap-2">
+                                <a href="#" class="btn btn-sm btn-outline-secondary disabled"><i class="fas fa-users"></i> Candidatos (0)</a>
+                                <a th:href="@{/anuncios/editar/{id}(id=${anuncio.id})}" class="btn btn-sm btn-outline-info ms-auto"><i class="fas fa-pencil-alt"></i></a>
+                                <form th:action="@{/anuncios/status/{id}(id=${anuncio.id})}" method="post">
+                                    <button type="submit" class="btn btn-sm" th:classappend="${anuncio.status.name() == 'ATIVO'} ? 'btn-outline-warning' : 'btn-outline-success'"><i th:classappend="${anuncio.status.name() == 'ATIVO'} ? 'fas fa-pause' : 'fas fa-play'"></i></button>
+                                </form>
+                                <form th:action="@{/anuncios/apagar/{id}(id=${anuncio.id})}" method="post" onsubmit="return confirm('Tem certeza?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center"><small class="text-muted" th:text="'Publicado em: ' + ${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy')}"></small></div>
+                    </div>
                 </div>
+            </div>
         </div>
     </div>
     
