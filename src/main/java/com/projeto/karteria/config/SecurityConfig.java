@@ -1,5 +1,6 @@
 package com.projeto.karteria.config;
 
+import com.projeto.karteria.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,8 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import com.projeto.karteria.service.UsuarioService;
 
 @Configuration
 @EnableWebSecurity
@@ -22,12 +21,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UsuarioService usuarioService) throws Exception {
         http
-            // ADICIONE ESTA LINHA PARA DESATIVAR A PROTEÇÃO CSRF
-            .csrf(csrf -> csrf.disable())
-
+            .csrf(csrf -> csrf.disable()) // Desativa CSRF para facilitar testes com Postman
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
-                .requestMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -37,7 +33,7 @@ public class SecurityConfig {
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/?logout")
                 .permitAll()
             )
             .userDetailsService(usuarioService);
