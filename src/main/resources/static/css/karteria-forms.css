@@ -1,8 +1,10 @@
 /* ========================================
-   KARTERIA - CSS DOS FORMULÁRIOS (REFATORADO)
+   KARTERIA - CSS DOS FORMULÁRIOS (REFEITO)
+   Layout Tradicional - Rótulo Acima do Campo
    ======================================== */
 
 /* === CONTAINER E CARD === */
+/* Esta seção define o fundo gradiente e o card central do formulário. */
 .form-container {
     min-height: 100vh;
     display: flex;
@@ -50,6 +52,7 @@
 }
 
 /* === ÍCONES FLUTUANTES E TEMA === */
+/* Estilos para os ícones decorativos e o botão de alternar tema. */
 .form-container .position-absolute { z-index: 0; opacity: 0.08; color: var(--text-primary); }
 .theme-toggle-form {
     position: absolute;
@@ -69,16 +72,29 @@
 .theme-toggle-form:hover { border-color: var(--brand-primary); transform: scale(1.1) rotate(15deg); }
 .theme-toggle-form i { font-size: 1rem; color: var(--text-primary); }
 
-/* === GRUPOS DE INPUT E FLOATING LABELS === */
+/* === GRUPOS DE INPUT - LAYOUT TRADICIONAL === */
+/* ESTA É A SEÇÃO PRINCIPAL QUE FOI ALTERADA. */
+
 .input-group {
     position: relative;
     margin-bottom: var(--space-lg);
 }
 
+/* O .input-wrapper continua útil para posicionar o ícone */
 .input-wrapper {
     position: relative;
 }
 
+/* RÓTULO (LABEL) - Agora posicionado de forma estática acima do campo */
+.input-label {
+    display: block; /* Garante que o rótulo ocupe sua própria linha */
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs); /* Espaço entre o rótulo e o campo de input */
+}
+
+/* ÍCONE - Continua posicionado de forma absoluta, mas dentro do campo */
 .input-icon {
     position: absolute;
     left: var(--space-md);
@@ -89,8 +105,10 @@
     z-index: 2;
 }
 
+/* CAMPO DE INPUT (FORM-INPUT) */
 .form-input {
     width: 100%;
+    /* O padding à esquerda (2.8rem) é mantido para não sobrepor o ícone */
     padding: var(--space-md) var(--space-md) var(--space-md) 2.8rem;
     border: 1px solid var(--border-medium);
     border-radius: var(--radius-lg);
@@ -101,28 +119,7 @@
     outline: none;
 }
 
-.input-label {
-    position: absolute;
-    top: 50%;
-    left: 2.8rem;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    background-color: var(--bg-secondary);
-    padding: 0 var(--space-xs);
-    transition: all 0.2s ease-out;
-    pointer-events: none;
-    font-size: 1rem;
-}
-
-/* Animação do Floating Label */
-.form-input:focus ~ .input-label,
-.form-input:not(:placeholder-shown) ~ .input-label {
-    top: 0;
-    left: 2.5rem;
-    font-size: 0.8rem;
-    color: var(--brand-primary);
-}
-
+/* EFEITO DE FOCO - Muda a cor da borda e do ícone ao clicar no campo */
 .form-input:focus {
     border-color: var(--brand-primary);
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
@@ -132,17 +129,15 @@
     color: var(--brand-primary);
 }
 
-/* Esconde o placeholder nativo para não conflitar com o label */
-.form-input::placeholder {
-    color: transparent;
-}
+/* AS REGRAS DE ANIMAÇÃO E PLACEHOLDER TRANSPARENTE FORAM REMOVIDAS. */
 
 /* === FEEDBACK DE VALIDAÇÃO === */
+/* Mantém os estilos para mensagens de erro e sucesso. */
 .error-message {
     color: var(--danger);
     font-size: 0.85rem;
     margin-top: var(--space-xs);
-    display: none; /* Oculto por padrão */
+    display: none;
     align-items: center;
     gap: var(--space-xs);
 }
@@ -215,6 +210,7 @@
 .alert { border-radius: var(--radius-md); }
 .form-check-input:checked { background-color: var(--brand-primary); border-color: var(--brand-primary); }
 
+/* === RESPONSIVIDADE === */
 @media (max-width: 480px) {
     .radio-options { grid-template-columns: 1fr; }
 }
