@@ -22,13 +22,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UsuarioService usuarioService) throws Exception {
         http
-            // A CORREÇÃO ESTÁ AQUI DENTRO
+            // ADICIONE ESTA LINHA PARA DESATIVAR A PROTEÇÃO CSRF
+            .csrf(csrf -> csrf.disable())
+
             .authorizeHttpRequests(authorize -> authorize
-                // Regra 1: Permite acesso público a estas URLs
                 .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
-                // Regra 2: Exige autenticação para URLs da API
                 .requestMatchers("/api/**").authenticated()
-                // Regra 3 (Padrão): Qualquer outra requisição também exige autenticação
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

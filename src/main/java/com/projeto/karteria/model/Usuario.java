@@ -2,64 +2,48 @@ package com.projeto.karteria.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-// Removi Lombok e JPA por enquanto, para ser um POJO simples
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter; // Import que estava faltando
+
+@Entity
+@Table(name = "usuarios")
+@Getter // Cria todos os getters automaticamente
+@Setter // Cria todos os setters automaticamente
+@NoArgsConstructor // Cria um construtor sem argumentos
+@AllArgsConstructor // Cria um construtor com todos os argumentos
 public class Usuario implements UserDetails {
 
+    // == Atributos de Dados ==
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String email;
     private String senha;
     private String telefone;
 
-    // Getters e Setters manuais
-    public Long getId() {
-        return id;
-    }
+    // == Relacionamentos ==
+    @OneToMany(mappedBy = "anunciante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Anuncio> anuncios;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    // Métodos da interface UserDetails
+    // == Métodos da Interface UserDetails (Exigidos pelo Spring Security) ==
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // Sem roles por enquanto
+        return Collections.emptyList();
     }
 
     @Override
