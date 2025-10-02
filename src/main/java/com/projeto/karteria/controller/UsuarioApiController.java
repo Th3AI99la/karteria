@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projeto.karteria.model.Usuario;
+import com.projeto.karteria.model.UsuarioDTO;
 import com.projeto.karteria.service.UsuarioService;
 
 @RestController
@@ -17,8 +17,10 @@ public class UsuarioApiController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping
-    public List<Usuario> getAllUsers() {
-        return usuarioService.listarTodos();
+      @GetMapping
+    // O retorno agora é uma lista de UsuarioDTO
+    public List<UsuarioDTO> getAllUsers() {
+        // Chamamos o novo método que retorna DTOs
+        return usuarioService.listarTodosDTO();
     }
 }
