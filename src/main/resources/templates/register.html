@@ -15,12 +15,12 @@
 <body>
     <main class="form-container">
         <div class="position-absolute" style="top: 10%; left: 8%;"><i class="fas fa-user-plus fa-3x animate-float"></i></div>
-        <div class="position-absolute" style="top: 30%; right: 15%;"><i class="fas fa-handshake fa-2x animate-float animate-delay-200"></i></div>
-        <div class="position-absolute" style="bottom: 20%; left: 20%;"><i class="fas fa-briefcase fa-2x animate-float animate-delay-400"></i></div>
-        <div class="position-absolute" style="bottom: 40%; right: 10%;"><i class="fas fa-users fa-3x animate-float animate-delay-600"></i></div>
+        <div class="position-absolute" style="top: 60%; right: 12%;"><i class="fas fa-handshake fa-2x animate-float animate-delay-300"></i></div>
+        <div class="position-absolute" style="bottom: 15%; left: 15%;"><i class="fas fa-briefcase fa-2x animate-float animate-delay-500"></i></div>
         
-        <div class="form-card animate-scale-in" data-aos="zoom-in" data-aos-duration="600">
+        <div class="form-card" data-aos="zoom-in" data-aos-duration="600">
             <button class="theme-toggle-form" id="themeToggle" aria-label="Alternar tema"><i class="fas fa-moon" id="themeIcon"></i></button>
+            
             <div class="form-header" data-aos="fade-down" data-aos-delay="200">
                 <h1 class="form-title">Criar Conta</h1>
                 <p class="form-subtitle">Junte-se à comunidade Karteria!</p>
@@ -28,54 +28,66 @@
             
             <div th:if="${registrationError}" class="alert alert-danger" data-aos="fade-in" data-aos-delay="300"><i class="fas fa-exclamation-circle"></i> <span th:text="${registrationError}"></span></div>
             
-            <form th:action="@{/register}" th:object="${usuario}" method="post" id="registerForm" data-aos="fade-up" data-aos-delay="400">
+            <form th:action="@{/register}" th:object="${usuario}" method="post" id="registerForm" data-aos="fade-up" data-aos-delay="400" novalidate>
                 <div class="input-group">
-                    <label for="nome" class="input-label">Nome Completo</label>
                     <div class="input-wrapper">
                         <i class="input-icon fas fa-user"></i>
                         <input type="text" id="nome" th:field="*{nome}" class="form-input" required placeholder="Seu nome completo" autocomplete="name" minlength="2">
+                        <label for="nome" class="input-label">Nome Completo</label>
                     </div>
+                    <div class="error-message" id="nomeError"></div>
                 </div>
                 
                 <div class="input-group">
-                    <label for="email" class="input-label">E-mail</label>
                     <div class="input-wrapper">
                         <i class="input-icon fas fa-envelope"></i>
                         <input type="email" id="email" th:field="*{email}" class="form-input" required placeholder="seu@email.com" autocomplete="email">
+                        <label for="email" class="input-label">E-mail</label>
                     </div>
+                    <div class="error-message" id="emailError"></div>
                 </div>
                 
                 <div class="input-group">
-                    <label for="senha" class="input-label">Senha</label>
                     <div class="input-wrapper">
                         <i class="input-icon fas fa-lock"></i>
                         <input type="password" id="senha" th:field="*{senha}" class="form-input" required placeholder="Crie uma senha forte" autocomplete="new-password" minlength="6">
-                        <button type="button" class="position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent me-3" id="togglePassword" aria-label="Mostrar/ocultar senha"><i class="fas fa-eye text-muted" id="passwordIcon"></i></button>
+                        <label for="senha" class="input-label">Senha</label>
+                        <button type="button" class="position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent me-3" id="togglePassword" aria-label="Mostrar senha"><i class="fas fa-eye text-muted"></i></button>
+                    </div>
+                    <div class="error-message" id="senhaError"></div>
+                    <div class="mt-2">
+                        <div class="d-flex gap-1" id="passwordStrength">
+                            <div class="flex-fill rounded" style="height: 4px;"></div><div class="flex-fill rounded" style="height: 4px;"></div><div class="flex-fill rounded" style="height: 4px;"></div><div class="flex-fill rounded" style="height: 4px;"></div>
+                        </div>
+                        <small class="text-muted" id="passwordStrengthText">Digite uma senha</small>
                     </div>
                 </div>
                 
                 <fieldset class="radio-group">
-                    <legend>Eu sou:</legend>
+                    <legend class="input-label">Eu sou:</legend>
                     <div class="radio-options">
                         <div class="radio-option">
                             <input type="radio" id="empregador" th:field="*{tipo}" value="EMPREGADOR" required>
-                            <label for="empregador"><i class="fas fa-building"></i>Empregador</label>
+                            <label for="empregador"><i class="fas fa-building"></i> Empregador</label>
                         </div>
                         <div class="radio-option">
                             <input type="radio" id="colaborador" th:field="*{tipo}" value="COLABORADOR" required>
-                            <label for="colaborador"><i class="fas fa-user-tie"></i>Colaborador</label>
+                            <label for="colaborador"><i class="fas fa-user-tie"></i> Colaborador</label>
                         </div>
                     </div>
                 </fieldset>
                 
-                <button type="submit" class="form-button" id="submitButton"><i class="fas fa-user-plus"></i> Criar Conta</button>
-                
-                <div class="form-links">
-                    <span class="text-muted">Já tem uma conta? </span><a th:href="@{/login}" class="form-link primary">Faça o login</a>
+                <div class="input-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label text-muted" for="terms">Concordo com os <a href="#" class="form-link primary">Termos de Uso</a> e <a href="#" class="form-link primary">Política de Privacidade</a></label>
+                    </div>
                 </div>
+                
+                <button type="submit" class="form-button" id="submitButton"><i class="fas fa-user-plus me-2"></i> Criar Conta</button>
+                
+                <div class="form-links"><span class="text-muted">Já tem uma conta? </span><a th:href="@{/login}" class="form-link primary">Faça o login</a></div>
             </form>
-            
-            <div class="mt-4 pt-4 border-top"></div>
         </div>
         
         <a th:href="@{/}" class="position-fixed top-0 start-0 m-4 text-white text-decoration-none" style="z-index: 1000;"><i class="fas fa-arrow-left me-2"></i>Voltar ao início</a>
@@ -85,22 +97,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script th:src="@{/js/karteria-forms.js}"></script>
     <script>
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100
-        });
-
-        // Script para toggle da senha
-        document.getElementById('togglePassword').addEventListener('click', function (e) {
-            const passwordInput = document.getElementById('senha');
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            // Altera o ícone do olho
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
-        });
+        AOS.init({ once: true } );
     </script>
 </body>
 </html>

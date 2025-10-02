@@ -1,98 +1,82 @@
 /* ========================================
-   KARTERIA - CSS DOS FORMULÁRIOS
+   KARTERIA - CSS DOS FORMULÁRIOS (REFATORADO)
    ======================================== */
 
-/* === RESET E ESTILOS GLOBAIS === */
-/* Já deve existir, apenas garantindo */
-body {
-    background-color: var(--bg-primary); /* Garante que o fundo use a cor do tema */
-    color: var(--text-primary); /* Garante que o texto padrão use a cor do tema */
-}
-
-/* === FORMULÁRIO BASE === */
+/* === CONTAINER E CARD === */
 .form-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gradient-hero); /* Usar o mesmo gradiente do Hero da Index */
+    background: var(--gradient-hero);
     position: relative;
-    overflow: hidden; /* Para garantir que os ícones flutuantes não saiam */
+    overflow: hidden;
+    padding: 2rem 0;
 }
 
-/* Efeito de background de bolhas, igual ao hero da index */
 .form-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0; /* Garante que fique atrás do formulário */
+    content: 
+        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 40%);
+    z-index: 0;
 }
 
 .form-card {
     background: var(--bg-secondary);
-    padding: var(--space-2xl);
+    padding: clamp(1.5rem, 5vw, 2.5rem);
     border-radius: var(--radius-2xl);
     box-shadow: var(--shadow-2xl);
-    max-width: 500px;
+    max-width: 480px;
     width: 90%;
-    z-index: 1; /* Garante que o card esteja acima do background de bolhas */
-    position: relative; /* Para que o z-index funcione */
+    z-index: 1;
+    position: relative;
     border: 1px solid var(--border-light);
 }
 
 .form-header {
     text-align: center;
-    margin-bottom: var(--space-2xl);
+    margin-bottom: var(--space-xl);
 }
 
 .form-title {
-    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
     font-weight: 700;
-    margin-bottom: var(--space-sm);
-    color: var(--text-primary); /* Garante cor do tema */
+    color: var(--text-primary);
 }
 
 .form-subtitle {
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    color: var(--text-secondary); /* Garante cor do tema */
-    margin-bottom: var(--space-xl);
+    color: var(--text-secondary);
+    margin-bottom: 0;
 }
 
-/* === INPUTS E GRUPOS === */
+/* === ÍCONES FLUTUANTES E TEMA === */
+.form-container .position-absolute { z-index: 0; opacity: 0.08; color: var(--text-primary); }
+.theme-toggle-form {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-medium);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-toggle-form:hover { border-color: var(--brand-primary); transform: scale(1.1) rotate(15deg); }
+.theme-toggle-form i { font-size: 1rem; color: var(--text-primary); }
+
+/* === GRUPOS DE INPUT E FLOATING LABELS === */
 .input-group {
     position: relative;
-    margin-bottom: var(--space-xl);
-}
-
-/* O Rótulo (label) agora é posicionado de forma absoluta */
-.input-label {
-    position: absolute;
-    top: 50%;
-    left: 3rem; /* Espaço para o ícone */
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    background-color: var(--bg-secondary); /* Cor de fundo para "recortar" a borda */
-    padding: 0 var(--space-xs);
-    transition: all 0.2s ease-out;
-    pointer-events: none; /* Permite clicar através do label no input */
-    font-size: 1rem;
+    margin-bottom: var(--space-lg);
 }
 
 .input-wrapper {
     position: relative;
-}
-
-.input-wrapper:focus-within {
-    border-color: var(--brand-primary);
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
 .input-icon {
@@ -101,15 +85,13 @@ body {
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted);
-    font-size: 1.1rem;
-    z-index: 2;
     transition: color var(--transition-fast);
+    z-index: 2;
 }
-
 
 .form-input {
     width: 100%;
-    padding: var(--space-md) var(--space-md) var(--space-md) 3rem;
+    padding: var(--space-md) var(--space-md) var(--space-md) 2.8rem;
     border: 1px solid var(--border-medium);
     border-radius: var(--radius-lg);
     background: var(--bg-secondary);
@@ -119,17 +101,25 @@ body {
     outline: none;
 }
 
-.form-input::placeholder {
-    color: var(--text-muted); /* Cor do placeholder */
+.input-label {
+    position: absolute;
+    top: 50%;
+    left: 2.8rem;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    background-color: var(--bg-secondary);
+    padding: 0 var(--space-xs);
+    transition: all 0.2s ease-out;
+    pointer-events: none;
+    font-size: 1rem;
 }
 
-/* A MÁGICA ACONTECE AQUI */
-/* Quando o input está focado ou preenchido, o label "flutua" */
+/* Animação do Floating Label */
 .form-input:focus ~ .input-label,
 .form-input:not(:placeholder-shown) ~ .input-label {
     top: 0;
     left: 2.5rem;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--brand-primary);
 }
 
@@ -142,106 +132,60 @@ body {
     color: var(--brand-primary);
 }
 
+/* Esconde o placeholder nativo para não conflitar com o label */
 .form-input::placeholder {
-    color: transparent; /* O placeholder fica transparente para não sobrepor o label */
+    color: transparent;
 }
 
-/* === BOTÃO DE MOSTRAR SENHA === */
-#togglePassword {
-    color: var(--text-muted); /* Cor do ícone de olho */
+/* === FEEDBACK DE VALIDAÇÃO === */
+.error-message {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: var(--space-xs);
+    display: none; /* Oculto por padrão */
+    align-items: center;
+    gap: var(--space-xs);
 }
-#togglePassword:hover {
-    color: var(--brand-primary);
-}
+.input-group.error .error-message { display: flex; }
+.input-group.error .form-input { border-color: var(--danger); }
+.input-group.error .input-icon { color: var(--danger); }
+.input-group.success .form-input { border-color: var(--success); }
+.input-group.success .input-icon { color: var(--success); }
 
-/* === RÁDIOS (EMPREGADOR/COLABORADOR) === */
-.radio-group {
-    border: none;
-    padding: 0;
-    margin-bottom: var(--space-2xl);
-}
+/* === BOTÃO DE SENHA E FORÇA === */
+#togglePassword { color: var(--text-muted); }
+#togglePassword:hover { color: var(--brand-primary); }
+#passwordStrength > div { background-color: var(--bg-tertiary); transition: background-color 0.3s; }
+#passwordStrengthText { transition: color 0.3s; }
 
-.radio-group legend {
-    font-weight: 600;
-    margin-bottom: var(--space-md);
-    color: var(--text-primary); /* Garante cor do tema */
-    padding: 0;
-    width: 100%; /* Garante que o legend ocupe a largura completa */
-}
-
-.radio-options {
+/* === BOTÕES DE RÁDIO (TIPO DE USUÁRIO) === */
+.radio-group { border: none; padding: 0; margin-bottom: var(--space-xl); }
+.radio-group legend { font-weight: 600; margin-bottom: var(--space-md); color: var(--text-secondary); font-size: 0.9rem; }
+.radio-options { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+.radio-option input[type="radio"] { display: none; }
+.radio-option label {
     display: flex;
-    gap: var(--space-lg); /* Espaçamento entre as opções */
-    flex-wrap: wrap; /* Para responsividade */
-    justify-content: center; /* Centraliza as opções se houver espaço */
-}
-
-.radio-option {
-    flex: 1; /* Faz as opções ocuparem espaço igual */
-    min-width: 140px; /* Largura mínima para cada opção */
-    
-    background: var(--bg-tertiary);
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
     border: 1px solid var(--border-medium);
     border-radius: var(--radius-lg);
-    padding: var(--space-md) var(--space-lg);
     cursor: pointer;
     transition: all var(--transition-normal);
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Centraliza o conteúdo (ícone e texto) */
+    font-weight: 500;
+    color: var(--text-secondary);
 }
-
-.radio-option:hover {
+.radio-option label:hover { border-color: var(--brand-primary-light); }
+.radio-option input[type="radio"]:checked + label {
+    background-color: var(--brand-primary-lightest);
     border-color: var(--brand-primary);
+    color: var(--brand-primary-dark);
+    font-weight: 600;
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
-
-.radio-option input[type="radio"] {
-    display: none; /* Esconde o radio button nativo */
-}
-
-.radio-option label {
-    display: flex; /* Para alinhar ícone e texto */
-    align-items: center;
-    gap: var(--space-sm);
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--text-secondary); /* Cor do texto das opções */
-    margin-bottom: 0; /* Remove margem padrão da label */
-    transition: color var(--transition-normal);
-}
-
-.radio-option input[type="radio"]:checked + label {
-    color: var(--brand-primary); /* Cor do texto quando selecionado */
-    font-weight: 600;
-}
-
-/* Adiciona um círculo customizado para indicar seleção */
-.radio-option label::before {
-    content: '';
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 2px solid var(--border-medium);
-    margin-right: var(--space-sm);
-    transition: all var(--transition-normal);
-    flex-shrink: 0; /* Impede que o círculo diminua */
-}
-
-.radio-option input[type="radio"]:checked + label::before {
-    background-color: var(--brand-primary);
-    border-color: var(--brand-primary);
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-}
-
-/* Estilo para ícones dentro dos labels das opções de rádio */
-.radio-option label i {
-    font-size: 1.1rem;
-    color: inherit; /* Herda a cor do label */
-    transition: color var(--transition-normal);
-}
-
+.radio-option label i { transition: transform 0.2s; }
+.radio-option input[type="radio"]:checked + label i { transform: scale(1.1); }
 
 /* === BOTÃO DE SUBMISSÃO === */
 .form-button {
@@ -249,123 +193,28 @@ body {
     border: none;
     color: white;
     font-weight: 600;
-    padding: 0.85rem 2rem;
+    padding: 0.8rem 1.5rem;
     border-radius: var(--radius-lg);
     width: 100%;
     transition: all var(--transition-normal);
     box-shadow: var(--shadow-md);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
     cursor: pointer;
 }
+.form-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.form-button:disabled { background: var(--bg-tertiary); cursor: not-allowed; }
 
-.form-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    background: linear-gradient(135deg, var(--karteria-green-600) 0%, var(--karteria-green-700) 100%);
-}
+/* === LINKS E OUTROS ELEMENTOS === */
+.form-links { text-align: center; margin-top: var(--space-lg); font-size: 0.9rem; }
+.form-link { color: var(--brand-primary); text-decoration: none; font-weight: 600; }
+.form-link:hover { text-decoration: underline; }
+.alert { border-radius: var(--radius-md); }
+.form-check-input:checked { background-color: var(--brand-primary); border-color: var(--brand-primary); }
 
-.form-button:active {
-    transform: translateY(0);
-}
-
-/* === LINKS E MENSAGENS === */
-.form-links {
-    text-align: center;
-    margin-top: var(--space-xl);
-    font-size: 0.95rem;
-    color: var(--text-secondary); /* Garante cor do tema */
-}
-
-.form-links .text-muted {
-    color: var(--text-muted) !important; /* Ajuste para Bootstrap */
-}
-
-.form-link {
-    color: var(--brand-primary); /* Cor primária para links */
-    text-decoration: none;
-    font-weight: 600;
-    transition: color var(--transition-fast);
-}
-
-.form-link:hover {
-    text-decoration: underline;
-}
-
-.alert {
-    margin-bottom: var(--space-xl);
-    border-radius: var(--radius-md);
-    padding: var(--space-md);
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-}
-.alert-success {
-    background-color: var(--karteria-green-100);
-    color: var(--karteria-green-800);
-    border-color: var(--karteria-green-300);
-}
-.alert-danger {
-    background-color: var(--karteria-red-100);
-    color: var(--karteria-red-800);
-    border-color: var(--karteria-red-300);
-}
-
-/* Ícones de fundo flutuantes - Igual ao Hero */
-.form-container .position-absolute {
-    z-index: 0;
-    opacity: 0.1;
-}
-
-/* Botão de alternância de tema no formulário */
-.theme-toggle-form {
-    position: absolute;
-    top: var(--space-lg);
-    right: var(--space-lg);
-    background: var(--bg-tertiary); /* Fundo sutil */
-    border: 2px solid var(--border-medium);
-    border-radius: var(--radius-xl);
-    padding: var(--space-sm);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
-    overflow: hidden;
-    z-index: 2; /* Acima do card e do fundo */
-}
-
-.theme-toggle-form:hover {
-    border-color: var(--brand-primary);
-    transform: scale(1.05);
-}
-
-.theme-toggle-form i {
-    font-size: 1.1rem;
-    color: var(--text-primary);
-    transition: all var(--transition-normal);
-}
-
-/* === MEDIA QUERIES (RESPONSIVIDADE) === */
-@media (max-width: 576px) {
-    .form-card {
-        padding: var(--space-lg);
-    }
-    .form-title {
-        font-size: 1.8rem;
-    }
-    .radio-options {
-        flex-direction: column;
-        gap: var(--space-md);
-    }
-    .radio-option {
-        width: 100%;
-        min-width: unset;
-    }
+@media (max-width: 480px) {
+    .radio-options { grid-template-columns: 1fr; }
 }
