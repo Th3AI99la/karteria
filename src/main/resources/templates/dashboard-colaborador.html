@@ -1,16 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/_base :: layout(~{::title}, ~{::#content})}">
-<head>
-    <title>Dashboard Colaborador</title>
-</head>
-<body>
-<div id="content" class="w-100 vh-100 d-flex flex-column">
-    <div th:replace="~{fragments/_navbar :: navbar}"></div>
-    <div class="container mt-5 flex-grow-1">
-        <h1>Dashboard do <span class="brand-text">Colaborador</span></h1>
-        <p class="lead text-secondary">Aqui você poderá buscar e se candidatar a anúncios.</p>
-    </div>
-</div>
-</body>
-</html>
+    th:replace="~{fragments/_base :: layout(~{::title}, ~{::#content})}">
+    <head>
+        <title>Dashboard Colaborador</title>
+    </head>
+    <body>
+        <div class="container mt-5 flex-grow-1">
+            <h1>Dashboard do <span class="brand-text">Colaborador</span></h1>
+            <p class="lead text-secondary">Abaixo estão as oportunidades
+                disponíveis.</p>
+
+            <div class="row g-4 mt-3">
+                <div th:each="anuncio : ${anuncios}" class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title brand-text"
+                                th:text="${anuncio.titulo}">Título do
+                                Anúncio</h5>
+                            <h6 class="card-subtitle mb-2 text-muted"
+                                th:text="'R$ ' + ${anuncio.valor}">R$
+                                100,00</h6>
+                            <p class="card-text flex-grow-1"
+                                th:text="${anuncio.descricao}">Descrição do
+                                serviço...</p>
+                            <small class="text-secondary"
+                                th:text="${anuncio.localizacao}">Localização</small>
+                            <a href="#"
+                                class="btn btn-primary-karteria mt-3">Ver
+                                Detalhes & Candidatar-se</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </html>

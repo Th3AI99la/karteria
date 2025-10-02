@@ -1,46 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/_base :: layout(~{::title}, ~{::#content})}">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
 
-<head>
-    <title>Login - Karteria</title>
-</head>
+<head th:insert="~{fragments/_header :: header(pageTitle='Login - Karteria')}"></head>
 
-<body>
-    <div id="content">
-         <div class="card p-5 fade-in-on-load" style="width: 25rem; border-radius: 1rem;">
-            <div class="card-body">
-                <h2 class="card-title text-center mb-4 brand-text">Acesse sua Conta</h2>
-                
-                <div th:if="${registrationSuccess}" class="alert alert-success" th:text="${registrationSuccess}"></div>
-                <div th:if="${param.error}" class="alert alert-danger">Email ou senha inválidos.</div>
+<body class="d-flex align-items-center justify-content-center vh-100">
+    <div class="card p-5" style="width: 25rem; border-radius: 1rem;">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4 brand-text">Acesse sua Conta</h2>
+            
+            <div th:if="${registrationSuccess}" class="alert alert-success" th:text="${registrationSuccess}"></div>
+            <div th:if="${param.error}" class="alert alert-danger">Email ou senha inválidos.</div>
 
-                <form th:action="@{/login}" method="post" class="mt-4">
-                    
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Email:</label>
-                        <input type="email" class="form-control form-control-lg" id="username" name="username" placeholder="seu@email.com" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="password" class="form-label">Senha:</label>
-                        <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="********" required>
-                    </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary-karteria btn-lg">Entrar</button>
-                    </div>
-                </form>
-
-                <div class="text-center mt-3">
-                    <a href="#" class="text-secondary small">Esqueceu a senha?</a>
+            <form th:action="@{/login}" method="post" class="mt-4">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Email:</label>
+                    <input type="email" class="form-control form-control-lg" id="username" name="username" required>
                 </div>
-                
-                <hr class="my-4">
-                
-                <p class="text-center text-secondary">Não tem uma conta? <a th:href="@{/register}">Registre-se aqui</a>.</p>
-            </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Senha:</label>
+                    <input type="password" class="form-control form-control-lg" id="password" name="password" required>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary-karteria btn-lg">Entrar</button>
+                </div>
+            </form>
+            <hr class="my-4">
+            <p class="text-center text-secondary">Não tem uma conta? <a th:href="@{/register}">Registre-se aqui</a>.</p>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/animations.js}"></script>
 </body>
 </html>
