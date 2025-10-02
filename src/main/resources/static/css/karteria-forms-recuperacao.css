@@ -1,0 +1,106 @@
+/* ========================================
+   KARTERIA - CSS PARA RECUPERAÇÃO DE SENHA
+   ======================================== */
+
+.form-container-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-primary);
+}
+
+.card-modern {
+    background: var(--bg-secondary);
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-light);
+    max-width: 500px;
+    width: 90%;
+}
+
+.section-title {
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-sm);
+}
+
+.section-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-control {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-medium);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+}
+
+.form-control:focus {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 .25rem rgba(34, 197, 94, 0.15);
+}
+
+/* === ESTILOS ADICIONAIS PARA BOTÕES E LINKS === */
+
+/* Botão de Ação Principal */
+.btn-primary-karteria {
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--radius-lg);
+    width: 100%;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-md);
+    font-size: 1.05rem;
+}
+
+.btn-primary-karteria:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-primary-karteria:focus {
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+}
+
+/* Link de Ação Secundária (Ex: Voltar) */
+.link-secondary-action {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+}
+
+.link-secondary-action:hover {
+    color: var(--brand-primary);
+    text-decoration: underline;
+}
