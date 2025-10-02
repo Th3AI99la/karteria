@@ -1,0 +1,51 @@
+/* Paleta de Cores e Estilos Globais */
+:root {
+    --cor-primaria: #00ff88;
+    --cor-fundo: #0d1b2a;
+    --cor-superficie: #1b263b;
+    --cor-texto: #e0e1dd;
+    --cor-empregador: #415a77;
+    --cor-colaborador: #2a9d8f;
+    --bs-body-bg: var(--cor-fundo);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Customização de componentes do Bootstrap */
+.card {
+    background-color: var(--cor-superficie);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-control {
+    background-color: var(--cor-fundo);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--cor-texto);
+}
+
+.form-control:focus {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 .25rem rgba(0, 255, 136, 0.25);
+}
+
+.btn-primary-karteria {
+    background-color: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    color: #121212;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary-karteria:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+}
+
+.brand-text {
+    color: var(--cor-primaria) !important;
+    font-weight: bold;
+}
