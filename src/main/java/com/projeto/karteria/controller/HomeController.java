@@ -8,11 +8,11 @@ public class HomeController {
 
     @GetMapping("/")
     public String showIndexPage() {
-        return "index"; // Página inicial pública
+        return "index"; // Mostra a página pública inicial
     }
 
-    @GetMapping("/dashboard")
-    public String showDashboard() {
-        return "dashboard"; // Página principal após o login
+    @GetMapping("/home")
+    public String showHomePage() {
+        return "home"; // Mostra a página principal após o login
     }
 }
