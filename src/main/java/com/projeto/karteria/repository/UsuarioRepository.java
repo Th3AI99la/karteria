@@ -1,5 +1,7 @@
 package com.projeto.karteria.repository;
 
+import java.util.ArrayList; // <-- Adicionar este import
+import java.util.List;      // <-- Adicionar este import
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +13,6 @@ import com.projeto.karteria.model.Usuario;
 
 @Repository
 public class UsuarioRepository {
-    // Simula uma tabela de banco de dados em memória
     private final Map<String, Usuario> usuariosByEmail = new ConcurrentHashMap<>();
     private final AtomicLong idCounter = new AtomicLong();
 
@@ -25,5 +26,9 @@ public class UsuarioRepository {
 
     public Optional<Usuario> findByEmail(String email) {
         return Optional.ofNullable(usuariosByEmail.get(email));
+    }
+
+    public List<Usuario> findAll() {
+        return new ArrayList<>(usuariosByEmail.values());
     }
 }

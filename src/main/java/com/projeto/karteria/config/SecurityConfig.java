@@ -22,20 +22,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UsuarioService usuarioService) throws Exception {
         http
+            // A CORREÇÃO ESTÁ AQUI DENTRO
             .authorizeHttpRequests(authorize -> authorize
-                // Libera o acesso à página pública, login, registro e arquivos estáticos
+                // Regra 1: Permite acesso público a estas URLs
                 .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
-                // Qualquer outra requisição (como /home) precisa de autenticação
+                // Regra 2: Exige autenticação para URLs da API
+                .requestMatchers("/api/**").authenticated()
+                // Regra 3 (Padrão): Qualquer outra requisição também exige autenticação
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login") // Nossa página de login customizada
-                .defaultSuccessUrl("/home", true) // Redireciona para /home após sucesso
+                .loginPage("/login")
+                .defaultSuccessUrl("/home", true)
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout") // Redireciona para login com msg de logout
+                .logoutSuccessUrl("/login?logout")
                 .permitAll()
             )
             .userDetailsService(usuarioService);

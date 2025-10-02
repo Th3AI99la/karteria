@@ -1,5 +1,7 @@
 package com.projeto.karteria.service;
 
+import java.util.List; // <-- Adicionar este import
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,19 +21,21 @@ public class UsuarioService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Método para o Spring Security buscar o usuário no login
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o e-mail: " + email));
     }
 
-    // Método para registrar um novo usuário
     public void registerUser(Usuario usuario) {
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
             throw new IllegalStateException("E-mail já cadastrado.");
         }
         usuario.setSenha(passwordEncoder.encode(usuario.getPassword()));
         usuarioRepository.save(usuario);
+    }
+    
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
     }
 }
