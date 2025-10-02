@@ -20,6 +20,7 @@ body {
     line-height: 1.6;
     transition: background-color var(--transition-normal), color var(--transition-normal);
     overflow-x: hidden;
+    padding-top: 100px;
 }
 
 /* === CUSTOMIZAÇÃO DE COMPONENTES BOOTSTRAP === */
@@ -124,14 +125,11 @@ body {
 }
 
 /* === SEÇÃO HERO (PRINCIPAL) === */
-.hero-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    background: var(--gradient-hero);
-    overflow: hidden;
+.hero-subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    margin-bottom: var(--space-2xl);
+    opacity: 0.9;
+    font-weight: 400;
 }
 
 .hero-section::before {
@@ -169,6 +167,17 @@ body {
     margin-bottom: var(--space-2xl);
     opacity: 0.9;
     font-weight: 400;
+}
+
+.hero-title .brand-text {
+    /* Define a cor do texto para um verde-escuro da nossa paleta */
+    color: var(--karteria-green-800);
+
+    /* Reseta as propriedades do gradiente para usar uma cor sólida */
+    background: none;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    background-clip: initial;
 }
 
 .hero-buttons {
