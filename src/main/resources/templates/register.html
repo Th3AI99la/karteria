@@ -23,17 +23,6 @@
                 <label for="senha" class="form-label">Senha:</label>
                 <input type="password" th:field="*{senha}" class="form-control" required>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Eu sou:</label>
-                <div class="form-check">
-                    <input type="radio" th:field="*{tipo}" value="EMPREGADOR" class="form-check-input" required>
-                    <label class="form-check-label">Empregador (Quero contratar)</label>
-                </div>
-                <div class="form-check">
-                    <input type="radio" th:field="*{tipo}" value="COLABORADOR" class="form-check-input" required>
-                    <label class="form-check-label">Colaborador (Quero trabalhar)</label>
-                </div>
-            </div>
             <div class="d-grid mt-4">
                 <button type="submit" class="btn btn-primary btn-lg">Registrar</button>
             </div>

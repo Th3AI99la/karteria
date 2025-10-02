@@ -22,16 +22,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UsuarioService usuarioService) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desativa CSRF para facilitar testes com Postman
+            // Desabilita CSRF para simplificar (não recomendado para produção)
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
+
+                .requestMatchers("/", "/login", "/register", "/escolher-perfil", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
             )
+            // Configura o formulário de login
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/home", true)
+                
+                .defaultSuccessUrl("/escolher-perfil", true)
                 .permitAll()
             )
+            // Configura o logout
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/?logout")
