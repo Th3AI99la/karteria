@@ -24,27 +24,34 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UsuarioService usuarioService) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) // Desativa CSRF para testes e APIs
             .authorizeHttpRequests(authorize -> authorize
+                
+                // ================== PONTO CRÍTICO DA CORREÇÃO ==================
+                // 1. URLs PÚBLICAS: Todas as URLs listadas aqui são 100% livres.
                 .requestMatchers(
-                    "/", 
-                    "/login", 
-                    "/register", 
-                    "/esqueci-senha", 
-                    "/resetar-senha", 
-                    "/css/**", 
-                    "/js/**"
+                    "/",                // Página inicial
+                    "/login",           // Página de login
+                    "/register",        // Página de registro
+                    "/esqueci-senha",   // Página para solicitar reset
+                    "/resetar-senha",   // Página para definir nova senha
+                    "/css/**",          // Arquivos CSS
+                    "/js/**",           // Arquivos JS
+                    "/images/**"        // Pasta para imagens, se houver
                 ).permitAll()
+                
+                // 2. QUALQUER OUTRA URL: Todas as outras URLs não listadas acima exigem autenticação.
                 .anyRequest().authenticated()
+                // =============================================================
             )
             .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/escolher-perfil", true)
+                .loginPage("/login") // Define a página de login customizada
+                .defaultSuccessUrl("/escolher-perfil", true) // Para onde ir após o login
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/?logout")
+                .logoutSuccessUrl("/?logout") // Para onde ir após o logout
                 .permitAll()
             )
             .userDetailsService(usuarioService);
