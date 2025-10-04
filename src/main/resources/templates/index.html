@@ -41,35 +41,39 @@
         </div>
     </nav>
 
-    <section class="hero-section d-flex align-items-center justify-content-center">
+<section class="hero-section d-flex align-items-center justify-content-center">
 
-        <div class="hero-content text-center" data-aos="fade-up" data-aos-duration="1000">
-            <h1 class="hero-title animate-fade-in-up text-white">
-                Bem-vindo ao <span class="brand-text">Karteria</span>
-            </h1>
-            <p class="hero-subtitle animate-fade-in-up animate-delay-200">
-                A plataforma que conecta empregadores a colaboradores para trabalhos informais de forma rápida, segura e eficiente.
-            </p>
-            <div class="hero-buttons animate-fade-in-up animate-delay-400">
-                <a th:href="@{/register}" class="btn btn-primary-karteria btn-lg">
-                    <i class="fas fa-rocket me-2"></i>Quero Começar
-                </a>
-                <a href="#features" class="btn btn-outline-secondary btn-lg">
-                    <i class="fas fa-info-circle me-2"></i>Saiba Mais
-                </a>
-            </div>
+    <div class="hero-content text-center" data-aos="fade-up" data-aos-duration="1000">
+        <h1 class="hero-title animate-fade-in-up">
+            <span class="hero-welcome">Bem-vindo ao</span>
+            <span class="brand-text"> Karteria</span>
+        </h1>
+        <p class="hero-subtitle animate-fade-in-up animate-delay-200">
+            A plataforma que conecta empregadores a colaboradores para trabalhos informais de forma rápida, segura e eficiente.
+        </p>
+        <div class="hero-buttons animate-fade-in-up animate-delay-400">
+            <a th:href="@{/register}" class="btn btn-primary-karteria btn-lg">
+                <i class="fas fa-rocket me-2"></i>Quero Começar
+            </a>
+            <a href="#features" class="btn btn-outline-secondary btn-lg">
+                <i class="fas fa-info-circle me-2"></i>Saiba Mais
+            </a>
         </div>
-        
-        <div class="position-absolute" style="top: 20%; left: 10%; opacity: 0.1;">
-            <i class="fas fa-users fa-3x animate-float"></i>
-        </div>
-        <div class="position-absolute" style="top: 60%; right: 15%; opacity: 0.1;">
-            <i class="fas fa-briefcase fa-2x animate-float animate-delay-300"></i>
-        </div>
-        <div class="position-absolute" style="bottom: 20%; left: 20%; opacity: 0.1;">
-            <i class="fas fa-handshake fa-2x animate-float animate-delay-500"></i>
-        </div>
-    </section>
+    </div>
+    
+    <div class="position-absolute" style="top: 20%; left: 10%; opacity: 0.1;">
+        <i class="fas fa-users fa-3x animate-float"></i>
+    </div>
+    <div class="position-absolute" style="top: 60%; right: 15%; opacity: 0.1;">
+        <i class="fas fa-briefcase fa-2x animate-float animate-delay-300"></i>
+    </div>
+    <div class="position-absolute" style="bottom: 20%; left: 20%; opacity: 0.1;">
+        <i class="fas fa-handshake fa-2x animate-float animate-delay-500"></i>
+    </div>
+</section>
+
+
+    
     <section id="features" class="section-padding">
         <div class="container">
             <div class="text-center mb-5" data-aos="fade-up">

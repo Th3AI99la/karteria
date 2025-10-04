@@ -315,3 +315,42 @@
 .animate-delay-300 { animation-delay: 0.3s; }
 .animate-delay-400 { animation-delay: 0.4s; }
 .animate-delay-500 { animation-delay: 0.5s; }
+
+
+/* === HERO SECTION === */
+.hero-section {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background var(--transition-normal), color var(--transition-normal);
+}
+
+.hero-section .hero-title {
+    color: var(--text-primary);
+}
+
+.hero-section .hero-subtitle {
+    color: var(--text-secondary);
+}
+
+.hero-section .hero-button {
+    background: var(--brand-primary);
+    color: var(--text-inverse);
+    border-radius: var(--radius-lg);
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.hero-section .hero-button:hover {
+    background: var(--brand-secondary);
+}
+
+.hero-welcome {
+    color: var(--text-primary); /* adapta automaticamente ao tema */
+    font-weight: 700;
+    font-size: 50px;
+    margin-bottom: 0.5rem;
+    transition: color var(--transition-normal);
+}
+
+[data-theme="dark"] .hero-welcome {
+    color: var(--text-secondary); /* leve ajuste no modo escuro para contraste */
+}
