@@ -1,30 +1,17 @@
 /* ========================================
-   KARTERIA - JAVASCRIPT PRINCIPAL
+   KARTERIA - JAVASCRIPT PRINCIPAL (v2)
    ======================================== */
 
 (function() {
     'use strict';
     
-    // === CONFIGURAÇÕES GLOBAIS === //
-    const KARTERIA = {
-        theme: {
-            current: localStorage.getItem('karteria-theme') || 'light',
-            toggle: null,
-            icon: null
-        },
-        animations: {
-            duration: 300,
-            easing: 'ease-in-out'
-        },
-        breakpoints: {
-            mobile: 768,
-            tablet: 1024
-        }
-    };
-    
     // === INICIALIZAÇÃO === //
     document.addEventListener('DOMContentLoaded', function() {
-        initTheme();
+        // Separa a lógica de aplicação do tema da configuração do botão
+        applySavedTheme();      // 1. Aplica o tema salvo (roda em todas as páginas)
+        initThemeToggle();      // 2. Configura o botão de troca (só roda se o botão existir)
+        
+        // Funções existentes que continuam funcionando normalmente
         initNavigation();
         initScrollEffects();
         initAnimations();
@@ -34,55 +21,63 @@
         console.log('🚀 Karteria initialized successfully!');
     });
     
-    // === SISTEMA DE TEMA === //
-    function initTheme() {
-        KARTERIA.theme.toggle = document.getElementById('themeToggle');
-        KARTERIA.theme.icon = document.getElementById('themeIcon');
-        
-        if (!KARTERIA.theme.toggle || !KARTERIA.theme.icon) return;
-        
-        // Aplicar tema salvo
-        applyTheme(KARTERIA.theme.current);
-        
-        // Event listener para toggle
-        KARTERIA.theme.toggle.addEventListener('click', toggleTheme);
-        
-        // Detectar preferência do sistema
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        mediaQuery.addEventListener('change', handleSystemThemeChange);
+    // === SISTEMA DE TEMA (REESTRUTURADO) === //
+
+    /**
+     * Esta função é independente e sempre executa.
+     * Ela lê o tema do localStorage ou a preferência do sistema e aplica na página.
+     */
+    function applySavedTheme() {
+        // Se um tema já foi salvo pelo usuário, usa ele.
+        // Senão, verifica a preferência do sistema operacional.
+        // Se nada for definido, usa 'light' como padrão.
+        const savedTheme = localStorage.getItem('karteria-theme') || 
+                           (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(savedTheme);
     }
-    
-    function toggleTheme() {
-        const newTheme = KARTERIA.theme.current === 'light' ? 'dark' : 'light';
-        applyTheme(newTheme);
+
+    /**
+     * Esta função agora SÓ se preocupa em configurar o botão de troca de tema.
+     */
+    function initThemeToggle() {
+        const themeToggle = document.getElementById('themeToggle');
         
-        // Animação do ícone
-        KARTERIA.theme.icon.style.transform = 'rotate(360deg)';
-        setTimeout(() => {
-            KARTERIA.theme.icon.style.transform = 'rotate(0deg)';
-        }, KARTERIA.theme.duration);
+        // Ponto crucial: Se a página não tem o botão, a função para aqui.
+        if (!themeToggle) {
+            return; 
+        }
+        
+        // Se o botão existe, adiciona o evento de clique.
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+
+            // Animação do ícone
+            const icon = document.getElementById('themeIcon');
+            if(icon) {
+                icon.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    icon.style.transform = 'rotate(0deg)';
+                }, 300);
+            }
+        });
     }
-    
+
+    /**
+     * Função auxiliar que efetivamente aplica o tema e atualiza o ícone.
+     * (sem alterações, mas agora chamada pelas duas funções acima)
+     */
     function applyTheme(theme) {
-        KARTERIA.theme.current = theme;
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('karteria-theme', theme);
         
-        // Atualizar ícone
-        if (KARTERIA.theme.icon) {
-            KARTERIA.theme.icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        const themeIcon = document.getElementById('themeIcon');
+        if (themeIcon) {
+            themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
         }
         
-        // Dispatch evento customizado
-        document.dispatchEvent(new CustomEvent('themeChanged', { 
-            detail: { theme } 
-        }));
-    }
-    
-    function handleSystemThemeChange(e) {
-        if (!localStorage.getItem('karteria-theme')) {
-            applyTheme(e.matches ? 'dark' : 'light');
-        }
+        document.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
     }
     
     // === NAVEGAÇÃO === //
@@ -373,7 +368,6 @@
         // Skip links
         const skipLink = document.createElement('a');
         skipLink.href = '#main-content';
-        skipLink.textContent = 'Pular para o conteúdo principal';
         skipLink.className = 'skip-link';
         document.body.insertBefore(skipLink, document.body.firstChild);
         
