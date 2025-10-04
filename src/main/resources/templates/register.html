@@ -49,29 +49,32 @@
                 data-aos="fade-up" data-aos-delay="400" novalidate>
 
                 <!-- Nome -->
-                <div class="input-group mb-3">
-                    <label for="nome" class="input-label">Nome Completo:</label>
+            <div class="input-group">
+                <div class="form-row"> <label for="nome" class="input-label">Nome Completo:</label>
                     <div class="input-wrapper position-relative">
                         <i class="input-icon fas fa-user"></i>
                         <input type="text" id="nome" th:field="*{nome}" class="form-input" placeholder="Seu nome completo"
                             autocomplete="name" minlength="2" required aria-describedby="nomeError">
                     </div>
-                    <div class="error-message" id="nomeError"></div>
-                </div>
+                </div> <div class="error-message" id="nomeError"></div>
+            </div>
 
                 <!-- Email -->
-                <div class="input-group mb-3">
+            <div class="input-group mb-3">
+                <div class="form-row">
                     <label for="email" class="input-label">E-mail:</label>
                     <div class="input-wrapper position-relative">
                         <i class="input-icon fas fa-envelope"></i>
                         <input type="email" id="email" th:field="*{email}" class="form-input" placeholder="seu@email.com"
                             autocomplete="email" required aria-describedby="emailError">
                     </div>
-                    <div class="error-message" id="emailError"></div>
                 </div>
+                <div class="error-message" id="emailError"></div>
+            </div>
 
                 <!-- Senha -->
-                <div class="input-group mb-3">
+            <div class="input-group mb-3">
+                <div class="form-row">
                     <label for="senha" class="input-label">Senha:</label>
                     <div class="input-wrapper position-relative">
                         <i class="input-icon fas fa-lock"></i>
@@ -83,9 +86,8 @@
                             <i class="fas fa-eye text-muted"></i>
                         </button>
                     </div>
-                    <div class="error-message" id="senhaError"></div>
-
-
+                </div>
+                <div class="error-message" id="senhaError"></div>
                 </div>
 
                 <!-- Tipo de usuário -->

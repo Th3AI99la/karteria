@@ -41,7 +41,7 @@ html[data-theme="dark"] .text-muted {
   padding: clamp(1.5rem, 5vw, 2.5rem);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-2xl);
-  max-width: 450px;
+  max-width: 550px;
   width: 100%;
   z-index: 1;
   position: relative;
@@ -100,6 +100,8 @@ html[data-theme="dark"] .text-muted {
 .input-group {
   /* Esta classe volta a ser apenas um espaçador */
   margin-bottom: var(--space-lg);
+  display: block; /* Garante o comportamento de bloco */
+  width: 100%; /* Garante a largura total */
 }
 
 .form-row {
@@ -118,7 +120,8 @@ html[data-theme="dark"] .text-muted {
 
 .input-wrapper {
   position: relative;
-  flex: 1;
+  display: block; /* Força o comportamento de bloco */
+  width: 100%; /* Garante a largura total */
 }
 
 /* ÍCONE - Continua posicionado de forma absoluta, mas dentro do campo */
@@ -141,6 +144,7 @@ html[data-theme="dark"] .text-muted {
   color: var(--text-primary);
   font-size: 1rem;
   outline: none;
+  width: 100%; /* Garante que o input preencha seu wrapper */
 }
 /* EFEITO DE FOCO - Muda a cor da borda e do ícone ao clicar no campo */
 .form-input:focus {
@@ -182,12 +186,20 @@ html[data-theme="dark"] .text-muted {
 
 /* === BOTÃO DE SENHA E FORÇA === */
 #togglePassword {
-  color: var(--text-muted);
+  color: var(--text-secondary); /* Ajustado para cor mais visível */
   cursor: pointer;
   transition: color var(--transition-fast);
 }
 #togglePassword:hover {
   color: var(--brand-primary);
+}
+#togglePassword i {
+  font-size: 1.25rem; /* Aumenta o tamanho do ícone */
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+#togglePassword:hover i {
+    color: var(--brand-primary);
 }
 /* === BOTÕES DE RÁDIO (TIPO DE USUÁRIO) === */
 .radio-group {
