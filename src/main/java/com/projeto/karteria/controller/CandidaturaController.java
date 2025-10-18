@@ -1,11 +1,7 @@
 package com.projeto.karteria.controller;
 
-import com.projeto.karteria.model.Anuncio;
-import com.projeto.karteria.model.Candidatura;
-import com.projeto.karteria.model.Usuario;
-import com.projeto.karteria.repository.AnuncioRepository;
-import com.projeto.karteria.repository.CandidaturaRepository;
-import com.projeto.karteria.repository.UsuarioRepository;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -13,7 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.time.LocalDateTime;
+
+import com.projeto.karteria.model.Anuncio;
+import com.projeto.karteria.model.Candidatura;
+import com.projeto.karteria.model.Usuario;
+import com.projeto.karteria.repository.AnuncioRepository;
+import com.projeto.karteria.repository.CandidaturaRepository;
+import com.projeto.karteria.repository.UsuarioRepository;
 
 @Controller
 public class CandidaturaController {
@@ -44,6 +46,6 @@ public class CandidaturaController {
         // Adiciona uma mensagem de sucesso
         redirectAttributes.addFlashAttribute("sucesso", "Candidatura realizada com sucesso!");
 
-        return "redirect:/home"; // Redireciona para o dashboard do colaborador
+        return "redirect:/home"; 
     }
 }

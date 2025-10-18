@@ -88,11 +88,11 @@ public class AnuncioController {
             return "redirect:/home";
         }
 
-        if (anuncio.getStatus() == StatusAnuncio.ATIVO) { // Agora funciona
-            anuncio.setStatus(StatusAnuncio.PAUSADO); // Agora funciona
+        if (anuncio.getStatus() == StatusAnuncio.ATIVO) {
+            anuncio.setStatus(StatusAnuncio.PAUSADO); 
             redirectAttributes.addFlashAttribute("sucesso", "Vaga pausada.");
-        } else if (anuncio.getStatus() == StatusAnuncio.PAUSADO) { // Agora funciona
-            anuncio.setStatus(StatusAnuncio.ATIVO); // Agora funciona
+        } else if (anuncio.getStatus() == StatusAnuncio.PAUSADO) {
+            anuncio.setStatus(StatusAnuncio.ATIVO);
             redirectAttributes.addFlashAttribute("sucesso", "Vaga reativada.");
         }
         

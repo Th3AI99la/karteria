@@ -39,11 +39,11 @@ public class HomeController {
             Usuario usuarioLogado = usuarioRepository.findByEmail(email).orElseThrow();
             // Busca apenas os anúncios do usuário logado e os adiciona ao modelo
             model.addAttribute("anunciosDoUsuario", anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado));
-            return "dashboard-empregador";
+            return "area-empregador";
         } else {
             // Busca todos os anúncios e os adiciona ao modelo para o colaborador
             model.addAttribute("anuncios", anuncioRepository.findAll());
-            return "dashboard-colaborador";
+            return "area-colaborador";
         }
     }
 }
