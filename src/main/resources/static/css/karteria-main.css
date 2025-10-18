@@ -503,7 +503,6 @@ body.dashboard-layout {
     list-style: none;
     padding: 0;
     margin: 0;
-    flex-grow: 1; /* Empurra o footer para baixo */
 }
 
 .sidenav-nav-item {
@@ -591,4 +590,13 @@ body.dashboard-layout {
     .user-dropdown .dropdown-toggle i {
         margin-right: 0;
     }
+}
+
+/* Adicionar este bloco */
+.sidenav-nav-link.text-danger {
+    color: var(--danger) !important;
+}
+.sidenav-nav-link.text-danger:hover {
+    background-color: var(--danger-bg);
+    color: var(--danger) !important;
 }

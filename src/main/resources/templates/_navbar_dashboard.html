@@ -3,49 +3,49 @@
 <body>
 
     <nav th:fragment="dashboard_nav" class="sidenav">
-        
+
         <div class="sidenav-header">
             <a class="sidenav-brand brand-text" th:href="@{/home}">
                 <i class="fas fa-handshake"></i> <span>Karteria</span>
             </a>
         </div>
 
-        <ul class="sidenav-nav">
+        <ul class="sidenav-nav" style="margin-top: var(--space-lg);">
+
             <li class="sidenav-nav-item">
-                <a class="sidenav-nav-link" th:href="@{/escolher-perfil}">
-                    <i class="fas fa-arrow-left"></i> <span>Voltar</span>
+                <a class="sidenav-nav-link" href="#">
+                    <i class="fas fa-user-cog"></i> <span>Meu Perfil</span>
                 </a>
             </li>
+
             <li class="sidenav-nav-item">
-                <a class="sidenav-nav-link" href="#"> <i class="fas fa-user-cog"></i> <span>Meu Perfil</span>
+                <a class="sidenav-nav-link" th:href="@{/escolher-perfil}"> <i class="fas fa-exchange-alt"></i> <span>Voltar menu seleção</span>
                 </a>
             </li>
-            </ul>
 
-        <div class="sidenav-footer">
-            
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon" id="themeIcon" style="width: 30px; margin-right: var(--space-sm);"></i> 
-                <span>Alternar Tema</span>
-            </button>
+            <li class="sidenav-nav-item">
+                <button class="sidenav-nav-link" id="themeToggle" type="button" style="width: 100%; border: none; background: transparent; text-align: left;">
+                    <i class="fas fa-moon" id="themeIcon"></i> <span>Alterar Tema</span>
+                </button>
+            </li>
 
-            <div class="user-dropdown dropdown mt-2">
-                <a class="dropdown-toggle" href="#" role="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Usuário</span> </a>
-                
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);">
-                    <li>
-                        <form th:action="@{/logout}" method="post" class="m-0">
-                            <button type="submit" class="dropdown-item text-danger">
-                                <i class="fas fa-sign-out-alt me-2"></i> Sair
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+            <li class="sidenav-nav-item">
+                <a class="sidenav-nav-link" href="#">
+                    <i class="fas fa-shield-alt"></i> <span>Segurança</span>
+                </a>
+            </li>
+
+            <br>
+            <li class="sidenav-nav-item">
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="sidenav-nav-link text-danger" style="width: 100%; border: none; background: transparent; text-align: left;">
+                        <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+
+        </nav>
 
 </body>
 </html>
