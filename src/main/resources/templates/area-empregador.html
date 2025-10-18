@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"> <head>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Painel Empregador - Karteria</title>
@@ -45,8 +47,9 @@
 
                 <div class="dashboard-toolbar mt-4">
                     <div class="search-bar">
-                        <input type="search" class="form-control"
-                            placeholder="Procurar vagas publicadas...">
+                        <input type="search" id="searchInput"
+                            class="form-control"
+                            placeholder="Buscar por Título, Valor ou Localização...">
                     </div>
                     <a th:href="@{/anuncios/novo}"
                         class="btn btn-primary-karteria btn-lg"> <i
@@ -82,9 +85,16 @@
                         </button> </li>
                 </ul>
 
-                <div class="tab-content mt-4" id="vagasTabContent">
+                <div class="text-muted small mt-3 mb-3" id="vagasCountInfo">
+                    Exibindo <span
+                        th:text="${#lists.size(vagasAtivas)}">0</span> vagas
+                    ativas de <span
+                        th:text="${#lists.size(todasAsVagas)}">0</span> no
+                    total.
+                </div>
 
-                    <div class="tab-pane fade show active" id="ativas-content"
+                <div class="tab-content" id="vagasTabContent"> <div
+                        class="tab-pane fade show active" id="ativas-content"
                         role="tabpanel">
                         <div th:if="${#lists.isEmpty(vagasAtivas)}"
                             class="empty-state" data-aos="zoom-in"><div
@@ -93,35 +103,39 @@
                                 class="fw-bold">Nenhuma vaga ativa</h3> <p
                                 class="text-muted">Publique uma nova vaga ou
                                 reative uma vaga pausada.</p> </div>
-                        <div class="row g-4">
+                        <div class="row g-4" id="ativasCardContainer">
                             <div th:each="anuncio : ${vagasAtivas}"
-                                class="col-lg-4 col-md-6">
-                                <div class="anuncio-card" data-aos="fade-up">
-                                    <div class="card-body"> <div
-                                            class="anuncio-card-header"> <h5
-                                                class="anuncio-card-title"
+                                class="col-lg-4 col-md-6 vaga-card-column"> <div
+                                    class="anuncio-card h-100"
+                                    data-aos="fade-up"> <div
+                                        class="card-body d-flex flex-column">
+                                        <div class="anuncio-card-header"> <h5
+                                                class="anuncio-card-title card-titulo"
                                                 th:text="${anuncio.titulo}"></h5>
                                             <span class="badge text-bg-success"
                                                 th:text="${anuncio.status}"></span>
-                                        </div> <h6
-                                            class="card-subtitle mb-2 text-muted"
+                                        </div>
+                                        <h6
+                                            class="card-subtitle mb-2 text-muted card-valor"
                                             th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}"></h6>
                                         <p
-                                            class="card-text text-secondary small"><i
+                                            class="card-text text-secondary small card-localizacao"><i
                                                 class="fas fa-map-marker-alt me-2"></i><span
                                                 th:text="${anuncio.localizacao}"></span></p>
-                                        <div class="anuncio-card-stats mt-auto">
-                                            <div class="stat-item"><i
-                                                    class="fas fa-eye"></i> 0
-                                                Visualizações</div> <div
-                                                class="stat-item"><i
-                                                    class="fas fa-users"></i> 0
-                                                Candidatos</div> </div> </div>
+
+                                        <small
+                                            class="anuncio-card-data mt-auto">
+                                            <i
+                                                class="fas fa-calendar-alt me-1"></i>
+                                            Publicada em: <span
+                                                th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy HH:mm')}"></span>
+                                        </small>
+                                    </div>
                                     <div class="anuncio-card-footer"> <a
                                             th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}"
                                             class="btn btn-primary-karteria btn-sm">
                                             <i class="fas fa-tasks me-1"></i>
-                                            Gerenciar Vaga </a> <div
+                                            Gerenciar </a> <div
                                             class="dropdown"> <button
                                                 class="btn btn-actions dropdown-toggle"
                                                 type="button"
@@ -163,29 +177,39 @@
                                 class="fw-bold">Nenhuma vaga pausada</h3> <p
                                 class="text-muted">Você pode pausar vagas ativas
                                 a qualquer momento.</p> </div>
-                        <div class="row g-4">
+                        <div class="row g-4" id="pausadasCardContainer">
                             <div th:each="anuncio : ${vagasPausadas}"
-                                class="col-lg-4 col-md-6">
-                                <div class="anuncio-card" data-aos="fade-up">
-                                    <div class="card-body"> <div
-                                            class="anuncio-card-header"> <h5
-                                                class="anuncio-card-title"
+                                class="col-lg-4 col-md-6 vaga-card-column"> <div
+                                    class="anuncio-card h-100"
+                                    data-aos="fade-up">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="anuncio-card-header"> <h5
+                                                class="anuncio-card-title card-titulo"
                                                 th:text="${anuncio.titulo}"></h5>
                                             <span class="badge text-bg-warning"
                                                 th:text="${anuncio.status}"></span>
-                                        </div> <h6
-                                            class="card-subtitle mb-2 text-muted"
+                                        </div>
+                                        <h6
+                                            class="card-subtitle mb-2 text-muted card-valor"
                                             th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}"></h6>
                                         <p
-                                            class="card-text text-secondary small"><i
+                                            class="card-text text-secondary small card-localizacao"><i
                                                 class="fas fa-map-marker-alt me-2"></i><span
                                                 th:text="${anuncio.localizacao}"></span></p>
+
+                                        <small
+                                            class="anuncio-card-data mt-auto">
+                                            <i
+                                                class="fas fa-calendar-alt me-1"></i>
+                                            Publicada em: <span
+                                                th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy HH:mm')}"></span>
+                                        </small>
                                     </div>
                                     <div class="anuncio-card-footer"> <a
                                             th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}"
                                             class="btn btn-primary-karteria btn-sm">
                                             <i class="fas fa-tasks me-1"></i>
-                                            Gerenciar Vaga </a> <div
+                                            Gerenciar </a> <div
                                             class="dropdown"> <button
                                                 class="btn btn-actions dropdown-toggle"
                                                 type="button"
@@ -227,31 +251,40 @@
                                 class="fw-bold">Nenhuma vaga arquivada</h3> <p
                                 class="text-muted">Vagas concluídas ou antigas
                                 podem ser arquivadas.</p> </div>
-                        <div th:unless="${#lists.isEmpty(vagasArquivadas)}"
-                            class="row g-4">
+                        <div class="row g-4" id="arquivadasCardContainer">
                             <div th:each="anuncio : ${vagasArquivadas}"
-                                class="col-lg-4 col-md-6">
-                                <div class="anuncio-card" data-aos="fade-up">
-                                    <div class="card-body"> <div
-                                            class="anuncio-card-header"> <h5
-                                                class="anuncio-card-title"
+                                class="col-lg-4 col-md-6 vaga-card-column"> <div
+                                    class="anuncio-card h-100"
+                                    data-aos="fade-up">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="anuncio-card-header"> <h5
+                                                class="anuncio-card-title card-titulo"
                                                 th:text="${anuncio.titulo}"></h5>
                                             <span
                                                 class="badge text-bg-secondary"
                                                 th:text="${anuncio.status}">ARQUIVADO</span>
-                                        </div> <h6
-                                            class="card-subtitle mb-2 text-muted"
+                                        </div>
+                                        <h6
+                                            class="card-subtitle mb-2 text-muted card-valor"
                                             th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}"></h6>
                                         <p
-                                            class="card-text text-secondary small"><i
+                                            class="card-text text-secondary small card-localizacao"><i
                                                 class="fas fa-map-marker-alt me-2"></i><span
                                                 th:text="${anuncio.localizacao}"></span></p>
+
+                                        <small
+                                            class="anuncio-card-data mt-auto">
+                                            <i
+                                                class="fas fa-calendar-alt me-1"></i>
+                                            Publicada em: <span
+                                                th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy HH:mm')}"></span>
+                                        </small>
                                     </div>
                                     <div class="anuncio-card-footer"> <a
                                             th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}"
                                             class="btn btn-primary-karteria btn-sm">
                                             <i class="fas fa-tasks me-1"></i>
-                                            Gerenciar Vaga </a> <div
+                                            Gerenciar </a> <div
                                             class="dropdown"> <button
                                                 class="btn btn-actions dropdown-toggle"
                                                 type="button"
@@ -275,40 +308,71 @@
                                 </div> </div> </div> </div> </div> </div>
         </main> <div th:each="anuncio : ${todasAsVagas}">
 
-        <div th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ATIVO or anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).PAUSADO}">
-                    <div class="modal fade" th:id="'modalEditar-' + ${anuncio.id}" tabindex="-1" aria-labelledby="'modalEditarLabel-' + ${anuncio.id}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header"> <h5 class="modal-title" th:id="'modalEditarLabel-' + ${anuncio.id}">Editar Vaga: <span class="brand-text" th:text="${anuncio.titulo}"></span></h5> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> </div>
-                                <form th:action="@{/anuncios/salvar}" method="post">
-                                    <input type="hidden" name="id" th:value="${anuncio.id}" />
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label th:for="'titulo-' + ${anuncio.id}" class="form-label">Título da Vaga</label>
-                                            <input type="text" name="titulo" th:id="'titulo-' + ${anuncio.id}" th:value="${anuncio.titulo}" class="form-control form-control-lg" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label th:for="'descricao-' + ${anuncio.id}" class="form-label">Descrição Detalhada</label>
-                                            <textarea name="descricao" th:id="'descricao-' + ${anuncio.id}" th:text="${anuncio.descricao}" class="form-control" rows="5" required></textarea>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label th:for="'valor-' + ${anuncio.id}" class="form-label">Valor Oferecido (R$)</label>
-                                                <input type="number" name="valor" th:id="'valor-' + ${anuncio.id}" th:value="${anuncio.valor}" class="form-control" step="0.01" required>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label th:for="'localizacao-' + ${anuncio.id}" class="form-label">Localização (Bairro, Cidade)</label>
-                                                <input type="text" name="localizacao" th:id="'localizacao-' + ${anuncio.id}" th:value="${anuncio.localizacao}" class="form-control" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button> <button type="submit" class="btn btn-primary-karteria"> <i class="fas fa-save me-2"></i> Salvar Alterações </button> </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            <div
+                th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ATIVO or anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).PAUSADO}">
+                <div class="modal fade" th:id="'modalEditar-' + ${anuncio.id}"
+                    tabindex="-1"
+                    aria-labelledby="'modalEditarLabel-' + ${anuncio.id}"
+                    aria-hidden="true"> <div
+                        class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content"> <div class="modal-header">
+                                <h5 class="modal-title"
+                                    th:id="'modalEditarLabel-' + ${anuncio.id}">Editar
+                                    Vaga: <span class="brand-text"
+                                        th:text="${anuncio.titulo}"></span></h5>
+                                <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button> </div> <form
+                                th:action="@{/anuncios/salvar}" method="post">
+                                <input type="hidden" name="id"
+                                    th:value="${anuncio.id}" /> <div
+                                    class="modal-body"> <div class="mb-3">
+                                        <label
+                                            th:for="'titulo-' + ${anuncio.id}"
+                                            class="form-label">Título da
+                                            Vaga</label> <input type="text"
+                                            name="titulo"
+                                            th:id="'titulo-' + ${anuncio.id}"
+                                            th:value="${anuncio.titulo}"
+                                            class="form-control form-control-lg"
+                                            required> </div> <div class="mb-3">
+                                        <label
+                                            th:for="'descricao-' + ${anuncio.id}"
+                                            class="form-label">Descrição
+                                            Detalhada</label> <textarea
+                                            name="descricao"
+                                            th:id="'descricao-' + ${anuncio.id}"
+                                            th:text="${anuncio.descricao}"
+                                            class="form-control" rows="5"
+                                            required></textarea> </div> <div
+                                        class="row"> <div class="col-md-6 mb-3">
+                                            <label
+                                                th:for="'valor-' + ${anuncio.id}"
+                                                class="form-label">Valor
+                                                Oferecido (R$)</label> <input
+                                                type="number" name="valor"
+                                                th:id="'valor-' + ${anuncio.id}"
+                                                th:value="${anuncio.valor}"
+                                                class="form-control" step="0.01"
+                                                required> </div> <div
+                                            class="col-md-6 mb-3"> <label
+                                                th:for="'localizacao-' + ${anuncio.id}"
+                                                class="form-label">Localização
+                                                (Bairro, Cidade)</label> <input
+                                                type="text" name="localizacao"
+                                                th:id="'localizacao-' + ${anuncio.id}"
+                                                th:value="${anuncio.localizacao}"
+                                                class="form-control" required>
+                                        </div> </div> </div> <div
+                                    class="modal-footer"> <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit"
+                                        class="btn btn-primary-karteria"> <i
+                                            class="fas fa-save me-2"></i> Salvar
+                                        Alterações </button> </div> </form>
+                        </div> </div> </div>
+            </div>
             <div class="modal fade" th:id="'modalApagar-' + ${anuncio.id}"
                 tabindex="-1"> <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content"> <div class="modal-header"><h5
@@ -328,7 +392,6 @@
                                 <button type="submit"
                                     class="btn btn-danger">Sim, Apagar</button>
                             </form> </div> </div> </div> </div>
-
             <div
                 th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ATIVO}">
                 <div class="modal fade" th:id="'modalPausar-' + ${anuncio.id}"
@@ -350,9 +413,7 @@
                                     <button type="submit"
                                         class="btn btn-warning">Sim,
                                         Pausar</button> </form> </div> </div>
-                    </div> </div>
-            </div>
-
+                    </div> </div> </div>
             <div
                 th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).PAUSADO}">
                 <div class="modal fade" th:id="'modalReativar-' + ${anuncio.id}"
@@ -375,9 +436,7 @@
                                     <button type="submit"
                                         class="btn btn-success">Sim,
                                         Reativar</button> </form> </div> </div>
-                    </div> </div>
-            </div>
-
+                    </div> </div> </div>
             <div
                 th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ATIVO or anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).PAUSADO}">
                 <div class="modal fade" th:id="'modalArquivar-' + ${anuncio.id}"
@@ -400,9 +459,7 @@
                                     <button type="submit"
                                         class="btn btn-info">Sim,
                                         Arquivar</button> </form> </div> </div>
-                    </div> </div>
-            </div>
-
+                    </div> </div> </div>
             <div
                 th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ARQUIVADO}">
                 <div class="modal fade"
@@ -426,13 +483,13 @@
                                     <button type="submit"
                                         class="btn btn-success">Sim,
                                         Desarquivar</button> </form> </div>
-                        </div> </div> </div>
-            </div>
+                        </div> </div> </div> </div>
 
         </div> <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-main.js}"></script>
+        <script th:src="@{/js/empregador-dashboard.js}"></script>
         <script> AOS.init({ once: true, duration: 600 }); </script>
     </body>
 

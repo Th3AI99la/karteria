@@ -601,11 +601,16 @@ body.dashboard-layout {
     color: var(--danger) !important;
 }
 
-/* === MODAL E DROPDOWN MENU EM DARK MODE === */
+/* Estilo para data de publicação no card */
+.anuncio-card-data {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px dashed var(--border-light); 
+}
 
-/* ========================================
-   CORREÇÕES DARK THEME P/ BOOTSTRAP COMPONENTS
-   ======================================== */
+/* === MODAL E DROPDOWN MENU EM DARK MODE === */
 
 [data-theme="dark"] {
     /* === MODAL === */
@@ -671,6 +676,23 @@ body.dashboard-layout {
      /* Divisor dentro do dropdown */
     .dropdown-divider {
         border-top-color: var(--border-light);
+    }
+
+
+    /* === INPUT DE BUSCA (Dark Mode) === */
+    .search-bar .form-control {
+        background-color: var(--bg-tertiary); 
+        color: var(--text-primary); 
+        border-color: var(--border-medium);
+    }
+    .search-bar .form-control::placeholder {
+        color: var(--text-muted); 
+    }
+    .search-bar .form-control:focus {
+         background-color: var(--bg-tertiary);
+         color: var(--text-primary);
+         border-color: var(--brand-primary);
+         box-shadow: 0 0 0 .25rem rgba(var(--karteria-green-500-rgb), 0.15); 
     }
 }
 
