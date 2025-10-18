@@ -600,3 +600,81 @@ body.dashboard-layout {
     background-color: var(--danger-bg);
     color: var(--danger) !important;
 }
+
+/* === MODAL E DROPDOWN MENU EM DARK MODE === */
+
+/* ========================================
+   CORREÇÕES DARK THEME P/ BOOTSTRAP COMPONENTS
+   ======================================== */
+
+[data-theme="dark"] {
+    /* === MODAL === */
+    .modal-content {
+        background-color: var(--bg-secondary); 
+        color: var(--text-primary); 
+        border: 1px solid var(--border-medium); 
+    }
+
+    .modal-header {
+        border-bottom-color: var(--border-light); 
+    }
+    /* Botão de fechar (X) no header do modal */
+    .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    .modal-footer {
+        border-top-color: var(--border-light);
+    }
+
+    /* Campos de formulário DENTRO do modal (se necessário) */
+    .modal-body .form-control,
+    .modal-body .form-select {
+         background-color: var(--bg-tertiary); 
+         color: var(--text-primary);
+         border-color: var(--border-medium);
+    }
+     .modal-body .form-control:focus,
+     .modal-body .form-select:focus {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 .25rem rgba(var(--karteria-green-500-rgb), 0.15); 
+     }
+
+
+    /* === CORREÇÃO DROPDOWN MENU === */
+    .dropdown-menu {
+        background-color: var(--bg-secondary);
+        border-color: var(--border-medium); 
+        box-shadow: var(--shadow-lg); 
+    }
+
+    .dropdown-item {
+        color: var(--text-secondary); 
+    }
+
+    /* Hover/Focus do item normal */
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        background-color: var(--bg-tertiary); 
+        color: var(--brand-primary); 
+    }
+
+    /* Hover/Focus do item vermelho (Apagar/Sair) */
+    .dropdown-item.text-danger:hover,
+    .dropdown-item.text-danger:focus {
+        background-color: var(--danger-bg);
+        color: var(--danger) !important;
+    }
+
+     /* Divisor dentro do dropdown */
+    .dropdown-divider {
+        border-top-color: var(--border-light);
+    }
+}
+
+/* Adiciona variável RGB para sombra do form-control no dark mode */
+:root {
+  --karteria-green-500-rgb: 34, 197, 94; 
+}
