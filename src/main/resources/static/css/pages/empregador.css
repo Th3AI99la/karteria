@@ -89,6 +89,7 @@
 .stat-item {
     font-size: 0.9rem;
     color: var(--text-secondary);
+    padding: 4px;
 }
 
 .stat-item i {
@@ -103,6 +104,7 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-sm) var(--space-md);
+    border-radius: 8px;
 }
 
 /* === MENU DE AÇÕES (3 PONTOS) === */
@@ -122,15 +124,21 @@
     background-color: var(--border-light);
 }
 
+/* === MENU DE DROPDOWN (3 PONTOS) === */
 .dropdown-menu {
     border: 1px solid var(--border-light);
     box-shadow: var(--shadow-lg);
     border-radius: var(--radius-lg);
+    padding: 2px;
 }
 
 .dropdown-item {
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
     font-weight: 500;
     transition: all var(--transition-fast);
+    padding: 6px 12px;
 }
 
 .dropdown-item:hover {
