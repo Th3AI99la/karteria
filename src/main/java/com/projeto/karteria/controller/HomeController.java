@@ -23,12 +23,14 @@ public class HomeController {
 
     @Autowired private UsuarioRepository usuarioRepository;
     @Autowired private AnuncioRepository anuncioRepository; 
-
+    
+    // MÉTODO PARA MOSTRAR PÁGINA INICIAL
     @GetMapping("/")
     public String showIndexPage() {
         return "index";
     }
 
+    // MÉTODO PARA MOSTRAR PÁGINA HOME BASEADA NO PERFIL ATIVO
     @GetMapping("/home")
     public String showHomePage(HttpSession session, Model model, Authentication authentication) {
         TipoUsuario perfilAtivo = (TipoUsuario) session.getAttribute("perfilAtivo");

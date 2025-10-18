@@ -14,20 +14,24 @@ import com.projeto.karteria.service.UsuarioService;
 @Controller
 public class AuthController {
 
+    // Serviço de Usuário
     @Autowired
     private UsuarioService usuarioService;
 
+    // MÉTODO PARA MOSTRAR FORMULÁRIO DE LOGIN
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }
 
+    // MÉTODO PARA MOSTRAR FORMULÁRIO DE REGISTRO
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("usuario", new Usuario());
         return "register";
     }
 
+    // MÉTODO PARA PROCESSAR REGISTRO DE USUÁRIO
     @PostMapping("/register")
     public String processRegistration(@ModelAttribute("usuario") Usuario usuario, RedirectAttributes redirectAttributes) {
         try {
