@@ -44,29 +44,47 @@ public class AnuncioController {
 
     // MÉTODO PARA SALVAR ANÚNCIO
     @PostMapping("/salvar")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
-    public String salvarAnuncio(@ModelAttribute Anuncio anuncio, Authentication authentication,
-            RedirectAttributes redirectAttributes) {
-        String email = authentication.getName();
-        Usuario usuarioLogado = usuarioRepository.findByEmail(email).orElseThrow();
+        @PreAuthorize("hasAuthority('EMPREGADOR')")
+        public String salvarAnuncio(@ModelAttribute Anuncio anuncioForm, // Renomeado para clareza
+                                Authentication authentication,
+                                RedirectAttributes redirectAttributes) {
+            String email = authentication.getName();
+            Usuario usuarioLogado = usuarioRepository.findByEmail(email).orElseThrow();
 
-        if (anuncio.getId() == null) {
-            anuncio.setAnunciante(usuarioLogado);
-            anuncio.setDataPostagem(LocalDateTime.now());
-            anuncio.setStatus(StatusAnuncio.ATIVO);
-            redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
-        } else {
-            Anuncio anuncioExistente = anuncioRepository.findById(anuncio.getId()).orElseThrow();
-            anuncio.setAnunciante(anuncioExistente.getAnunciante());
-            anuncio.setDataPostagem(anuncioExistente.getDataPostagem());
-            // Mantém o status que já existia ao salvar (seja ATIVO ou PAUSADO)
-            anuncio.setStatus(anuncioExistente.getStatus());
-            redirectAttributes.addFlashAttribute("sucesso", "Vaga atualizada com sucesso!");
+            // --- SE FOR UMA NOVA VAGA ---
+            if (anuncioForm.getId() == null) {
+                anuncioForm.setAnunciante(usuarioLogado);
+                anuncioForm.setDataPostagem(LocalDateTime.now());
+                anuncioForm.setStatus(StatusAnuncio.ATIVO);
+                anuncioRepository.save(anuncioForm); // Salva o novo anúncio diretamente
+                redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
+            }
+            // --- SE FOR UMA EDIÇÃO ---
+            else {
+                // 1. Busca o anúncio EXISTENTE no banco
+                Anuncio anuncioExistente = anuncioRepository.findById(anuncioForm.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido para edição:" + anuncioForm.getId()));
+
+                // 2. Validação de segurança: o usuário logado é o dono?
+                if (!anuncioExistente.getAnunciante().getEmail().equals(authentication.getName())) {
+                    redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para editar esta vaga.");
+                    return "redirect:/home";
+                }
+
+                // 3. ATUALIZA os campos do anúncio EXISTENTE com os dados do FORMULÁRIO
+                anuncioExistente.setTitulo(anuncioForm.getTitulo());
+                anuncioExistente.setDescricao(anuncioForm.getDescricao());
+                anuncioExistente.setValor(anuncioForm.getValor());
+                anuncioExistente.setLocalizacao(anuncioForm.getLocalizacao());
+                // Mantemos o anunciante, dataPostagem e status originais (não são editáveis no form)
+
+                // 4. SALVA o anúncio EXISTENTE (que contém a referência correta da coleção 'candidaturas')
+                anuncioRepository.save(anuncioExistente); // <-- SALVA O OBJETO CORRETO
+                redirectAttributes.addFlashAttribute("sucesso", "Vaga atualizada com sucesso!");
+            }
+
+            return "redirect:/home";
         }
-
-        anuncioRepository.save(anuncio);
-        return "redirect:/home";
-    }
 
     // MÉTODO PARA MOSTRAR FORMULÁRIO DE EDIÇÃO
     @GetMapping("/editar/{id}")
