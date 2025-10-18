@@ -1,11 +1,16 @@
 package com.projeto.karteria.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.projeto.karteria.model.Anuncio;
+import com.projeto.karteria.model.StatusAnuncio; 
 import com.projeto.karteria.model.TipoUsuario;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
@@ -17,9 +22,7 @@ import jakarta.servlet.http.HttpSession;
 public class HomeController {
 
     @Autowired private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private AnuncioRepository anuncioRepository; 
+    @Autowired private AnuncioRepository anuncioRepository; 
 
     @GetMapping("/")
     public String showIndexPage() {
@@ -37,11 +40,25 @@ public class HomeController {
         if (perfilAtivo == TipoUsuario.EMPREGADOR) {
             String email = authentication.getName();
             Usuario usuarioLogado = usuarioRepository.findByEmail(email).orElseThrow();
-            // Busca apenas os anúncios do usuário logado e os adiciona ao modelo
-            model.addAttribute("anunciosDoUsuario", anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado));
+            
+            // 1. Busca todos os anúncios do usuário
+            List<Anuncio> todosAnuncios = anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado);
+
+            // 2. Filtra os anúncios por status usando Streams
+            model.addAttribute("vagasAtivas", todosAnuncios.stream()
+                .filter(a -> a.getStatus() == StatusAnuncio.ATIVO)
+                .collect(Collectors.toList()));
+            
+            model.addAttribute("vagasPausadas", todosAnuncios.stream()
+                .filter(a -> a.getStatus() == StatusAnuncio.PAUSADO)
+                .collect(Collectors.toList()));
+
+            model.addAttribute("vagasArquivadas", todosAnuncios.stream()
+                .filter(a -> a.getStatus() == StatusAnuncio.ARQUIVADO)
+                .collect(Collectors.toList()));
+
             return "area-empregador";
         } else {
-            // Busca todos os anúncios e os adiciona ao modelo para o colaborador
             model.addAttribute("anuncios", anuncioRepository.findAll());
             return "area-colaborador";
         }

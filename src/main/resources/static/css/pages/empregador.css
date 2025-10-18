@@ -1,11 +1,46 @@
 /* Estilos específicos para o Dashboard do Empregador */
 
-.dashboard-header {
-    border-bottom: 1px solid var(--border-medium);
-    padding-bottom: var(--space-lg);
-    margin-bottom: var(--space-xl);
+/* === BARRA DE FERRAMENTAS === */
+.dashboard-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+    margin-bottom: var(--space-lg);
 }
 
+.search-bar {
+    max-width: 400px;
+    flex-grow: 1;
+}
+
+.search-bar .form-control {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-medium);
+}
+
+/* === ABAS (TABS) === */
+.nav-tabs-karteria {
+    border-bottom: 2px solid var(--border-light);
+}
+
+.nav-tabs-karteria .nav-link {
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: var(--space-sm) var(--space-lg);
+}
+
+.nav-tabs-karteria .nav-link.active {
+    color: var(--brand-primary);
+    background-color: transparent;
+    border-bottom: 2px solid var(--brand-primary);
+}
+
+/* === CARD DE ANÚNCIO (Refatorado) === */
 .anuncio-card {
     background: var(--bg-secondary);
     border-radius: var(--radius-xl);
@@ -14,7 +49,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
+    overflow: hidden;
 }
 
 .anuncio-card:hover {
@@ -29,23 +64,83 @@
     flex-direction: column;
 }
 
-.anuncio-card .card-footer {
+.anuncio-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-sm);
+}
+
+.anuncio-card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.anuncio-card-stats {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-light);
+}
+
+.stat-item {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.stat-item i {
+    margin-right: var(--space-xs);
+    color: var(--brand-primary);
+}
+
+.anuncio-card-footer {
     background: var(--bg-tertiary);
     border-top: 1px solid var(--border-light);
-    padding: var(--space-sm) var(--space-md);
-    font-size: 0.85rem;
-}
-
-.anuncio-card-actions {
     display: flex;
-    gap: var(--space-sm);
+    justify-content: space-between;
     align-items: center;
+    padding: var(--space-sm) var(--space-md);
 }
 
-.anuncio-card-actions .btn {
-    padding: 0.25rem 0.6rem;
+/* === MENU DE AÇÕES (3 PONTOS) === */
+.dropdown-toggle::after {
+    display: none; /* Esconde a seta padrão do dropdown */
 }
 
+.btn-actions {
+    background-color: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.25rem 0.5rem;
+}
+
+.btn-actions:hover {
+    color: var(--text-primary);
+    background-color: var(--border-light);
+}
+
+.dropdown-menu {
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-lg);
+}
+
+.dropdown-item {
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: var(--danger-bg);
+}
+
+/* === ESTADO VAZIO === */
 .empty-state {
     text-align: center;
     padding: var(--space-3xl) var(--space-xl);
