@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <nav th:fragment="dashboard_nav" class="sidenav">
+        
+        <div class="sidenav-header">
+            <a class="sidenav-brand brand-text" th:href="@{/home}">
+                <i class="fas fa-handshake"></i> <span>Karteria</span>
+            </a>
+        </div>
+
+        <ul class="sidenav-nav">
+            <li class="sidenav-nav-item">
+                <a class="sidenav-nav-link" th:href="@{/escolher-perfil}">
+                    <i class="fas fa-arrow-left"></i> <span>Voltar</span>
+                </a>
+            </li>
+            <li class="sidenav-nav-item">
+                <a class="sidenav-nav-link" href="#"> <i class="fas fa-user-cog"></i> <span>Meu Perfil</span>
+                </a>
+            </li>
+            </ul>
+
+        <div class="sidenav-footer">
+            
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon" id="themeIcon" style="width: 30px; margin-right: var(--space-sm);"></i> 
+                <span>Alternar Tema</span>
+            </button>
+
+            <div class="user-dropdown dropdown mt-2">
+                <a class="dropdown-toggle" href="#" role="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Usuário</span> </a>
+                
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);">
+                    <li>
+                        <form th:action="@{/logout}" method="post" class="m-0">
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="fas fa-sign-out-alt me-2"></i> Sair
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+</body>
+</html>

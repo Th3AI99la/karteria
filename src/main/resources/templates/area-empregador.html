@@ -18,7 +18,7 @@
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     </head>
 
-    <body>
+    <body class="dashboard-layout">
         <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand-modern brand-text" th:href="@{/home}"><i
@@ -45,13 +45,9 @@
                 </div>
             </div>
 
-            <div class="mb-4">
-                <a th:href="@{/escolher-perfil}"
-                    class="btn btn-outline-secondary btn-sm">
-                    <i class="fas fa-arrow-left me-2"></i>Voltar para Escolha de
-                    Perfil
-                </a>
-            </div>
+            <div th:replace="~{_navbar_dashboard :: dashboard_nav}"></div>
+
+            <main class="dashboard-content">
 
             <div th:if="${sucesso}" class="alert alert-success mt-4"
                 th:text="${sucesso}"></div>

@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/pages/colaborador.css}"> <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="dashboard-layout">
     <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand-modern brand-text" th:href="@{/home}"><i class="fas fa-handshake me-2"></i>Karteria</a>
@@ -40,6 +40,8 @@
                 <h3 class="fw-bold">Nenhuma oportunidade no momento</h3>
                 <p class="text-muted">Parece que não há vagas disponíveis agora. Volte mais tarde!</p>
             </div>
+
+            <div th:replace="~{_navbar_dashboard :: dashboard_nav}"></div>
 
             <div th:unless="${#lists.isEmpty(anuncios)}" class="row g-4">
                 <div th:each="anuncio : ${anuncios}" class="col-lg-4 col-md-6">

@@ -453,3 +453,142 @@ body {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
+
+
+body.dashboard-layout {
+    display: flex;
+    padding-top: 0;
+}
+
+.sidenav {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-lg);
+    transition: width var(--transition-normal);
+}
+
+
+.dashboard-content {
+    margin-left: 260px; 
+    width: 100%;
+    padding: var(--space-xl);
+    transition: margin-left var(--transition-normal);
+}
+
+/* --- Itens da Sidenav --- */
+
+.sidenav-header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Logo (Karteria) */
+.sidenav-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+/* Lista de navegação principal */
+.sidenav-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Empurra o footer para baixo */
+}
+
+.sidenav-nav-item {
+    margin-bottom: var(--space-sm);
+}
+
+.sidenav-nav-link {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    text-decoration: none;
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.sidenav-nav-link i {
+    width: 30px; /* Alinha os ícones */
+    font-size: 1.1rem;
+    margin-right: var(--space-sm);
+}
+
+.sidenav-nav-link:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--brand-primary);
+}
+
+/* Rodapé da Sidenav (Usuário e Tema) */
+.sidenav-footer {
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-light);
+}
+
+.user-dropdown .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-primary);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+.user-dropdown .dropdown-toggle:hover {
+    background-color: var(--bg-tertiary);
+}
+.user-dropdown .dropdown-toggle i {
+    font-size: 1.5rem;
+    margin-right: var(--space-md);
+}
+.user-dropdown .dropdown-toggle::after {
+    margin-left: auto;
+}
+
+/* Alinha o botão de tema */
+.sidenav-footer .theme-toggle {
+    width: 100%;
+    justify-content: flex-start;
+    padding: var(--space-md);
+    border: none;
+    background: transparent;
+}
+.sidenav-footer .theme-toggle:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--brand-primary);
+}
+
+/* Responsividade (em telas pequenas, esconde o menu) */
+@media (max-width: 992px) {
+    .sidenav {
+        width: 70px; /* Encolhe o menu */
+    }
+    .sidenav .sidenav-brand span,
+    .sidenav .sidenav-nav-link span,
+    .sidenav .user-dropdown span,
+    .sidenav .user-dropdown .dropdown-toggle::after {
+        display: none; /* Esconde os textos */
+    }
+    .sidenav .sidenav-nav-link i {
+        margin-right: 0;
+    }
+    .dashboard-content {
+        margin-left: 70px;
+    }
+    .user-dropdown .dropdown-toggle i {
+        margin-right: 0;
+    }
+}
