@@ -28,12 +28,18 @@
         </div>
     </nav>
 
-    <div class="container" style="padding-top: 100px;">
-        <div class="dashboard-header d-flex justify-content-between align-items-center">
+     <div class="container" style="padding-top: 100px;">
+        <div class="dashboard-header d-flex justify-content-between align-items-center mb-2">
             <div>
                 <h1>Dashboard do <span class="brand-text">Empregador</span></h1>
                 <p class="lead text-secondary mb-0">Gerencie seus anúncios e encontre talentos.</p>
             </div>
+        </div>
+
+        <div class="mb-4">
+            <a th:href="@{/escolher-perfil}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-2"></i>Voltar para Escolha de Perfil
+            </a>
         </div>
 
         <div th:if="${sucesso}" class="alert alert-success mt-4" th:text="${sucesso}"></div>
