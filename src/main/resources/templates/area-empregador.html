@@ -95,10 +95,9 @@
                                     </div>
                                 </div>
                                 <div class="anuncio-card-footer">
-                                    <a href="#" class="btn btn-primary-karteria btn-sm">
-                                        <i class="fas fa-tasks me-1"></i>
-                                        Gerenciar Vaga
-                                    </a>
+                                <a th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria btn-sm">
+                                    <i class="fas fa-tasks me-1"></i> Gerenciar Vaga
+                                </a>
                                     <div class="dropdown">
                                         <button class="btn btn-actions dropdown-toggle" type="button"
                                             data-bs-toggle="dropdown">

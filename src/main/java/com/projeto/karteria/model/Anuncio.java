@@ -2,7 +2,9 @@ package com.projeto.karteria.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -37,6 +40,9 @@ public class Anuncio {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "anunciante_id")
     private Usuario anunciante;
+
+    @OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidatura> candidaturas;
 
     // --- Getters e Setters ---
     public Long getId() {
@@ -101,5 +107,13 @@ public class Anuncio {
 
     public void setAnunciante(Usuario anunciante) {
         this.anunciante = anunciante;
+    }
+
+    public List<Candidatura> getCandidaturas() {
+        return candidaturas;
+    }
+
+    public void setCandidaturas(List<Candidatura> candidaturas) {
+        this.candidaturas = candidaturas;
     }
 }
