@@ -45,6 +45,13 @@ public class CandidaturaController {
             return "redirect:/anuncios/detalhes/" + anuncioId;
         }
 
+        // Evita Candidatura duplicada
+        boolean jaCandidatado = candidaturaRepository.existsByColaboradorAndAnuncio(colaborador, anuncio);
+        if (jaCandidatado) {
+            redirectAttributes.addFlashAttribute("erro", "Você já se candidatou para esta vaga.");
+            return "redirect:/anuncios/detalhes/" + anuncioId; // Volta para detalhes com erro
+        }
+
         // Cria a nova candidatura
         Candidatura novaCandidatura = new Candidatura();
         novaCandidatura.setColaborador(colaborador);
@@ -62,11 +69,10 @@ public class CandidaturaController {
             Notificacao notificacao = new Notificacao(empregador, mensagem, link);
             notificacaoRepository.save(notificacao);
         } catch (Exception e) {
-            // Logar o erro, mas não impedir a candidatura de funcionar
+            // Log do erro (pode ser substituído por um logger adequado)
             System.err.println("Erro ao criar notificação: " + e.getMessage());
-            // Considerar usar um logger mais robusto aqui (SLF4j, Logback)
+
         }
-        // ***********************************************
 
         redirectAttributes.addFlashAttribute("sucesso", "Candidatura realizada com sucesso!");
         return "redirect:/home";

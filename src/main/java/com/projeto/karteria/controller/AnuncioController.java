@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.projeto.karteria.model.Anuncio;
 import com.projeto.karteria.model.Candidatura;
 import com.projeto.karteria.model.StatusAnuncio;
+import com.projeto.karteria.model.TipoUsuario;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
 import com.projeto.karteria.repository.CandidaturaRepository;
@@ -217,22 +218,28 @@ public class AnuncioController {
 
         boolean isAnunciante = false;
         String nomeUsuarioLogado = null;
+        boolean jaCandidatado = false;
 
-        // Verifica se há um usuário autenticado
         if (authentication != null && authentication.isAuthenticated()) {
             String emailUsuarioLogado = authentication.getName();
-            // Compara o email logado com o email do anunciante
-            if (anuncio.getAnunciante() != null && anuncio.getAnunciante().getEmail().equals(emailUsuarioLogado)) {
-                isAnunciante = true;
-                // Busca o nome do usuário para exibir (opcional)
-                Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado).orElse(null);
-                if (usuarioLogado != null) {
+            Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado).orElse(null); // Busca usuário
+                                                                                                    // logado
+
+            if (usuarioLogado != null) {
+                // Verifica se é o anunciante
+                if (anuncio.getAnunciante() != null && anuncio.getAnunciante().getId().equals(usuarioLogado.getId())) {
+                    isAnunciante = true;
                     nomeUsuarioLogado = usuarioLogado.getNome();
+                } else {
+                    // Se não for anunciante, incrementa view
+                    anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
+                    anuncioRepository.save(anuncio); // Salva o incremento
+
+                    // ** Verifica se o COLABORADOR logado já se candidatou **
+                    if (usuarioLogado.getTipo() == TipoUsuario.COLABORADOR) { // Garante que é um colaborador
+                        jaCandidatado = candidaturaRepository.existsByColaboradorAndAnuncio(usuarioLogado, anuncio);
+                    }
                 }
-            } else {
-                // Incrementa visualizações APENAS se não for o anunciante
-                anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
-                anuncioRepository.save(anuncio);
             }
         } else {
             // Se não houver usuário logado (anônimo?), incrementa a view
@@ -243,6 +250,7 @@ public class AnuncioController {
         model.addAttribute("anuncio", anuncio);
         model.addAttribute("isAnunciante", isAnunciante);
         model.addAttribute("nomeUsuarioLogado", nomeUsuarioLogado);
+        model.addAttribute("jaCandidatado", jaCandidatado); 
 
         return "anuncio-detalhes";
     }

@@ -17,6 +17,7 @@
 .profile-item span {
     font-size: 1.1rem;
 }
-.cpf-mask { /* Estilo simples para "mascarar" CPF visualmente */
+.cpf-mask {
+    /* Estilo simples para "mascarar" CPF visualmente */
     font-family: monospace;
 }

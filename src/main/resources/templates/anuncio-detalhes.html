@@ -60,22 +60,30 @@
                             </p>
                         </div>
 
+                        <!-- Botão de candidatura -->
                         <div class="d-grid gap-2 mt-5">
-                            <!-- Botão de candidatura só aparece se o usuário NÃO for o anunciante -->
                             <th:block th:if="${!isAnunciante}">
-                                <button type="button" class="btn btn-primary-karteria btn-lg w-100" data-bs-toggle="modal" data-bs-target="#confirmarCandidaturaModal">
+                                <button
+                                    th:if="${!jaCandidatado}"
+                                    type="button"
+                                    class="btn btn-primary-karteria btn-lg w-100"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#confirmarCandidaturaModal">
                                     <i class="fas fa-check-circle me-2"></i>
                                     Quero me candidatar
                                 </button>
+                                <div th:if="${jaCandidatado}" class="alert alert-success text-center" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Candidatura realizada com sucesso!
+                                </div>
                             </th:block>
 
-                            <!-- Mensagem informativa se o usuário for o anunciante -->
                             <th:block th:if="${isAnunciante}">
                                 <div class="alert alert-info text-center" role="alert">
                                     <i class="fas fa-info-circle me-2"></i>
                                     Vaga criada por você
                                     <em th:if="${nomeUsuarioLogado != null}" th:text="' (' + ${nomeUsuarioLogado} + ')'"></em>
-                                    . Não é possível se candidatar.
+                                    .
                                 </div>
                             </th:block>
                         </div>
