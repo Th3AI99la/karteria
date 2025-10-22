@@ -468,9 +468,8 @@
     // === API PÚBLICA === //
     window.Karteria = {
         theme: {
-            toggle: toggleTheme,
             set: applyTheme,
-            get: () => KARTERIA.theme.current
+            get: () => document.documentElement.getAttribute('data-theme') || 'light' // Pega o tema atual do HTML
         },
         utils: {
             throttle,
