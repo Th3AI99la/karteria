@@ -46,7 +46,8 @@ public class AnuncioController {
 
     // ================= Helper =================
     private boolean isAnunciante(Anuncio anuncio, Authentication auth) {
-        if (auth == null || !auth.isAuthenticated()) return false;
+        if (auth == null || !auth.isAuthenticated())
+            return false;
         String email = auth.getName();
         return anuncio.getAnunciante() != null && email.equals(anuncio.getAnunciante().getEmail());
     }
@@ -63,8 +64,8 @@ public class AnuncioController {
     @PostMapping("/salvar")
     @PreAuthorize("hasAuthority('EMPREGADOR')")
     public String salvarAnuncio(@ModelAttribute Anuncio anuncioForm,
-                                Authentication authentication,
-                                RedirectAttributes redirectAttributes) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
 
         Usuario usuarioLogado = usuarioRepository.findByEmail(authentication.getName()).orElseThrow();
 
@@ -76,7 +77,8 @@ public class AnuncioController {
             redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
         } else { // EDIÇÃO
             Anuncio anuncioExistente = anuncioRepository.findById(anuncioForm.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido para edição:" + anuncioForm.getId()));
+                    .orElseThrow(
+                            () -> new IllegalArgumentException("Anúncio inválido para edição:" + anuncioForm.getId()));
 
             if (!isAnunciante(anuncioExistente, authentication)) {
                 redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para editar esta vaga.");
@@ -107,7 +109,8 @@ public class AnuncioController {
 
     @PostMapping("/apagar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR')")
-    public String apagarAnuncio(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String apagarAnuncio(@PathVariable Long id, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
         if (!isAnunciante(anuncio, authentication)) {
             return "redirect:/home";
@@ -119,7 +122,8 @@ public class AnuncioController {
 
     @PostMapping("/status/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR')")
-    public String alterarStatusAnuncio(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String alterarStatusAnuncio(@PathVariable Long id, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
         if (!isAnunciante(anuncio, authentication)) {
             return "redirect:/home";
@@ -139,7 +143,8 @@ public class AnuncioController {
 
     @PostMapping("/arquivar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR')")
-    public String arquivarAnuncio(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String arquivarAnuncio(@PathVariable Long id, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
         if (!isAnunciante(anuncio, authentication)) {
             return "redirect:/home";
@@ -152,7 +157,8 @@ public class AnuncioController {
 
     @PostMapping("/desarquivar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR')")
-    public String desarquivarAnuncio(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String desarquivarAnuncio(@PathVariable Long id, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
         if (!isAnunciante(anuncio, authentication)) {
             return "redirect:/home";
@@ -165,7 +171,8 @@ public class AnuncioController {
 
     @GetMapping("/gerenciar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR')")
-    public String showGerenciarVaga(@PathVariable Long id, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String showGerenciarVaga(@PathVariable Long id, Model model, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
 
@@ -183,24 +190,38 @@ public class AnuncioController {
 
     // ================= DETALHES ANÚNCIO =================
     @GetMapping("/detalhes/{id}")
-    public String showAnuncioDetalhes(@PathVariable Long id, Model model, Authentication authentication, HttpSession session) {
+    public String showAnuncioDetalhes(@PathVariable Long id, Model model, Authentication authentication,
+            HttpSession session) {
+        System.out.println("DEBUG: Entrando em showAnuncioDetalhes para ID: " + id);
+
         Anuncio anuncio = anuncioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
+                .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido: " + id));
 
         boolean isAnunciante = false;
         String nomeUsuarioLogado = null;
         boolean jaCandidatado = false;
+        boolean countedView = false;
 
         if (authentication != null && authentication.isAuthenticated()) {
             String emailUsuarioLogado = authentication.getName();
+            System.out.println("DEBUG: Usuário autenticado: " + emailUsuarioLogado);
+
             Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado).orElse(null);
 
             if (usuarioLogado != null) {
-                if (anuncio.getAnunciante() != null && anuncio.getAnunciante().getId().equals(usuarioLogado.getId())) {
+                System.out.println("DEBUG: Objeto Usuario encontrado: ID=" + usuarioLogado.getId() +
+                        ", TipoRegistro=" + usuarioLogado.getTipo());
+
+                // Verifica se o usuário é o anunciante
+                if (anuncio.getAnunciante() != null &&
+                        anuncio.getAnunciante().getId().equals(usuarioLogado.getId())) {
+
+                    System.out.println("DEBUG: Usuário é o anunciante deste anúncio.");
                     isAnunciante = true;
                     nomeUsuarioLogado = usuarioLogado.getNome();
+
                 } else {
-                    // Contagem única de views por sessão
+                    // Controle de visualizações únicas por sessão
                     @SuppressWarnings("unchecked")
                     Set<Long> viewedAnnouncements = (Set<Long>) session.getAttribute("viewedAnnouncements");
                     if (viewedAnnouncements == null) {
@@ -212,16 +233,29 @@ public class AnuncioController {
                         anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
                         anuncioRepository.save(anuncio);
                         viewedAnnouncements.add(id);
-                        log.debug("View contada para anúncio {} pelo usuário {}", id, emailUsuarioLogado);
+                        countedView = true;
+                        System.out.println("DEBUG: View contada para anúncio ID=" + id);
                     } else {
-                        log.debug("View já contada para anúncio {} nesta sessão", id);
+                        System.out.println("DEBUG: View JÁ contada nesta sessão para anúncio ID=" + id);
                     }
 
-                    // Verifica se o usuário já se candidatou (independente do tipo)
+                    // Verifica se o usuário já se candidatou (SEM CHECAGEM DE TIPO)
+                    System.out.println("DEBUG: Verificando candidatura existente para Colaborador ID=" +
+                            usuarioLogado.getId() + " e Anuncio ID=" + anuncio.getId());
                     jaCandidatado = candidaturaRepository.existsByColaboradorAndAnuncio(usuarioLogado, anuncio);
+                    System.out.println("DEBUG: Resultado de existsByColaboradorAndAnuncio: " + jaCandidatado);
                 }
+            } else {
+                System.out
+                        .println("WARN: Objeto Usuario NÃO encontrado para o email autenticado: " + emailUsuarioLogado);
             }
+
+        } else {
+            System.out.println("DEBUG: Usuário não autenticado (anônimo?).");
         }
+
+        System.out.println("DEBUG: Enviando para o Model - isAnunciante=" + isAnunciante +
+                ", jaCandidatado=" + jaCandidatado + ", countedView=" + countedView);
 
         model.addAttribute("anuncio", anuncio);
         model.addAttribute("isAnunciante", isAnunciante);
@@ -230,4 +264,5 @@ public class AnuncioController {
 
         return "anuncio-detalhes";
     }
+
 }
