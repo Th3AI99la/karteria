@@ -215,14 +215,35 @@ public class AnuncioController {
         Anuncio anuncio = anuncioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
 
-        // ** INCREMENTA VISUALIZAÇÕES (se não for o dono) **
-        if (authentication != null && !anuncio.getAnunciante().getEmail().equals(authentication.getName())) {
+        boolean isAnunciante = false;
+        String nomeUsuarioLogado = null;
+
+        // Verifica se há um usuário autenticado
+        if (authentication != null && authentication.isAuthenticated()) {
+            String emailUsuarioLogado = authentication.getName();
+            // Compara o email logado com o email do anunciante
+            if (anuncio.getAnunciante() != null && anuncio.getAnunciante().getEmail().equals(emailUsuarioLogado)) {
+                isAnunciante = true;
+                // Busca o nome do usuário para exibir (opcional)
+                Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado).orElse(null);
+                if (usuarioLogado != null) {
+                    nomeUsuarioLogado = usuarioLogado.getNome();
+                }
+            } else {
+                // Incrementa visualizações APENAS se não for o anunciante
+                anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
+                anuncioRepository.save(anuncio);
+            }
+        } else {
+            // Se não houver usuário logado (anônimo?), incrementa a view
             anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
-            anuncioRepository.save(anuncio); // Salva o incremento
+            anuncioRepository.save(anuncio);
         }
-        // *************************************************
 
         model.addAttribute("anuncio", anuncio);
+        model.addAttribute("isAnunciante", isAnunciante);
+        model.addAttribute("nomeUsuarioLogado", nomeUsuarioLogado);
+
         return "anuncio-detalhes";
     }
 }
