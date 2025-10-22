@@ -12,44 +12,36 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.projeto.karteria.model.Anuncio;
 import com.projeto.karteria.model.Candidatura;
+import com.projeto.karteria.model.Notificacao;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
 import com.projeto.karteria.repository.CandidaturaRepository;
+import com.projeto.karteria.repository.NotificacaoRepository;
 import com.projeto.karteria.repository.UsuarioRepository;
 
 @Controller
 public class CandidaturaController {
 
-    @Autowired 
+    @Autowired
     private CandidaturaRepository candidaturaRepository;
-
-    @Autowired 
+    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired 
+    @Autowired
     private AnuncioRepository anuncioRepository;
+    @Autowired
+    private NotificacaoRepository notificacaoRepository;
 
     @PostMapping("/candidatar/{anuncioId}")
-    @PreAuthorize("hasAuthority('COLABORADOR')") // Apenas colaboradores podem se candidatar
-    public String seCandidatar(
-            @PathVariable Long anuncioId,
-            Authentication authentication,
+    @PreAuthorize("hasAuthority('COLABORADOR')")
+    public String seCandidatar(@PathVariable Long anuncioId, Authentication authentication,
             RedirectAttributes redirectAttributes) {
-
-        // Busca o usuário logado (colaborador)
         String email = authentication.getName();
         Usuario colaborador = usuarioRepository.findByEmail(email).orElseThrow();
-
-        // Busca o anúncio ao qual ele está se candidatando
         Anuncio anuncio = anuncioRepository.findById(anuncioId).orElseThrow();
 
-        // ✅ NOVA VERIFICAÇÃO: impedir auto-candidatura
+        // Verificação de auto-candidatura
         if (colaborador.getId().equals(anuncio.getAnunciante().getId())) {
-            redirectAttributes.addFlashAttribute(
-                "erro", 
-                "Você não pode se candidatar à sua própria vaga."
-            );
-            // Redireciona de volta para os detalhes da vaga
+            redirectAttributes.addFlashAttribute("erro", "Você não pode se candidatar à sua própria vaga.");
             return "redirect:/anuncios/detalhes/" + anuncioId;
         }
 
@@ -58,11 +50,24 @@ public class CandidaturaController {
         novaCandidatura.setColaborador(colaborador);
         novaCandidatura.setAnuncio(anuncio);
         novaCandidatura.setDataCandidatura(LocalDateTime.now());
-
-        // Salva no banco de dados
         candidaturaRepository.save(novaCandidatura);
 
-        // Mensagem de sucesso e redirecionamento
+        // Criar Notificação para o Empregador **
+        try {
+            Usuario empregador = anuncio.getAnunciante();
+            String mensagem = colaborador.getNome() + " se candidatou para sua vaga '" + anuncio.getTitulo() + "'.";
+            // Link que leva para a página de gerenciamento da vaga específica
+            String link = "/anuncios/gerenciar/" + anuncio.getId();
+
+            Notificacao notificacao = new Notificacao(empregador, mensagem, link);
+            notificacaoRepository.save(notificacao);
+        } catch (Exception e) {
+            // Logar o erro, mas não impedir a candidatura de funcionar
+            System.err.println("Erro ao criar notificação: " + e.getMessage());
+            // Considerar usar um logger mais robusto aqui (SLF4j, Logback)
+        }
+        // ***********************************************
+
         redirectAttributes.addFlashAttribute("sucesso", "Candidatura realizada com sucesso!");
         return "redirect:/home";
     }
