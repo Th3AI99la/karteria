@@ -36,7 +36,7 @@ public class AnuncioController {
 
     // MÉTODO PARA MOSTRAR FORMULÁRIO DE CRIAÇÃO
     @GetMapping("/novo")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("@activeProfileSecurityService.hasActiveRole('EMPREGADOR')") // <- NOVA LINHA
     public String showAnuncioForm(Model model) {
         model.addAttribute("anuncio", new Anuncio());
         return "anuncio-form";

@@ -32,7 +32,7 @@ public class CandidaturaController {
     private NotificacaoRepository notificacaoRepository;
 
     @PostMapping("/candidatar/{anuncioId}")
-    @PreAuthorize("hasAuthority('COLABORADOR')")
+    @PreAuthorize("@activeProfileSecurityService.hasActiveRole('COLABORADOR')")
     public String seCandidatar(@PathVariable Long anuncioId, Authentication authentication,
             RedirectAttributes redirectAttributes) {
         String email = authentication.getName();
