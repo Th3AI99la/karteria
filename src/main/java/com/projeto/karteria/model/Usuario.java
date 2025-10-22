@@ -1,5 +1,14 @@
 package com.projeto.karteria.model;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,134 +18,166 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String nome;
-  private String email;
-  private String senha;
+    private String nome;
+    private String email;
+    private String senha;
 
-  @Enumerated(EnumType.STRING)
-  private TipoUsuario tipo;
+    private String sobrenome;
+    private String telefone;
+    private String cpf;
+    private String endereco;
 
-  @OneToMany(mappedBy = "anunciante", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Anuncio> anuncios;
+    @Enumerated(EnumType.STRING)
+    private TipoUsuario tipo;
 
-  private String resetToken;
-  private LocalDateTime resetTokenExpiry;
+    @OneToMany(mappedBy = "anunciante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Anuncio> anuncios;
 
-  // --- Getters e Setters Manuais ---
-  public Long getId() {
-    return id;
-  }
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    // --- Getters e Setters Manuais ---
 
-  public String getNome() {
-    return nome;
-  }
+    public String getSobrenome() {
+        return sobrenome;
+    }
 
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    public String getTelefone() {
+        return telefone;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
 
-  public String getSenha() {
-    return senha;
-  }
+    public String getCpf() {
+        return cpf;
+    }
 
-  public void setSenha(String senha) {
-    this.senha = senha;
-  }
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 
-  public TipoUsuario getTipo() {
-    return tipo;
-  }
+    public String getEndereco() {
+        return endereco;
+    }
 
-  public void setTipo(TipoUsuario tipo) {
-    this.tipo = tipo;
-  }
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
 
-  public List<Anuncio> getAnuncios() {
-    return anuncios;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setAnuncios(List<Anuncio> anuncios) {
-    this.anuncios = anuncios;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public String getResetToken() {
-    return resetToken;
-  }
+    public String getNome() {
+        return nome;
+    }
 
-  public void setResetToken(String resetToken) {
-    this.resetToken = resetToken;
-  }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-  public LocalDateTime getResetTokenExpiry() {
-    return resetTokenExpiry;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
-    this.resetTokenExpiry = resetTokenExpiry;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  // --- UserDetails ---
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (this.tipo == null) return Collections.emptyList();
-    return Collections.singletonList(new SimpleGrantedAuthority(this.tipo.name()));
-  }
+    public String getSenha() {
+        return senha;
+    }
 
-  @Override
-  public String getPassword() {
-    return this.senha;
-  }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
-  @Override
-  public String getUsername() {
-    return this.email;
-  }
+    public TipoUsuario getTipo() {
+        return tipo;
+    }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
+    public void setTipo(TipoUsuario tipo) {
+        this.tipo = tipo;
+    }
 
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
+    public List<Anuncio> getAnuncios() {
+        return anuncios;
+    }
 
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
+    public void setAnuncios(List<Anuncio> anuncios) {
+        this.anuncios = anuncios;
+    }
 
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    // --- UserDetails ---
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.tipo == null)
+            return Collections.emptyList();
+        return Collections.singletonList(new SimpleGrantedAuthority(this.tipo.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -29,6 +29,8 @@
                     <h1 class="h2" th:text="${anuncio.titulo}">Título do Anúncio</h1>
                 </div>
 
+                <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+
                 <div class="card-modern" data-aos="fade-up">
                     <div class="card-body p-4">
                         <h2 class="brand-text mb-3" th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}">R$ 150,00</h2>
@@ -60,7 +62,7 @@
 
                         <div class="d-grid gap-2 mt-5">
                             <form th:action="@{/candidatar/{id}(id=${anuncio.id})}" method="post">
-                                <button type="submit" class="btn btn-primary-karteria btn-lg w-100">
+                                <button type="button" class="btn btn-primary-karteria btn-lg w-100" data-bs-toggle="modal" data-bs-target="#confirmarCandidaturaModal">
                                     <i class="fas fa-check-circle me-2"></i>
                                     Quero me candidatar
                                 </button>
@@ -70,6 +72,33 @@
                 </div>
             </div>
         </main>
+
+        <!-- Modal Confirmar Candidatura -->
+        <div class="modal fade" id="confirmarCandidaturaModal" tabindex="-1" aria-labelledby="confirmarCandidaturaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmarCandidaturaModalLabel">Confirmar Candidatura</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja se candidatar para a vaga "
+                        <span class="fw-bold" th:text="${anuncio.titulo}"></span>
+                        "?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form th:action="@{/candidatar/{id}(id=${anuncio.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-1"></i>
+                                Sim, Candidatar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-main.js}"></script>

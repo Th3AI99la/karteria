@@ -1,5 +1,9 @@
 package com.projeto.karteria.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,107 +16,113 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "anuncios")
 public class Anuncio {
 
-  // --- Chave Primária ---
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    // --- Chave Primária ---
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  // --- Campos de Dados ---
-  private String titulo;
-  private String descricao;
-  private BigDecimal valor;
-  private String localizacao;
-  private LocalDateTime dataPostagem;
+    // --- Campos de Dados ---
+    private String titulo;
+    private String descricao;
+    private BigDecimal valor;
+    private String localizacao;
+    private LocalDateTime dataPostagem;
 
-  @Enumerated(EnumType.STRING)
-  private StatusAnuncio status;
+    @Enumerated(EnumType.STRING)
+    private StatusAnuncio status;
 
-  // --- Relacionamentos ---
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "anunciante_id")
-  private Usuario anunciante;
+    // --- Relacionamentos ---
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "anunciante_id")
+    private Usuario anunciante;
 
-  @OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Candidatura> candidaturas;
+    @OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidatura> candidaturas;
+    private int visualizacoes = 0; // Inicializa com 0
 
-  // --- Getters e Setters ---
-  public Long getId() {
-    return id;
-  }
+    // --- Getters e Setters ---
+    public Long getId() {
+        return id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public String getTitulo() {
-    return titulo;
-  }
+    public String getTitulo() {
+        return titulo;
+    }
 
-  public void setTitulo(String titulo) {
-    this.titulo = titulo;
-  }
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
-  public String getDescricao() {
-    return descricao;
-  }
+    public String getDescricao() {
+        return descricao;
+    }
 
-  public void setDescricao(String descricao) {
-    this.descricao = descricao;
-  }
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 
-  public BigDecimal getValor() {
-    return valor;
-  }
+    public BigDecimal getValor() {
+        return valor;
+    }
 
-  public void setValor(BigDecimal valor) {
-    this.valor = valor;
-  }
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
 
-  public String getLocalizacao() {
-    return localizacao;
-  }
+    public String getLocalizacao() {
+        return localizacao;
+    }
 
-  public void setLocalizacao(String localizacao) {
-    this.localizacao = localizacao;
-  }
+    public void setLocalizacao(String localizacao) {
+        this.localizacao = localizacao;
+    }
 
-  public LocalDateTime getDataPostagem() {
-    return dataPostagem;
-  }
+    public LocalDateTime getDataPostagem() {
+        return dataPostagem;
+    }
 
-  public void setDataPostagem(LocalDateTime dataPostagem) {
-    this.dataPostagem = dataPostagem;
-  }
+    public void setDataPostagem(LocalDateTime dataPostagem) {
+        this.dataPostagem = dataPostagem;
+    }
 
-  public StatusAnuncio getStatus() {
-    return status;
-  }
+    public StatusAnuncio getStatus() {
+        return status;
+    }
 
-  public void setStatus(StatusAnuncio status) {
-    this.status = status;
-  }
+    public void setStatus(StatusAnuncio status) {
+        this.status = status;
+    }
 
-  public Usuario getAnunciante() {
-    return anunciante;
-  }
+    public Usuario getAnunciante() {
+        return anunciante;
+    }
 
-  public void setAnunciante(Usuario anunciante) {
-    this.anunciante = anunciante;
-  }
+    public void setAnunciante(Usuario anunciante) {
+        this.anunciante = anunciante;
+    }
 
-  public List<Candidatura> getCandidaturas() {
-    return candidaturas;
-  }
+    public List<Candidatura> getCandidaturas() {
+        return candidaturas;
+    }
 
-  public void setCandidaturas(List<Candidatura> candidaturas) {
-    this.candidaturas = candidaturas;
-  }
+    public void setCandidaturas(List<Candidatura> candidaturas) {
+        this.candidaturas = candidaturas;
+    }
+
+    public int getVisualizacoes() {
+        return visualizacoes;
+    }
+
+    public void setVisualizacoes(int visualizacoes) {
+        this.visualizacoes = visualizacoes;
+    }
 }
