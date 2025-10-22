@@ -45,8 +45,7 @@
         applyTheme(savedTheme);
 
         themeToggle.addEventListener('click', () => {
-            const newTheme =
-                document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             applyTheme(newTheme);
         });
     }
@@ -84,7 +83,7 @@
             0: { text: 'Muito fraca', color: '#dc2626' },
             1: { text: 'Fraca', color: '#f97316' },
             2: { text: 'Regular', color: '#f59e0b' },
-            3: { text: 'Forte', color: '#22c55e' },
+            3: { text: 'Forte', color: '#22c55e' }
         };
 
         passwordInput.addEventListener('input', () => {
@@ -98,8 +97,7 @@
             score = Math.min(score, 3);
 
             bars.forEach((bar, index) => {
-                bar.style.backgroundColor =
-                    index < score + 1 ? strengthLevels[score].color : 'var(--bg-tertiary)';
+                bar.style.backgroundColor = index < score + 1 ? strengthLevels[score].color : 'var(--bg-tertiary)';
             });
 
             if (password.length === 0) {

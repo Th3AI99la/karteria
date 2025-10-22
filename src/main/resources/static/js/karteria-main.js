@@ -119,7 +119,7 @@
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
-                        block: 'start',
+                        block: 'start'
                     });
                 }
             });
@@ -164,7 +164,7 @@
         // Reveal animations on scroll
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px',
+            rootMargin: '0px 0px -50px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
@@ -470,14 +470,14 @@
         theme: {
             toggle: toggleTheme,
             set: applyTheme,
-            get: () => KARTERIA.theme.current,
+            get: () => KARTERIA.theme.current
         },
         utils: {
             throttle,
             debounce,
-            announceToScreenReader,
+            announceToScreenReader
         },
-        version: '1.0.0',
+        version: '1.0.0'
     };
 })();
 

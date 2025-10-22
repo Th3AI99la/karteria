@@ -47,11 +47,7 @@ body {
 .btn-primary-karteria:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    background: linear-gradient(
-        135deg,
-        var(--karteria-green-600) 0%,
-        var(--karteria-green-700) 100%
-    );
+    background: linear-gradient(135deg, var(--karteria-green-600) 0%, var(--karteria-green-700) 100%);
 }
 
 .btn-primary-karteria:active {

@@ -8,9 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Verifica se os elementos essenciais existem
     if (!searchInput || !vagasCountInfo || !cardContainer) {
-        console.warn(
-            'Aviso: Elementos de busca/contagem do dashboard do colaborador não encontrados.'
-        );
+        console.warn('Aviso: Elementos de busca/contagem do dashboard do colaborador não encontrados.');
         return; // Não executa a lógica de busca se algo estiver faltando
     }
 
@@ -34,13 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Pega os textos dos campos relevantes
             const titulo = card.querySelector('.card-titulo')?.textContent.toLowerCase() || '';
             const valorText =
-                card
-                    .querySelector('.card-valor')
-                    ?.textContent.toLowerCase()
-                    .replace('r$', '')
-                    .trim() || '';
-            const localizacao =
-                card.querySelector('.card-localizacao span')?.textContent.toLowerCase() || '';
+                card.querySelector('.card-valor')?.textContent.toLowerCase().replace('r$', '').trim() || '';
+            const localizacao = card.querySelector('.card-localizacao span')?.textContent.toLowerCase() || '';
 
             // Verifica match
             const isMatch =

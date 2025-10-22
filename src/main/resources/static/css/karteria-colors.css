@@ -88,21 +88,9 @@
     --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
     /* === GRADIENTES === */
-    --gradient-primary: linear-gradient(
-        135deg,
-        var(--karteria-green-500) 0%,
-        var(--karteria-green-600) 100%
-    );
-    --gradient-secondary: linear-gradient(
-        135deg,
-        var(--karteria-blue-500) 0%,
-        var(--karteria-purple-500) 100%
-    );
-    --gradient-accent: linear-gradient(
-        135deg,
-        var(--karteria-green-400) 0%,
-        var(--karteria-blue-400) 100%
-    );
+    --gradient-primary: linear-gradient(135deg, var(--karteria-green-500) 0%, var(--karteria-green-600) 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--karteria-blue-500) 0%, var(--karteria-purple-500) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--karteria-green-400) 0%, var(--karteria-blue-400) 100%);
     --gradient-hero: linear-gradient(
         135deg,
         var(--karteria-green-600) 0%,

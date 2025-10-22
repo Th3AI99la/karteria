@@ -34,10 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Ao mudar de aba, sempre re-filtramos E atualizamos a contagem
                 filterCards(); // filterCards agora lida com a aba ativa correta e chama updateVagasCountInfo
             } else {
-                console.error(
-                    'Erro: Não foi possível encontrar o painel da aba ativa:',
-                    activeTabPaneId
-                );
+                console.error('Erro: Não foi possível encontrar o painel da aba ativa:', activeTabPaneId);
             }
         });
     });
@@ -64,13 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const titulo = card.querySelector('.card-titulo')?.textContent.toLowerCase() || '';
             const valorText =
-                card
-                    .querySelector('.card-valor')
-                    ?.textContent.toLowerCase()
-                    .replace('r$', '')
-                    .trim() || '';
-            const localizacao =
-                card.querySelector('.card-localizacao span')?.textContent.toLowerCase() || '';
+                card.querySelector('.card-valor')?.textContent.toLowerCase().replace('r$', '').trim() || '';
+            const localizacao = card.querySelector('.card-localizacao span')?.textContent.toLowerCase() || '';
 
             const isMatch =
                 searchTerm === '' ||
@@ -101,14 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tabId = activeTabPane.id;
         let statusText = 'vagas';
 
-        console.log(
-            'UpdateVagasCountInfo - Aba:',
-            tabId,
-            'Visíveis:',
-            visibleCount,
-            'Total na Aba:',
-            totalNaAba
-        ); // DEBUG
+        console.log('UpdateVagasCountInfo - Aba:', tabId, 'Visíveis:', visibleCount, 'Total na Aba:', totalNaAba); // DEBUG
 
         if (tabId === 'ativas-content') {
             statusText = 'ativas';
