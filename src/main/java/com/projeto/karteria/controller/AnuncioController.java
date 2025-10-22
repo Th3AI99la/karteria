@@ -253,7 +253,6 @@ public class AnuncioController {
                         anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
                         anuncioRepository.save(anuncio);
                         viewedAnnouncements.add(id);
-                        countedView = true;
                         System.out.println(
                                 "DEBUG: View contada para anúncio " + id + " pelo usuário " + emailUsuarioLogado);
 
