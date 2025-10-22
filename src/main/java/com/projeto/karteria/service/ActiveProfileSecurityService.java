@@ -8,16 +8,10 @@ import com.projeto.karteria.model.TipoUsuario;
 
 import jakarta.servlet.http.HttpSession;
 
-@Service("activeProfileSecurityService") // Define um nome para o bean ser chamado no SpEL
+@Service("activeProfileSecurityService") 
 public class ActiveProfileSecurityService {
 
-    /**
-     * Verifica se o perfil ativo na sessão do usuário corresponde ao perfil
-     * necessário.
-     *
-     * @param requiredProfile O nome do TipoUsuario esperado (ex: "EMPREGADOR", "COLABORADOR").
-     * @return true se o perfil ativo na sessão for igual ao perfil requerido, false caso contrário ou se não houver sessão/perfil ativo.
-     */
+    @SuppressWarnings("unused")
     public boolean hasActiveRole(String requiredProfile) {
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         // Verifica se estamos em um contexto de requisição HTTP
@@ -29,17 +23,20 @@ public class ActiveProfileSecurityService {
 
         // Se não houver sessão ou perfil ativo definido nela, nega o acesso
         if (session == null || session.getAttribute("perfilAtivo") == null) {
-             System.err.println("WARN: ActiveProfileSecurityService - Sessão ou perfilAtivo nulo.");
-             return false;
+            System.err.println("WARN: ActiveProfileSecurityService - Sessão ou perfilAtivo nulo.");
+            return false;
         }
 
         // Pega o perfil ativo da sessão
         TipoUsuario activeProfile = (TipoUsuario) session.getAttribute("perfilAtivo");
 
-        // Compara o NOME do enum ativo com a String requerida (ignorando maiúsculas/minúsculas)
+        // Compara o NOME do enum ativo com a String requerida (ignorando
+        // maiúsculas/minúsculas)
         boolean hasRole = activeProfile.name().equalsIgnoreCase(requiredProfile);
 
-        // System.out.println("DEBUG: hasActiveRole check - Required: " + requiredProfile + ", Active: " + activeProfile.name() + ", Result: " + hasRole); // Linha de Debug (remover em produção)
+        // System.out.println("DEBUG: hasActiveRole check - Required: " +
+        // requiredProfile + ", Active: " + activeProfile.name() + ", Result: " +
+        // hasRole); // Linha de Debug (remover em produção)
 
         return hasRole;
     }
