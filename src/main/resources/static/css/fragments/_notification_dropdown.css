@@ -1,0 +1,149 @@
+/* ============================================= */
+/* === ESTILOS DO DROPDOWN DE NOTIFICAÇÕES === */
+/* ============================================= */
+
+/* Container principal do dropdown */
+.notification-dropdown {
+    width: 360px; /* Largura definida no inline style */
+    max-height: 500px; /* Altura máxima definida no inline style */
+    overflow-y: auto; /* Scroll vertical */
+    border: 1px solid var(--border-light); /* Borda definida no inline style */
+    box-shadow: var(--shadow-xl); /* Sombra definida no inline style */
+    padding: 0; /* Remove padding padrão do dropdown-menu */
+    font-family: 'Inter', sans-serif; /* Garante a fonte primária */
+    background-color: var(--bg-secondary); /* Fundo padrão */
+}
+
+/* Cabeçalho do dropdown */
+.notification-header {
+    background-color: var(--bg-secondary); /* Fundo definido no inline style */
+    border-bottom: 1px solid var(--border-light); /* Borda definida no inline style */
+    padding: 1rem 1rem; /* Padding do py-3 px-3 */
+}
+.notification-header h6 {
+    color: var(--text-primary); /* Garante a cor do título */
+    margin-bottom: 0;
+    font-weight: 700;
+}
+.notification-header .badge {
+    background-color: var(--brand-primary); /* Cor do badge definida no inline style */
+    color: var(--text-inverse); /* Cor do texto do badge definida no inline style */
+}
+
+/* Container da lista (para scroll) */
+.notification-list-container {
+    max-height: 380px; /* Altura máxima definida no inline style */
+    overflow-y: auto; /* Scroll vertical */
+    background-color: var(--bg-secondary); /* Fundo definido no inline style */
+}
+
+/* Item individual da notificação */
+.notification-item {
+    border-bottom: 1px solid var(--border-light) !important; /* Borda definida no inline style, !important para sobrescrever Bootstrap se necessário */
+    transition: var(--transition-fast);
+    padding: 1rem 1rem !important; /* Padding do p-3 */
+    display: block !important; /* Garante que o <a> ocupe espaço */
+    text-decoration: none; /* Remove sublinhado padrão do <a> */
+}
+.notification-item:last-child {
+    border-bottom: none !important; /* Remove borda do último item */
+}
+
+/* Indicador de não lido (bolinha vermelha) */
+.notification-unread-indicator {
+    background-color: var(--danger); /* Cor definida no inline style */
+    min-width: 8px;
+    min-height: 8px;
+    padding: 0.25rem; /* Ajuste para ficar redondo */
+    border-radius: 50%;
+    align-self: flex-start; /* Alinha no topo */
+}
+
+/* Conteúdo do item */
+.notification-item-content p {
+    font-size: 0.875rem; /* Tamanho da mensagem */
+    line-height: 1.4;
+    color: var(--text-primary); /* Cor da mensagem */
+    margin-bottom: 0.25rem !important; /* Espaço entre msg e data */
+}
+.notification-item-content small {
+    color: var(--text-muted) !important; /* Cor da data */
+    font-size: 0.75rem; /* Tamanho da data */
+}
+
+/* Hover do item */
+.notification-item:hover {
+    background-color: var(--bg-accent) !important; /* Cor de hover da tag style */
+    text-decoration: none;
+}
+
+/* Rodapé do dropdown */
+.notification-footer {
+    background-color: var(--bg-secondary); /* Fundo definido no inline style */
+    border-top: 1px solid var(--border-light); /* Borda definida no inline style */
+    padding: 1rem 1rem; /* Padding do p-3 */
+}
+.notification-footer .btn {
+    background-color: transparent;
+    border: 1px solid var(--brand-primary);
+    color: var(--brand-primary);
+    border-radius: var(--radius-md);
+    transition: var(--transition-fast);
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Ocupa toda a largura do d-grid */
+}
+.notification-footer .btn:hover {
+    background-color: var(--brand-primary) !important; /* Cor de hover da tag style */
+    color: var(--text-inverse) !important; /* Cor de hover da tag style */
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Estado Vazio */
+.notification-empty-state {
+    text-align: center;
+    padding: 3rem 1rem; /* Mais padding vertical */
+}
+.notification-empty-state i {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+.notification-empty-state p {
+    color: var(--text-muted);
+    font-size: 0.875rem; /* small */
+    margin-bottom: 0;
+}
+
+/* Scrollbar (da tag style) */
+.notification-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+.notification-list-container::-webkit-scrollbar-track {
+    background: transparent; /* Fundo transparente */
+    border-radius: 3px;
+}
+.notification-list-container::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: 3px;
+}
+.notification-list-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Animação (da tag style) */
+.notification-item {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

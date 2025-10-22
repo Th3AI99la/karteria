@@ -1,126 +1,32 @@
 <!doctype html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <link rel="stylesheet" th:href="@{/css/karteria-colors.css}" />
-    </head>
     <body>
         <ul
             th:fragment="notification_list"
-            class="dropdown-menu dropdown-menu-end p-0 font-primary"
-            aria-labelledby="notificationDropdown"
-            style="width: 360px; max-height: 500px; overflow-y: auto; border: 1px solid var(--border-light); box-shadow: var(--shadow-xl)">
-            <!-- Cabeçalho -->
-            <li class="dropdown-header py-3 px-3" style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-light)">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0 fw-bold" style="color: var(--text-primary)">Notificações</h6>
-                    <span
-                        th:if="${not #lists.isEmpty(notificacoesNaoLidas)}"
-                        class="badge rounded-pill"
-                        style="background-color: var(--brand-primary); color: var(--text-inverse)"
-                        th:text="${#lists.size(notificacoesNaoLidas)}"></span>
-                </div>
-            </li>
+            class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown">
 
-            <!-- Lista de notificações -->
-            <div class="notification-list" style="max-height: 380px; overflow-y: auto; background-color: var(--bg-secondary)">
-                <!-- Estado vazio -->
-                <li th:if="${#lists.isEmpty(notificacoesNaoLidas)}" class="text-center py-5 px-3">
-                    <div style="color: var(--text-muted)">
-                        <i class="fas fa-bell-slash fa-2x mb-3 opacity-50"></i>
-                        <p class="small mb-0" style="color: var(--text-muted)">Nenhuma notificação nova</p>
-                    </div>
+            <li class="notification-header"> <div class="d-flex justify-content-between align-items-center">
+                    <h6>Notificações</h6> <span th:if="${not #lists.isEmpty(notificacoesNaoLidas)}" class="badge rounded-pill" th:text="${#lists.size(notificacoesNaoLidas)}"></span> </div>
+            </li>
+            <div class="notification-list-container"> <li th:if="${#lists.isEmpty(notificacoesNaoLidas)}" class="notification-empty-state"> <div> <i class="fas fa-bell-slash fa-2x mb-3"></i> <p>Nenhuma notificação nova</p> </div>
                 </li>
 
-                <!-- Notificações -->
                 <li th:each="notificacao : ${notificacoesNaoLidas}">
                     <a
-                        class="dropdown-item d-block p-3 notification-item"
-                        th:href="@{${notificacao.link != null ? notificacao.link : '#'}}"
-                        style="border-bottom: 1px solid var(--border-light); transition: var(--transition-fast)">
+                        class="notification-item" th:href="@{${notificacao.link != null ? notificacao.link : '#'}}">
                         <div class="d-flex align-items-start">
-                            <!-- Indicador de não lido -->
                             <div th:if="${notificacao.lida != null and not notificacao.lida}" class="flex-shrink-0 me-3 mt-1">
-                                <span class="badge rounded-circle p-1" style="background-color: var(--danger); min-width: 8px; min-height: 8px"></span>
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-2" style="font-size: 0.875rem; line-height: 1.4; color: var(--text-primary); margin: 0" th:text="${notificacao.mensagem}"></p>
-                                <small
-                                    class="text-muted"
-                                    style="color: var(--text-muted) !important; font-size: 0.75rem"
-                                    th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
-                            </div>
+                                <span class="notification-unread-indicator"></span> </div>
+                            <div class="flex-grow-1 notification-item-content"> <p th:text="${notificacao.mensagem}"></p> <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small> </div>
                         </div>
                     </a>
                 </li>
-            </div>
-
-            <!-- Rodapé -->
-            <li style="background-color: var(--bg-secondary); border-top: 1px solid var(--border-light)">
-                <div class="d-grid p-3">
-                    <a
-                        class="btn btn-sm"
-                        href="#"
-                        style="
-                            background-color: transparent;
-                            border: 1px solid var(--brand-primary);
-                            color: var(--brand-primary);
-                            border-radius: var(--radius-md);
-                            transition: var(--transition-fast);
-                        ">
-                        <i class="fas fa-list me-2"></i>
+            </div> <li class="notification-footer"> <div class="d-grid"> <a class="btn btn-sm" href="#"> <i class="fas fa-list me-2"></i>
                         Ver todas as notificações
                     </a>
                 </div>
             </li>
         </ul>
 
-        <style>
-            .notification-item:hover {
-                background-color: var(--bg-accent) !important;
-                text-decoration: none;
-            }
-
-            .notification-list::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            .notification-list::-webkit-scrollbar-track {
-                background: var(--bg-primary);
-                border-radius: 3px;
-            }
-
-            .notification-list::-webkit-scrollbar-thumb {
-                background: var(--border-medium);
-                border-radius: 3px;
-            }
-
-            .notification-list::-webkit-scrollbar-thumb:hover {
-                background: var(--text-muted);
-            }
-
-            /* Efeitos de hover para o botão */
-            .btn:hover {
-                background-color: var(--brand-primary) !important;
-                color: var(--text-inverse) !important;
-                transform: translateY(-1px);
-                box-shadow: var(--shadow-md);
-            }
-
-            /* Animação de entrada para notificações */
-            .notification-item {
-                animation: fadeInUp 0.3s ease-out;
-            }
-
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        </style>
-    </body>
+        </body>
 </html>
