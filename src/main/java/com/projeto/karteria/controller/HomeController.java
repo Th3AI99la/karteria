@@ -43,18 +43,19 @@ public class HomeController {
             String email = authentication.getName();
             Usuario usuarioLogado = usuarioRepository.findByEmail(email).orElseThrow();
 
-            List<Anuncio> todosAnunciosDoUsuario = anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado);
+            List<Anuncio> todosAnunciosDoUsuario =
+                    anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado);
 
             // Filtra para as abas 
             List<Anuncio> vagasAtivas = todosAnunciosDoUsuario.stream()
-                .filter(a -> a.getStatus() == StatusAnuncio.ATIVO)
-                .collect(Collectors.toList());
+                    .filter(a -> a.getStatus() == StatusAnuncio.ATIVO)
+                    .collect(Collectors.toList());
             List<Anuncio> vagasPausadas = todosAnunciosDoUsuario.stream()
-                .filter(a -> a.getStatus() == StatusAnuncio.PAUSADO)
-                .collect(Collectors.toList());
+                    .filter(a -> a.getStatus() == StatusAnuncio.PAUSADO)
+                    .collect(Collectors.toList());
             List<Anuncio> vagasArquivadas = todosAnunciosDoUsuario.stream()
-                .filter(a -> a.getStatus() == StatusAnuncio.ARQUIVADO)
-                .collect(Collectors.toList());
+                    .filter(a -> a.getStatus() == StatusAnuncio.ARQUIVADO)
+                    .collect(Collectors.toList());
 
             model.addAttribute("vagasAtivas", vagasAtivas);
             model.addAttribute("vagasPausadas", vagasPausadas);
@@ -64,15 +65,20 @@ public class HomeController {
             List<Anuncio> todasAsVagas = new ArrayList<>();
             todasAsVagas.addAll(vagasAtivas);
             todasAsVagas.addAll(vagasPausadas);
-            todasAsVagas.addAll(vagasArquivadas); 
+            todasAsVagas.addAll(vagasArquivadas);
             model.addAttribute("todasAsVagas", todasAsVagas);
-            // ************************************************************************
 
             return "area-empregador";
         }
-        // LÓGICA DO COLABORADOR 
+        // --- LÓGICA DO COLABORADOR
         else {
-            model.addAttribute("anuncios", anuncioRepository.findAll());
+            // Busca apenas anúncios ATIVOS usando o novo método do repositório
+            List<Anuncio> anunciosAtivos =
+                    anuncioRepository.findByStatusOrderByDataPostagemDesc(StatusAnuncio.ATIVO);
+
+            model.addAttribute("anuncios", anunciosAtivos);
+            model.addAttribute("totalAnunciosAtivos", anunciosAtivos.size());
+
             return "area-colaborador";
         }
     }

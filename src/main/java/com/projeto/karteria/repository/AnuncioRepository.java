@@ -2,14 +2,18 @@ package com.projeto.karteria.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository; // Importar Usuario
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.projeto.karteria.model.Anuncio;
-import com.projeto.karteria.model.Usuario; // Importar List
+import com.projeto.karteria.model.StatusAnuncio;
+import com.projeto.karteria.model.Usuario;
 
 @Repository
 public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
-    // O Spring Data JPA cria a query automaticamente: "encontre todos os Anuncios pelo objeto anunciante"
+    // Método existente para empregador
     List<Anuncio> findByAnuncianteOrderByDataPostagemDesc(Usuario anunciante);
+
+    // Método: Busca anúncios por status, ordenados por data
+    List<Anuncio> findByStatusOrderByDataPostagemDesc(StatusAnuncio status);
 }
