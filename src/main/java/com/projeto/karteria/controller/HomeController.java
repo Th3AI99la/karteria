@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.projeto.karteria.model.Anuncio;
+import com.projeto.karteria.model.Notificacao;
 import com.projeto.karteria.model.StatusAnuncio;
 import com.projeto.karteria.model.TipoUsuario;
 import com.projeto.karteria.model.Usuario;
@@ -44,58 +45,65 @@ public class HomeController {
             return "redirect:/escolher-perfil";
         }
 
-        String email = authentication.getName();
-        Usuario usuarioLogado = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + email));
+        Usuario usuarioLogado = getUsuarioLogado(authentication);
 
-        // --- LÓGICA DO EMPREGADOR ---
+        // --- Contagem e lista de notificações não lidas ---
+        long contagemNaoLidas = contarNotificacoesNaoLidas(usuarioLogado);
+        List<Notificacao> notificacoesNaoLidas = buscarNotificacoesNaoLidas(usuarioLogado);
+
+        model.addAttribute("contagemNotificacoesNaoLidas", contagemNaoLidas);
+        model.addAttribute("notificacoesNaoLidas", notificacoesNaoLidas);
+
         if (perfilAtivo == TipoUsuario.EMPREGADOR) {
-
-            List<Anuncio> todosAnunciosDoUsuario = anuncioRepository
-                    .findByAnuncianteOrderByDataPostagemDesc(usuarioLogado);
-
-            // Agrupa por status para evitar múltiplos streams
-            Map<StatusAnuncio, List<Anuncio>> anunciosPorStatus = todosAnunciosDoUsuario.stream()
-                    .collect(Collectors.groupingBy(Anuncio::getStatus));
-
-            List<Anuncio> vagasAtivas = anunciosPorStatus.getOrDefault(StatusAnuncio.ATIVO, new ArrayList<>());
-            List<Anuncio> vagasPausadas = anunciosPorStatus.getOrDefault(StatusAnuncio.PAUSADO, new ArrayList<>());
-            List<Anuncio> vagasArquivadas = anunciosPorStatus.getOrDefault(StatusAnuncio.ARQUIVADO, new ArrayList<>());
-
-            model.addAttribute("vagasAtivas", vagasAtivas);
-            model.addAttribute("vagasPausadas", vagasPausadas);
-            model.addAttribute("vagasArquivadas", vagasArquivadas);
-
-            // Combina todas as vagas em uma lista para os modais
-            List<Anuncio> todasAsVagas = new ArrayList<>();
-            todasAsVagas.addAll(vagasAtivas);
-            todasAsVagas.addAll(vagasPausadas);
-            todasAsVagas.addAll(vagasArquivadas);
-            model.addAttribute("todasAsVagas", todasAsVagas);
-
-            // Contagem de notificações não lidas ---
-            long contagemNaoLidas = notificacaoRepository
-                    .countByUsuarioDestinatarioAndLidaIsFalse(usuarioLogado);
-            model.addAttribute("contagemNotificacoesNaoLidas", contagemNaoLidas);
-
+            prepararHomeEmpregador(model, usuarioLogado);
             return "area-empregador";
-        }
-
-        // --- LÓGICA DO COLABORADOR ---
-        else {
-            List<Anuncio> anunciosAtivos = anuncioRepository.findByStatusOrderByDataPostagemDesc(StatusAnuncio.ATIVO);
-
-            model.addAttribute("anuncios", anunciosAtivos);
-            model.addAttribute("totalAnunciosAtivos", anunciosAtivos.size());
-
-            // Contagem de notificações não lidas para colaborador ---
-            long contagemNaoLidasColab = notificacaoRepository
-                    .countByUsuarioDestinatarioAndLidaIsFalse(usuarioLogado);
-            model.addAttribute("contagemNotificacoesNaoLidas", contagemNaoLidasColab);
-
-
+        } else {
+            prepararHomeColaborador(model);
             return "area-colaborador";
         }
     }
 
+    // ===================== MÉTODOS AUXILIARES =====================
+
+    private Usuario getUsuarioLogado(Authentication authentication) {
+        String email = authentication.getName();
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + email));
+    }
+
+    private long contarNotificacoesNaoLidas(Usuario usuario) {
+        return notificacaoRepository.countByUsuarioDestinatarioAndLidaIsFalse(usuario);
+    }
+
+    private List<Notificacao> buscarNotificacoesNaoLidas(Usuario usuario) {
+        return notificacaoRepository.findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(usuario);
+    }
+
+    private void prepararHomeEmpregador(Model model, Usuario usuarioLogado) {
+        List<Anuncio> todosAnuncios = anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado);
+
+        // Agrupa por status
+        Map<StatusAnuncio, List<Anuncio>> anunciosPorStatus = todosAnuncios.stream()
+                .collect(Collectors.groupingBy(Anuncio::getStatus));
+
+        List<Anuncio> vagasAtivas = anunciosPorStatus.getOrDefault(StatusAnuncio.ATIVO, new ArrayList<>());
+        List<Anuncio> vagasPausadas = anunciosPorStatus.getOrDefault(StatusAnuncio.PAUSADO, new ArrayList<>());
+        List<Anuncio> vagasArquivadas = anunciosPorStatus.getOrDefault(StatusAnuncio.ARQUIVADO, new ArrayList<>());
+
+        List<Anuncio> todasAsVagas = new ArrayList<>();
+        todasAsVagas.addAll(vagasAtivas);
+        todasAsVagas.addAll(vagasPausadas);
+        todasAsVagas.addAll(vagasArquivadas);
+
+        model.addAttribute("vagasAtivas", vagasAtivas);
+        model.addAttribute("vagasPausadas", vagasPausadas);
+        model.addAttribute("vagasArquivadas", vagasArquivadas);
+        model.addAttribute("todasAsVagas", todasAsVagas);
+    }
+
+    private void prepararHomeColaborador(Model model) {
+        List<Anuncio> anunciosAtivos = anuncioRepository.findByStatusOrderByDataPostagemDesc(StatusAnuncio.ATIVO);
+        model.addAttribute("anuncios", anunciosAtivos);
+        model.addAttribute("totalAnunciosAtivos", anunciosAtivos.size());
+    }
 }

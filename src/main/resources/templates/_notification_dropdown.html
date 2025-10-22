@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <ul
+            th:fragment="notification_list"
+            class="dropdown-menu dropdown-menu-end p-2"
+            aria-labelledby="notificationDropdown"
+            style="width: 300px; max-height: 400px; overflow-y: auto">
+            <li><h6 class="dropdown-header">Notificações Recentes</h6></li>
+            <li><hr class="dropdown-divider" /></li>
+
+            <li th:if="${#lists.isEmpty(notificacoesNaoLidas)}" class="px-3 py-2 text-muted small">Nenhuma notificação nova.</li>
+
+            <li th:each="notificacao : ${notificacoesNaoLidas}">
+                <a class="dropdown-item rounded" th:href="@{${notificacao.link ?: '#'}}">
+                    <p class="mb-1" style="font-size: 0.9em" th:text="${notificacao.mensagem}"></p>
+                    <small class="text-muted" th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM HH:mm')}"></small>
+                </a>
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item text-center text-primary small" href="#">Ver todas as notificações</a></li>
+        </ul>
+    </body>
+</html>

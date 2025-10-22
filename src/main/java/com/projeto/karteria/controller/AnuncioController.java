@@ -1,7 +1,9 @@
 package com.projeto.karteria.controller;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +25,8 @@ import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
 import com.projeto.karteria.repository.CandidaturaRepository;
 import com.projeto.karteria.repository.UsuarioRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/anuncios")
@@ -212,7 +216,8 @@ public class AnuncioController {
 
     // MÉTODO PARA EXIBIR DETALHES DA VAGA (Colaborador)
     @GetMapping("/detalhes/{id}")
-    public String showAnuncioDetalhes(@PathVariable Long id, Model model, Authentication authentication) {
+    public String showAnuncioDetalhes(@PathVariable Long id, Model model, Authentication authentication,
+            HttpSession session) { // <-- Injeta HttpSession
         Anuncio anuncio = anuncioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
 
@@ -220,10 +225,12 @@ public class AnuncioController {
         String nomeUsuarioLogado = null;
         boolean jaCandidatado = false;
 
+        // --- Lógica de Visualização Única (por sessão) ---
+        boolean countedView = false;
+
         if (authentication != null && authentication.isAuthenticated()) {
             String emailUsuarioLogado = authentication.getName();
-            Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado).orElse(null); // Busca usuário
-                                                                                                    // logado
+            Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado).orElse(null);
 
             if (usuarioLogado != null) {
                 // Verifica se é o anunciante
@@ -231,26 +238,44 @@ public class AnuncioController {
                     isAnunciante = true;
                     nomeUsuarioLogado = usuarioLogado.getNome();
                 } else {
-                    // Se não for anunciante, incrementa view
-                    anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
-                    anuncioRepository.save(anuncio); // Salva o incremento
+                    // ** LÓGICA DE VISUALIZAÇÃO ÚNICA **
+                    @SuppressWarnings("unchecked")
+                    Set<Long> viewedAnnouncements = (Set<Long>) session.getAttribute("viewedAnnouncements");
+                    if (viewedAnnouncements == null) {
+                        viewedAnnouncements = new HashSet<>();
+                        session.setAttribute("viewedAnnouncements", viewedAnnouncements);
+                    }
 
-                    // ** Verifica se o COLABORADOR logado já se candidatou **
-                    if (usuarioLogado.getTipo() == TipoUsuario.COLABORADOR) { // Garante que é um colaborador
+                    // Verifica se este anúncio JÁ FOI VISTO nesta sessão
+                    if (!viewedAnnouncements.contains(id)) {
+
+                        // Incrementa as visualizações
+                        anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
+                        anuncioRepository.save(anuncio);
+                        viewedAnnouncements.add(id);
+                        countedView = true;
+                        System.out.println(
+                                "DEBUG: View contada para anúncio " + id + " pelo usuário " + emailUsuarioLogado);
+
+                    } else {
+                        System.out.println("DEBUG: View JÁ contada para anúncio " + id + " nesta sessão.");
+
+                    }
+                    // **********************************
+
+                    // Verifica se o COLABORADOR logado já se candidatou (sem alterações)
+                    if (usuarioLogado.getTipo() == TipoUsuario.COLABORADOR) {
                         jaCandidatado = candidaturaRepository.existsByColaboradorAndAnuncio(usuarioLogado, anuncio);
                     }
                 }
             }
-        } else {
-            // Se não houver usuário logado (anônimo?), incrementa a view
-            anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
-            anuncioRepository.save(anuncio);
+        } else if (!countedView) {
         }
 
         model.addAttribute("anuncio", anuncio);
         model.addAttribute("isAnunciante", isAnunciante);
         model.addAttribute("nomeUsuarioLogado", nomeUsuarioLogado);
-        model.addAttribute("jaCandidatado", jaCandidatado); 
+        model.addAttribute("jaCandidatado", jaCandidatado);
 
         return "anuncio-detalhes";
     }

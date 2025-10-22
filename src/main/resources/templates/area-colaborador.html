@@ -26,14 +26,26 @@
                         </h1>
                         <p class="lead text-secondary mb-0">Encontre a oportunidade perfeita para você.</p>
                     </div>
-                    <div>
+
+                    <div class="dropdown">
                         <a
                             href="#"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-outline-secondary position-relative"
                             style="border-radius: var(--radius-xl); padding: var(--space-sm); width: 50px; height: 50px; border-color: var(--border-medium)"
-                            title="Notificações">
+                            title="Notificações"
+                            id="notificationDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
                             <i class="fas fa-bell" style="font-size: 1.2rem"></i>
+                            <span
+                                th:if="${contagemNotificacoesNaoLidas > 0}"
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 0.6em">
+                                [[${contagemNotificacoesNaoLidas}]]
+                                <span class="visually-hidden">notificações não lidas</span>
+                            </span>
                         </a>
+                        <div th:replace="~{_notification_dropdown :: notification_list}"></div>
                     </div>
                 </div>
 

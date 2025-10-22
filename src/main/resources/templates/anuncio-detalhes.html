@@ -72,10 +72,10 @@
                                     <i class="fas fa-check-circle me-2"></i>
                                     Quero me candidatar
                                 </button>
-                                <div th:if="${jaCandidatado}" class="alert alert-success text-center" role="alert">
+                                <button th:if="${jaCandidatado}" type="button" class="btn btn-success btn-lg w-100 disabled" disabled>
                                     <i class="fas fa-check-circle me-2"></i>
-                                    Candidatura realizada com sucesso!
-                                </div>
+                                    Você já se candidatou
+                                </button>
                             </th:block>
 
                             <th:block th:if="${isAnunciante}">
