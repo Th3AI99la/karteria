@@ -1,5 +1,7 @@
 package com.projeto.karteria.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory; 
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -8,35 +10,46 @@ import com.projeto.karteria.model.TipoUsuario;
 
 import jakarta.servlet.http.HttpSession;
 
-@Service("activeProfileSecurityService") 
+@Service("activeProfileSecurityService")
 public class ActiveProfileSecurityService {
 
-    @SuppressWarnings("unused")
+    // ** Adiciona um Logger **
+    private static final Logger logger = LoggerFactory.getLogger(ActiveProfileSecurityService.class);
+
     public boolean hasActiveRole(String requiredProfile) {
-        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        // Verifica se estamos em um contexto de requisição HTTP
+        logger.debug("Verificando @PreAuthorize: Perfil requerido = {}", requiredProfile); // LOG 1
+
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes(); // Usar getRequestAttributes()
+
         if (attr == null) {
-            System.err.println("WARN: ActiveProfileSecurityService chamado fora de um contexto de requisição HTTP.");
-            return false;
-        }
-        HttpSession session = attr.getRequest().getSession(false); // Pega a sessão SE ela existir
-
-        // Se não houver sessão ou perfil ativo definido nela, nega o acesso
-        if (session == null || session.getAttribute("perfilAtivo") == null) {
-            System.err.println("WARN: ActiveProfileSecurityService - Sessão ou perfilAtivo nulo.");
+            logger.warn("WARN: hasActiveRole chamado fora de um contexto de requisição HTTP.");
             return false;
         }
 
-        // Pega o perfil ativo da sessão
-        TipoUsuario activeProfile = (TipoUsuario) session.getAttribute("perfilAtivo");
+        HttpSession session = attr.getRequest().getSession(false);
 
-        // Compara o NOME do enum ativo com a String requerida (ignorando
-        // maiúsculas/minúsculas)
+        if (session == null) {
+            logger.warn("WARN: hasActiveRole - HttpSession não encontrada.");
+            return false;
+        }
+
+        Object activeProfileAttr = session.getAttribute("perfilAtivo");
+
+        if (activeProfileAttr == null) {
+             logger.warn("WARN: hasActiveRole - Atributo 'perfilAtivo' NULO na sessão ID: {}", session.getId()); // LOG 2
+             return false;
+        }
+
+        if (!(activeProfileAttr instanceof TipoUsuario)) {
+             logger.error("ERRO: hasActiveRole - Atributo 'perfilAtivo' não é do tipo TipoUsuario. Tipo encontrado: {}", activeProfileAttr.getClass().getName()); // LOG 3
+             return false;
+        }
+
+        TipoUsuario activeProfile = (TipoUsuario) activeProfileAttr;
+        logger.debug("Perfil ativo encontrado na sessão: {}", activeProfile.name()); // LOG 4
+
         boolean hasRole = activeProfile.name().equalsIgnoreCase(requiredProfile);
-
-        // System.out.println("DEBUG: hasActiveRole check - Required: " +
-        // requiredProfile + ", Active: " + activeProfile.name() + ", Result: " +
-        // hasRole); // Linha de Debug (remover em produção)
+        logger.debug("Resultado da comparação ({} == {}): {}", activeProfile.name(), requiredProfile, hasRole); // LOG 5
 
         return hasRole;
     }
