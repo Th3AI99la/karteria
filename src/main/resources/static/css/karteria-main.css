@@ -709,3 +709,28 @@ body.dashboard-layout {
 :root {
     --karteria-green-500-rgb: 34, 197, 94;
 }
+
+
+/* ========================================
+   FORÇAR ESTILO DO BOTÃO SECUNDÁRIO DESABILITADO
+   ======================================== */
+
+/* Aplica em ambos os temas (claro e escuro) */
+.btn-secondary.disabled,
+.btn-secondary:disabled {
+    color: var(--text-muted) !important; 
+    background-color: var(--bg-tertiary) !important; 
+    border-color: var(--border-medium) !important; 
+    opacity: 0.65 !important; 
+    cursor: not-allowed !important; 
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Ajuste específico para garantir contraste no Dark Mode, se necessário */
+[data-theme="dark"] .btn-secondary.disabled,
+[data-theme="dark"] .btn-secondary:disabled {
+    color: var(--karteria-gray-500) !important; /* Tom de cinza ligeiramente diferente para contraste */
+    background-color: var(--karteria-gray-800) !important; /* Fundo escuro */
+    border-color: var(--karteria-gray-700) !important; /* Borda escura */
+}
