@@ -49,16 +49,6 @@
     border-bottom: none !important; /* Remove borda do último item */
 }
 
-/* Indicador de não lido (bolinha vermelha) */
-.notification-unread-indicator {
-    background-color: var(--danger); /* Cor definida no inline style */
-    min-width: 8px;
-    min-height: 8px;
-    padding: 0.25rem; /* Ajuste para ficar redondo */
-    border-radius: 50%;
-    align-self: flex-start; /* Alinha no topo */
-}
-
 /* Conteúdo do item */
 .notification-item-content p {
     font-size: 0.875rem; /* Tamanho da mensagem */
@@ -69,6 +59,28 @@
 .notification-item-content small {
     color: var(--text-muted) !important; /* Cor da data */
     font-size: 0.75rem; /* Tamanho da data */
+}
+
+
+/* Estilo para o nome do usuário na notificação */
+.notification-user-name {
+    font-weight: 700; /* Negrito */
+    color: var(--brand-primary); /* Cor primária (verde) */
+}
+
+/* Ajuste no conteúdo do item para alinhar corretamente sem o ícone */
+.notification-item-content {
+    /* (As regras existentes para p e small permanecem) */
+    /* Garante que o conteúdo ocupe toda a largura */
+    width: 100%;
+}
+
+/* Ajuste no hover para não afetar a cor do nome */
+.notification-item:hover .notification-user-name {
+    color: var(--brand-primary); /* Mantém a cor verde mesmo no hover do item */
+}
+.notification-item:hover .notification-item-content p {
+    color: var(--text-primary); /* Garante que o resto do texto fique visível no hover */
 }
 
 /* Hover do item */

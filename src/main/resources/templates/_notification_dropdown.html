@@ -3,30 +3,44 @@
     <body>
         <ul
             th:fragment="notification_list"
-            class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown">
+            class="dropdown-menu dropdown-menu-end notification-dropdown"
+            aria-labelledby="notificationDropdown">
 
-            <li class="notification-header"> <div class="d-flex justify-content-between align-items-center">
-                    <h6>Notificações</h6> <span th:if="${not #lists.isEmpty(notificacoesNaoLidas)}" class="badge rounded-pill" th:text="${#lists.size(notificacoesNaoLidas)}"></span> </div>
+            <li class="notification-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6>Notificações</h6>
+                    <span th:if="${not #lists.isEmpty(notificacoesNaoLidas)}"
+                        class="badge rounded-pill"
+                        th:text="${#lists.size(notificacoesNaoLidas)}"></span>
+                </div>
             </li>
-            <div class="notification-list-container"> <li th:if="${#lists.isEmpty(notificacoesNaoLidas)}" class="notification-empty-state"> <div> <i class="fas fa-bell-slash fa-2x mb-3"></i> <p>Nenhuma notificação nova</p> </div>
-                </li>
 
-                <li th:each="notificacao : ${notificacoesNaoLidas}">
-                    <a
-                        class="notification-item" th:href="@{${notificacao.link != null ? notificacao.link : '#'}}">
-                        <div class="d-flex align-items-start">
-                            <div th:if="${notificacao.lida != null and not notificacao.lida}" class="flex-shrink-0 me-3 mt-1">
-                                <span class="notification-unread-indicator"></span> </div>
-                            <div class="flex-grow-1 notification-item-content"> <p th:text="${notificacao.mensagem}"></p> <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small> </div>
+            <li> <div class="notification-list-container">
+                    <div th:if="${#lists.isEmpty(notificacoesNaoLidas)}"
+                        class="notification-empty-state">
+                        <div> <i class="fas fa-bell-slash fa-2x mb-3"></i>
+                            <p>Nenhuma notificação nova</p> </div>
+                    </div>
+
+                    <a th:each="notificacao : ${notificacoesNaoLidas}"
+                        class="notification-item"
+                        th:href="@{${notificacao.link != null ? notificacao.link : '#'}}">
+                        <div class="notification-item-content">
+                            <p
+                                th:utext="${#strings.replace(notificacao.mensagem, #strings.substringBefore(notificacao.mensagem, ' se candidatou'), '<strong class=&quot;notification-user-name&quot;>' + #strings.substringBefore(notificacao.mensagem, ' se candidatou') + '</strong>')}"></p>
+                            <small
+                                th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
                         </div>
                     </a>
-                </li>
-            </div> <li class="notification-footer"> <div class="d-grid"> <a class="btn btn-sm" href="#"> <i class="fas fa-list me-2"></i>
-                        Ver todas as notificações
+                </div> </li> <li class="notification-footer">
+                <div class="d-grid">
+                    <a class="btn btn-sm" href="#">
+                        <i class="fas fa-list me-2"></i> Ver todas as
+                        notificações
                     </a>
                 </div>
             </li>
         </ul>
 
-        </body>
+    </body>
 </html>
