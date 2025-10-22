@@ -6,154 +6,146 @@
 /* === CONTAINER E CARD === */
 /* Esta seção define o fundo gradiente e o card central do formulário. */
 
-
 html[data-theme="dark"] .text-muted {
     color: var(--text-secondary) !important;
 }
 
 .form-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gradient-hero);
-  position: relative;
-  overflow: hidden;
-  padding: 2rem 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-hero);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem 0;
 }
 
 .form-container::before {
-  content: radial-gradient(
-      circle at 20% 80%,
-      rgba(34, 197, 94, 0.2) 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(59, 130, 246, 0.2) 0%,
-      transparent 40%
-    );
-  z-index: 0;
+    content:
+        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 40%);
+    z-index: 0;
 }
 
 .form-card {
-  background: var(--bg-secondary);
-  padding: clamp(1.5rem, 5vw, 2.5rem);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-2xl);
-  max-width: 550px;
-  width: 100%;
-  z-index: 1;
-  position: relative;
-  border: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-2xl);
+    max-width: 550px;
+    width: 100%;
+    z-index: 1;
+    position: relative;
+    border: 1px solid var(--border-light);
 }
 
 .form-header {
-  text-align: center;
-  margin-bottom: var(--space-xl);
+    text-align: center;
+    margin-bottom: var(--space-xl);
 }
 
 .form-title {
-  font-size: clamp(1.8rem, 4vw, 2.2rem);
-  font-weight: 700;
-  color: var(--text-primary);
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+    font-weight: 700;
+    color: var(--text-primary);
 }
 
 .form-subtitle {
-  color: var(--text-secondary);
-  margin-bottom: 0;
+    color: var(--text-secondary);
+    margin-bottom: 0;
 }
 
 /* === ÍCONES FLUTUANTES E TEMA === */
 /* Estilos para os ícones decorativos e o botão de alternar tema. */
 .form-container .position-absolute {
-  z-index: 0;
-  opacity: 0.08;
-  color: var(--text-primary);
+    z-index: 0;
+    opacity: 0.08;
+    color: var(--text-primary);
 }
 .theme-toggle-form {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-medium);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-medium);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .theme-toggle-form:hover {
-  border-color: var(--brand-primary);
-  transform: scale(1.1) rotate(15deg);
+    border-color: var(--brand-primary);
+    transform: scale(1.1) rotate(15deg);
 }
 .theme-toggle-form i {
-  font-size: 1rem;
-  color: var(--text-primary);
+    font-size: 1rem;
+    color: var(--text-primary);
 }
 
 /* === GRUPOS DE INPUT - LAYOUT LADO A LADO === */
 
 .input-group {
-  /* Esta classe volta a ser apenas um espaçador */
-  margin-bottom: var(--space-lg);
-  display: block; /* Garante o comportamento de bloco */
-  width: 100%; /* Garante a largura total */
+    /* Esta classe volta a ser apenas um espaçador */
+    margin-bottom: var(--space-lg);
+    display: block; /* Garante o comportamento de bloco */
+    width: 100%; /* Garante a largura total */
 }
 
 .form-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: var(--space-xs);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: var(--space-xs);
 }
 
 .input-label {
-  flex: 0 0 110px;
-  font-weight: 600;
-  color: var(--text-secondary); /* ESSE */
-  text-align: start;
+    flex: 0 0 110px;
+    font-weight: 600;
+    color: var(--text-secondary); /* ESSE */
+    text-align: start;
 }
 
 .input-wrapper {
-  position: relative;
-  display: block; /* Força o comportamento de bloco */
-  width: 100%; /* Garante a largura total */
+    position: relative;
+    display: block; /* Força o comportamento de bloco */
+    width: 100%; /* Garante a largura total */
 }
 
 /* ÍCONE - Continua posicionado de forma absoluta, mas dentro do campo */
 .input-icon {
-  position: absolute;
-  left: var(--space-md);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  transition: color var(--transition-fast);
-  z-index: 2;
+    position: absolute;
+    left: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    transition: color var(--transition-fast);
+    z-index: 2;
 }
 
 /* CAMPO DE INPUT (FORM-INPUT) */
 .form-input {
-  padding: 0.85rem 0.75rem 0.75rem 2.8rem; /* mantém ícone */
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-lg);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-size: 1rem;
-  outline: none;
-  width: 100%; /* Garante que o input preencha seu wrapper */
+    padding: 0.85rem 0.75rem 0.75rem 2.8rem; /* mantém ícone */
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    outline: none;
+    width: 100%; /* Garante que o input preencha seu wrapper */
 }
 /* EFEITO DE FOCO - Muda a cor da borda e do ícone ao clicar no campo */
 .form-input:focus {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
 .form-input:focus ~ .input-icon {
-  color: var(--brand-primary);
+    color: var(--brand-primary);
 }
 
 /* AS REGRAS DE ANIMAÇÃO E PLACEHOLDER TRANSPARENTE FORAM REMOVIDAS. */
@@ -161,152 +153,151 @@ html[data-theme="dark"] .text-muted {
 /* === FEEDBACK DE VALIDAÇÃO === */
 /* Mantém os estilos para mensagens de erro e sucesso. */
 .error-message {
-  display: none;
-  color: var(--danger);
-  margin-top: 0.25rem; /* distância entre input e erro */
-  padding-left: 150px;
-  font-size: 12px;
-  
+    display: none;
+    color: var(--danger);
+    margin-top: 0.25rem; /* distância entre input e erro */
+    padding-left: 150px;
+    font-size: 12px;
 }
 .input-group.error .error-message {
-  display: block;
+    display: block;
 }
 .input-group.error .form-input {
-  border-color: var(--danger);
+    border-color: var(--danger);
 }
 .input-group.error .input-icon {
-  color: var(--danger);
+    color: var(--danger);
 }
 .input-group.success .form-input {
-  border-color: var(--success);
+    border-color: var(--success);
 }
 .input-group.success .input-icon {
-  color: var(--success);
+    color: var(--success);
 }
 
 /* === BOTÃO DE SENHA E FORÇA === */
 #togglePassword {
-  color: var(--text-secondary); /* Ajustado para cor mais visível */
-  cursor: pointer;
-  transition: color var(--transition-fast);
+    color: var(--text-secondary); /* Ajustado para cor mais visível */
+    cursor: pointer;
+    transition: color var(--transition-fast);
 }
 #togglePassword:hover {
-  color: var(--brand-primary);
+    color: var(--brand-primary);
 }
 #togglePassword i {
-  font-size: 1.25rem; /* Aumenta o tamanho do ícone */
-  color: var(--text-secondary);
-  transition: color var(--transition-fast);
+    font-size: 1.25rem; /* Aumenta o tamanho do ícone */
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
 }
 #togglePassword:hover i {
     color: var(--brand-primary);
 }
 /* === BOTÕES DE RÁDIO (TIPO DE USUÁRIO) === */
 radio-group {
-  border: none;
-  padding: 0;
-  margin-bottom: var(--space-xl);
-  text-align: center; 
+    border: none;
+    padding: 0;
+    margin-bottom: var(--space-xl);
+    text-align: center;
 }
 .radio-group legend {
-  font-weight: 600;
-  margin-bottom: var(--space-md);
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 .radio-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-  justify-content: center; 
-  width: fit-content;
-  margin: 0 auto; 
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    justify-content: center;
+    width: fit-content;
+    margin: 0 auto;
 }
 .radio-option input[type="radio"] {
-  display: none;
+    display: none;
 }
 .radio-option label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-md);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  font-weight: 500;
-  color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-weight: 500;
+    color: var(--text-secondary);
 }
 .radio-option label:hover {
-  border-color: var(--brand-primary-light);
+    border-color: var(--brand-primary-light);
 }
 .radio-option input[type="radio"]:checked + label {
-  background-color: var(--brand-primary-lightest); 
-  border-color: var(--brand-primary); 
-  color: var(--karteria-green-600) ;
-  font-weight: 600;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1); 
+    background-color: var(--brand-primary-lightest);
+    border-color: var(--brand-primary);
+    color: var(--karteria-green-600);
+    font-weight: 600;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
 .radio-option label i {
-  transition: transform 0.2s;
+    transition: transform 0.2s;
 }
 .radio-option input[type="radio"]:checked + label i {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 /* === BOTÃO DE SUBMISSÃO === */
 .form-button {
-  background: var(--gradient-primary);
-  border: none;
-  color: white;
-  font-weight: 600;
-  padding: 0.8rem 1.5rem;
-  border-radius: var(--radius-lg);
-  width: 100%;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-md);
-  font-size: 1.05rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  cursor: pointer;
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--radius-lg);
+    width: 100%;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-md);
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    cursor: pointer;
 }
 .form-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 .form-button:disabled {
-  background: var(--bg-tertiary);
-  cursor: not-allowed;
+    background: var(--bg-tertiary);
+    cursor: not-allowed;
 }
 
 /* === LINKS E OUTROS ELEMENTOS === */
 .form-links {
-  text-align: center;
-  margin-top: var(--space-lg);
-  font-size: 0.9rem;
+    text-align: center;
+    margin-top: var(--space-lg);
+    font-size: 0.9rem;
 }
 .form-link {
-  color: var(--brand-primary);
-  text-decoration: none;
-  font-weight: 600;
+    color: var(--brand-primary);
+    text-decoration: none;
+    font-weight: 600;
 }
 .form-link:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 .alert {
-  border-radius: var(--radius-md);
+    border-radius: var(--radius-md);
 }
 .form-check-input:checked {
-  background-color: var(--brand-primary);
-  border-color: var(--brand-primary);
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
 }
 
 /* === RESPONSIVIDADE === */
 @media (max-width: 480px) {
-  .radio-options {
-    grid-template-columns: 1fr;
-  }
+    .radio-options {
+        grid-template-columns: 1fr;
+    }
 }

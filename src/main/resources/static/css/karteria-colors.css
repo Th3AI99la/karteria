@@ -2,7 +2,7 @@
    KARTERIA - SISTEMA DE CORES E IDENTIDADE VISUAL
    ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap");
 
 :root {
     /* === CORES PRIMÁRIAS VERDE === */
@@ -22,11 +22,11 @@
     --karteria-blue-400: #60a5fa;
     --karteria-blue-500: #3b82f6;
     --karteria-blue-600: #2563eb;
-    
+
     --karteria-purple-400: #a78bfa;
     --karteria-purple-500: #8b5cf6;
     --karteria-purple-600: #7c3aed;
-    
+
     --karteria-orange-400: #fb923c;
     --karteria-orange-500: #f97316;
     --karteria-orange-600: #ea580c;
@@ -49,33 +49,33 @@
     --bg-secondary: #ffffff;
     --bg-tertiary: var(--karteria-green-50);
     --bg-accent: var(--karteria-green-100);
-    
+
     --text-primary: var(--karteria-gray-900);
     --text-secondary: var(--karteria-gray-600);
     --text-muted: var(--karteria-gray-500);
     --text-inverse: #ffffff;
-    
+
     --border-light: var(--karteria-gray-200);
     --border-medium: var(--karteria-gray-300);
     --border-strong: var(--karteria-gray-400);
-    
+
     --brand-primary: var(--karteria-green-600);
     --brand-secondary: var(--karteria-green-500);
     --brand-accent: var(--karteria-blue-500);
-    
+
     /* === CORES DE ESTADO === */
     --success: var(--karteria-green-600);
     --success-bg: var(--karteria-green-100);
     --success-border: var(--karteria-green-300);
-    
+
     --warning: var(--karteria-orange-500);
     --warning-bg: #fef3c7;
     --warning-border: #fcd34d;
-    
+
     --danger: #dc2626;
     --danger-bg: #fee2e2;
     --danger-border: #fca5a5;
-    
+
     --info: var(--karteria-blue-500);
     --info-bg: #dbeafe;
     --info-border: #93c5fd;
@@ -86,25 +86,42 @@
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    
+
     /* === GRADIENTES === */
-    --gradient-primary: linear-gradient(135deg, var(--karteria-green-500) 0%, var(--karteria-green-600) 100%);
-    --gradient-secondary: linear-gradient(135deg, var(--karteria-blue-500) 0%, var(--karteria-purple-500) 100%);
-    --gradient-accent: linear-gradient(135deg, var(--karteria-green-400) 0%, var(--karteria-blue-400) 100%);
-    --gradient-hero: linear-gradient(135deg, var(--karteria-green-600) 0%, var(--karteria-green-500) 50%, var(--karteria-blue-500) 100%);
-    
+    --gradient-primary: linear-gradient(
+        135deg,
+        var(--karteria-green-500) 0%,
+        var(--karteria-green-600) 100%
+    );
+    --gradient-secondary: linear-gradient(
+        135deg,
+        var(--karteria-blue-500) 0%,
+        var(--karteria-purple-500) 100%
+    );
+    --gradient-accent: linear-gradient(
+        135deg,
+        var(--karteria-green-400) 0%,
+        var(--karteria-blue-400) 100%
+    );
+    --gradient-hero: linear-gradient(
+        135deg,
+        var(--karteria-green-600) 0%,
+        var(--karteria-green-500) 50%,
+        var(--karteria-blue-500) 100%
+    );
+
     /* === TRANSIÇÕES === */
     --transition-fast: 0.15s ease-in-out;
     --transition-normal: 0.3s ease-in-out;
     --transition-slow: 0.5s ease-in-out;
-    
+
     /* === BORDAS === */
     --radius-sm: 0.375rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
     --radius-2xl: 1.5rem;
-    
+
     /* === ESPAÇAMENTOS === */
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
@@ -121,37 +138,37 @@
     --bg-secondary: var(--karteria-gray-900);
     --bg-tertiary: var(--karteria-gray-800);
     --bg-accent: var(--karteria-green-950);
-    
+
     --text-primary: var(--karteria-gray-100);
     --text-secondary: var(--karteria-gray-300);
     --text-muted: var(--karteria-gray-400);
     --text-inverse: var(--karteria-gray-900);
-    
+
     --border-light: var(--karteria-gray-800);
     --border-medium: var(--karteria-gray-700);
     --border-strong: var(--karteria-gray-600);
-    
+
     --brand-primary: var(--karteria-green-500);
     --brand-secondary: var(--karteria-green-400);
     --brand-accent: var(--karteria-blue-400);
-    
+
     /* === CORES DE ESTADO MODO ESCURO === */
     --success: var(--karteria-green-500);
     --success-bg: rgba(34, 197, 94, 0.1);
     --success-border: var(--karteria-green-800);
-    
+
     --warning: var(--karteria-orange-400);
     --warning-bg: rgba(251, 146, 60, 0.1);
     --warning-border: #92400e;
-    
+
     --danger: #f87171;
     --danger-bg: rgba(248, 113, 113, 0.1);
     --danger-border: #991b1b;
-    
+
     --info: var(--karteria-blue-400);
     --info-bg: rgba(96, 165, 250, 0.1);
     --info-border: #1e40af;
-    
+
     /* === SOMBRAS MODO ESCURO === */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
@@ -162,11 +179,21 @@
 
 /* === TIPOGRAFIA === */
 .font-primary {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
 .font-secondary {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family:
+        "Poppins",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
 /* === CLASSES UTILITÁRIAS === */
@@ -263,7 +290,8 @@
 }
 
 @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
     }
     50% {
@@ -272,7 +300,8 @@
 }
 
 @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateY(0px);
     }
     50% {
@@ -310,18 +339,29 @@
 }
 
 /* === DELAYS DE ANIMAÇÃO === */
-.animate-delay-100 { animation-delay: 0.1s; }
-.animate-delay-200 { animation-delay: 0.2s; }
-.animate-delay-300 { animation-delay: 0.3s; }
-.animate-delay-400 { animation-delay: 0.4s; }
-.animate-delay-500 { animation-delay: 0.5s; }
-
+.animate-delay-100 {
+    animation-delay: 0.1s;
+}
+.animate-delay-200 {
+    animation-delay: 0.2s;
+}
+.animate-delay-300 {
+    animation-delay: 0.3s;
+}
+.animate-delay-400 {
+    animation-delay: 0.4s;
+}
+.animate-delay-500 {
+    animation-delay: 0.5s;
+}
 
 /* === HERO SECTION === */
 .hero-section {
     background: var(--bg-primary);
     color: var(--text-primary);
-    transition: background var(--transition-normal), color var(--transition-normal);
+    transition:
+        background var(--transition-normal),
+        color var(--transition-normal);
 }
 
 .hero-section .hero-title {
@@ -336,7 +376,9 @@
     background: var(--brand-primary);
     color: var(--text-inverse);
     border-radius: var(--radius-lg);
-    transition: background var(--transition-fast), color var(--transition-fast);
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast);
 }
 
 .hero-section .hero-button:hover {

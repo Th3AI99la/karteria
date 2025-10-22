@@ -29,7 +29,7 @@
 }
 
 .section-title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -10px;
     left: 50%;
@@ -64,7 +64,7 @@
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
     border-color: var(--brand-primary);
-    box-shadow: 0 0 0 .25rem rgba(34, 197, 94, 0.15);
+    box-shadow: 0 0 0 0.25rem rgba(34, 197, 94, 0.15);
 }
 
 /* === ESTILOS ADICIONAIS PARA BOTÕES E LINKS === */

@@ -1,51 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<body>
-
-    <nav th:fragment="dashboard_nav" class="sidenav">
-
-        <div class="sidenav-header">
-            <a class="sidenav-brand brand-text" th:href="@{/home}">
-                <i class="fas fa-handshake"></i> <span>Karteria</span>
-            </a>
-        </div>
-
-        <ul class="sidenav-nav" style="margin-top: var(--space-lg);">
-
-            <li class="sidenav-nav-item">
-                <a class="sidenav-nav-link" href="#">
-                    <i class="fas fa-user-cog"></i> <span>Meu Perfil</span>
+    <body>
+        <nav th:fragment="dashboard_nav" class="sidenav">
+            <div class="sidenav-header">
+                <a class="sidenav-brand brand-text" th:href="@{/home}">
+                    <i class="fas fa-handshake"></i>
+                    <span>Karteria</span>
                 </a>
-            </li>
+            </div>
 
-            <li class="sidenav-nav-item">
-                <a class="sidenav-nav-link" th:href="@{/escolher-perfil}"> <i class="fas fa-exchange-alt"></i> <span>Voltar menu seleção</span>
-                </a>
-            </li>
+            <ul class="sidenav-nav" style="margin-top: var(--space-lg)">
+                <li class="sidenav-nav-item">
+                    <a class="sidenav-nav-link" href="#">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Meu Perfil</span>
+                    </a>
+                </li>
 
-            <li class="sidenav-nav-item">
-                <button class="sidenav-nav-link" id="themeToggle" type="button" style="width: 100%; border: none; background: transparent; text-align: left;">
-                    <i class="fas fa-moon" id="themeIcon"></i> <span>Alterar Tema</span>
-                </button>
-            </li>
+                <li class="sidenav-nav-item">
+                    <a class="sidenav-nav-link" th:href="@{/escolher-perfil}">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Voltar menu seleção</span>
+                    </a>
+                </li>
 
-            <li class="sidenav-nav-item">
-                <a class="sidenav-nav-link" href="#">
-                    <i class="fas fa-shield-alt"></i> <span>Segurança</span>
-                </a>
-            </li>
-
-            <br>
-            <li class="sidenav-nav-item">
-                <form th:action="@{/logout}" method="post" class="m-0">
-                    <button type="submit" class="sidenav-nav-link text-danger" style="width: 100%; border: none; background: transparent; text-align: left;">
-                        <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+                <li class="sidenav-nav-item">
+                    <button
+                        class="sidenav-nav-link"
+                        id="themeToggle"
+                        type="button"
+                        style="width: 100%; border: none; background: transparent; text-align: left"
+                    >
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                        <span>Alterar Tema</span>
                     </button>
-                </form>
-            </li>
-        </ul>
+                </li>
 
+                <li class="sidenav-nav-item">
+                    <a class="sidenav-nav-link" href="#">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Segurança</span>
+                    </a>
+                </li>
+
+                <br />
+                <li class="sidenav-nav-item">
+                    <form th:action="@{/logout}" method="post" class="m-0">
+                        <button
+                            type="submit"
+                            class="sidenav-nav-link text-danger"
+                            style="
+                                width: 100%;
+                                border: none;
+                                background: transparent;
+                                text-align: left;
+                            "
+                        >
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sair</span>
+                        </button>
+                    </form>
+                </li>
+            </ul>
         </nav>
-
-</body>
+    </body>
 </html>

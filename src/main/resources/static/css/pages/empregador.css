@@ -50,7 +50,6 @@
     flex-direction: column;
     padding: 10px;
     border-radius: 10px;
-    
 }
 
 .anuncio-card:hover {
@@ -133,9 +132,9 @@
 }
 
 .dropdown-item {
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-weight: 500;
     transition: all var(--transition-fast);
     padding: 6px 12px;

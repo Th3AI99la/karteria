@@ -1,10 +1,33 @@
+# ==============================
+# 📦 MAVEN / SPRING BOOT
+# ==============================
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+# ==============================
+# ☕ JAVA / SPOTLESS
+# ==============================
+# Arquivos de cache de formatação
+.spotless-cache/
+
+# ==============================
+# 🌐 FRONTEND / PRETTIER
+# ==============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+# ==============================
+# 🧰 IDEs
+# ==============================
+
+### Spring Tool Suite (STS)
 .apt_generated
 .classpath
 .factorypath
@@ -13,21 +36,37 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+### IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+### NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
+/build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+### VS Code
 .vscode/
+
+# ==============================
+# 🧾 SISTEMAS OPERACIONAIS
+# ==============================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~

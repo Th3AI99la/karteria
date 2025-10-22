@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Verifica se os elementos essenciais existem
     if (!searchInput || !vagasCountInfo || !cardContainer) {
-        console.warn("Aviso: Elementos de busca/contagem do dashboard do colaborador não encontrados.");
+        console.warn(
+            'Aviso: Elementos de busca/contagem do dashboard do colaborador não encontrados.'
+        );
         return; // Não executa a lógica de busca se algo estiver faltando
     }
 
@@ -25,20 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const emptyState = document.querySelector('#colabCardContainer ~ .empty-state'); // Encontra empty-state (se houver)
         let visibleCount = 0;
 
-        cardColumns.forEach(column => {
+        cardColumns.forEach((column) => {
             const card = column.querySelector('.anuncio-card-colab');
             if (!card) return;
 
             // Pega os textos dos campos relevantes
             const titulo = card.querySelector('.card-titulo')?.textContent.toLowerCase() || '';
-            const valorText = card.querySelector('.card-valor')?.textContent.toLowerCase().replace('r$', '').trim() || '';
-            const localizacao = card.querySelector('.card-localizacao span')?.textContent.toLowerCase() || '';
+            const valorText =
+                card
+                    .querySelector('.card-valor')
+                    ?.textContent.toLowerCase()
+                    .replace('r$', '')
+                    .trim() || '';
+            const localizacao =
+                card.querySelector('.card-localizacao span')?.textContent.toLowerCase() || '';
 
             // Verifica match
-            const isMatch = searchTerm === '' ||
-                            titulo.includes(searchTerm) ||
-                            valorText.includes(searchTerm) ||
-                            localizacao.includes(searchTerm);
+            const isMatch =
+                searchTerm === '' ||
+                titulo.includes(searchTerm) ||
+                valorText.includes(searchTerm) ||
+                localizacao.includes(searchTerm);
 
             // Mostra/esconde coluna
             column.style.display = isMatch ? '' : 'none';
@@ -62,15 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchTerm = searchInput.value.trim();
 
         if (searchTerm === '') {
-             vagasCountInfo.textContent = `Exibindo ${totalNaPagina} vagas disponíveis.`;
+            vagasCountInfo.textContent = `Exibindo ${totalNaPagina} vagas disponíveis.`;
         } else {
-             vagasCountInfo.textContent = `Exibindo ${visibleCount} de ${totalNaPagina} vagas correspondentes à busca.`;
+            vagasCountInfo.textContent = `Exibindo ${visibleCount} de ${totalNaPagina} vagas correspondentes à busca.`;
         }
     }
 
-     // --- Chamada Inicial ---
-     // Atualiza a contagem inicial (o texto já vem do Thymeleaf, mas podemos garantir)
-     const initialCards = cardContainer.querySelectorAll('.colab-vaga-card-column').length;
-     updateVagasCountInfo(initialCards, initialCards);
-
+    // --- Chamada Inicial ---
+    // Atualiza a contagem inicial (o texto já vem do Thymeleaf, mas podemos garantir)
+    const initialCards = cardContainer.querySelectorAll('.colab-vaga-card-column').length;
+    updateVagasCountInfo(initialCards, initialCards);
 });

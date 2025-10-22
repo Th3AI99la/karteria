@@ -2,14 +2,14 @@
    KARTERIA - JAVASCRIPT PARA FORMULÁRIOS (REFATORADO)
    ======================================== */
 
-(function() {
+(function () {
     'use strict';
 
     // Roda o script quando o DOM estiver pronto
     document.addEventListener('DOMContentLoaded', () => {
         // Inicializa todas as funcionalidades em todos os formulários da página
         const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
+        forms.forEach((form) => {
             initThemeToggle();
             initPasswordToggle(form);
             initFormValidation(form);
@@ -39,11 +39,14 @@
         };
 
         // Aplica tema salvo ou do sistema
-        const savedTheme = localStorage.getItem('karteria-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const savedTheme =
+            localStorage.getItem('karteria-theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         applyTheme(savedTheme);
 
         themeToggle.addEventListener('click', () => {
-            const newTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            const newTheme =
+                document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             applyTheme(newTheme);
         });
     }
@@ -55,11 +58,11 @@
         const toggleButton = form.querySelector('#togglePassword');
         if (!toggleButton) return;
 
-        toggleButton.addEventListener('click', function() {
+        toggleButton.addEventListener('click', function () {
             const passwordInput = this.previousElementSibling;
             const icon = this.querySelector('i');
             const isPassword = passwordInput.type === 'password';
-            
+
             passwordInput.type = isPassword ? 'text' : 'password';
             icon.classList.toggle('fa-eye', !isPassword);
             icon.classList.toggle('fa-eye-slash', isPassword);
@@ -91,11 +94,12 @@
             if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
             if (/\d/.test(password)) score++;
             if (/[^a-zA-Z0-9]/.test(password)) score++;
-            
+
             score = Math.min(score, 3);
 
             bars.forEach((bar, index) => {
-                bar.style.backgroundColor = index < score + 1 ? strengthLevels[score].color : 'var(--bg-tertiary)';
+                bar.style.backgroundColor =
+                    index < score + 1 ? strengthLevels[score].color : 'var(--bg-tertiary)';
             });
 
             if (password.length === 0) {
@@ -114,9 +118,9 @@
     function initFormValidation(form) {
         const inputs = form.querySelectorAll('.form-input[required]');
 
-        inputs.forEach(input => {
+        inputs.forEach((input) => {
             input.addEventListener('input', () => validateInput(input)); // Valida ao digitar
-            input.addEventListener('blur', () => validateInput(input));  // Valida ao sair do campo
+            input.addEventListener('blur', () => validateInput(input)); // Valida ao sair do campo
         });
 
         form.addEventListener('submit', (event) => {
@@ -168,7 +172,7 @@
         if (errorElement) {
             errorElement.textContent = errorMessage;
         }
-        
+
         return isValid;
     }
 
@@ -176,7 +180,7 @@
      * Controla o estado de "loading" do botão de envio
      */
     function initSubmissionHandler(form) {
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function () {
             const submitButton = form.querySelector('button[type="submit"]');
             if (!submitButton) return;
 
@@ -184,11 +188,10 @@
             // Se chegamos aqui, o form é válido e podemos mostrar o loading.
             setTimeout(() => {
                 if (!form.checkValidity()) return; // Dupla verificação
-                
+
                 submitButton.disabled = true;
                 submitButton.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processando...`;
             }, 0);
         });
     }
-
 })();
