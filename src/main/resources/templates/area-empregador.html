@@ -48,7 +48,6 @@
                         </a>
                         <div th:replace="~{_notification_dropdown :: notification_list}"></div>
                     </div>
-                    
                 </div>
 
                 <!-- Alerta de sucesso -->
@@ -335,6 +334,208 @@
                                             </ul>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:each="anuncio : ${todasAsVagas}">
+                <div th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ATIVO or anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).PAUSADO}">
+                    <div class="modal fade" th:id="'modalEditar-' + ${anuncio.id}" tabindex="-1" aria-labelledby="'modalEditarLabel-' + ${anuncio.id}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" th:id="'modalEditarLabel-' + ${anuncio.id}">
+                                        Editar Vaga:
+                                        <span class="brand-text" th:text="${anuncio.titulo}"></span>
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form th:action="@{/anuncios/salvar}" method="post">
+                                    <input type="hidden" name="id" th:value="${anuncio.id}" />
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label th:for="'titulo-' + ${anuncio.id}" class="form-label">Título da Vaga</label>
+                                            <input
+                                                type="text"
+                                                name="titulo"
+                                                th:id="'titulo-' + ${anuncio.id}"
+                                                th:value="${anuncio.titulo}"
+                                                class="form-control form-control-lg"
+                                                required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label th:for="'descricao-' + ${anuncio.id}" class="form-label">Descrição Detalhada</label>
+                                            <textarea
+                                                name="descricao"
+                                                th:id="'descricao-' + ${anuncio.id}"
+                                                th:text="${anuncio.descricao}"
+                                                class="form-control"
+                                                rows="5"
+                                                required></textarea>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label th:for="'valor-' + ${anuncio.id}" class="form-label">Valor Oferecido (R$)</label>
+                                                <input
+                                                    type="number"
+                                                    name="valor"
+                                                    th:id="'valor-' + ${anuncio.id}"
+                                                    th:value="${anuncio.valor}"
+                                                    class="form-control"
+                                                    step="0.01"
+                                                    required />
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label th:for="'localizacao-' + ${anuncio.id}" class="form-label">Localização (Bairro, Cidade)</label>
+                                                <input
+                                                    type="text"
+                                                    name="localizacao"
+                                                    th:id="'localizacao-' + ${anuncio.id}"
+                                                    th:value="${anuncio.localizacao}"
+                                                    class="form-control"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary-karteria">
+                                            <i class="fas fa-save me-2"></i>
+                                            Salvar Alterações
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" th:id="'modalApagar-' + ${anuncio.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirmar Exclusão</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    Tem certeza que deseja apagar a vaga
+                                    <strong th:text="${anuncio.titulo}"></strong>
+                                    ? Esta ação não pode ser desfeita.
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/anuncios/apagar/{id}(id=${anuncio.id})}" method="post">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-danger">Sim, Apagar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ATIVO}">
+                    <div class="modal fade" th:id="'modalPausar-' + ${anuncio.id}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Pausar Vaga</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        Deseja pausar a vaga
+                                        <strong th:text="${anuncio.titulo}"></strong>
+                                        ? Ela não aparecerá mais nas buscas.
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form th:action="@{/anuncios/status/{id}(id=${anuncio.id})}" method="post">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-warning">Sim, Pausar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).PAUSADO}">
+                    <div class="modal fade" th:id="'modalReativar-' + ${anuncio.id}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Reativar Vaga</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        Deseja reativar a vaga
+                                        <strong th:text="${anuncio.titulo}"></strong>
+                                        ? Ela voltará a aparecer nas buscas.
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form th:action="@{/anuncios/status/{id}(id=${anuncio.id})}" method="post">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">Sim, Reativar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ATIVO or anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).PAUSADO}">
+                    <div class="modal fade" th:id="'modalArquivar-' + ${anuncio.id}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Arquivar Vaga</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        Arquivar a vaga
+                                        <strong th:text="${anuncio.titulo}"></strong>
+                                        ? Ela sairá das listas Ativas/Pausadas.
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form th:action="@{/anuncios/arquivar/{id}(id=${anuncio.id})}" method="post">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-info">Sim, Arquivar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${anuncio.status == T(com.projeto.karteria.model.StatusAnuncio).ARQUIVADO}">
+                    <div class="modal fade" th:id="'modalDesarquivar-' + ${anuncio.id}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Desarquivar Vaga</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        Deseja desarquivar a vaga
+                                        <strong th:text="${anuncio.titulo}"></strong>
+                                        ?
+                                    </p>
+                                    <p class="text-muted small">A vaga retornará ao status "PAUSADO".</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form th:action="@{/anuncios/desarquivar/{id}(id=${anuncio.id})}" method="post">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">Sim, Desarquivar</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
