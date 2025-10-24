@@ -14,6 +14,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 10px;
+    
 }
 
 .anuncio-card-colab:hover {
@@ -26,13 +28,15 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    border-radius: 10px;
+   
 }
 
 .anuncio-card-colab .card-footer {
-    background: var(--bg-tertiary);
     border-top: 1px solid var(--border-light);
     padding: var(--space-sm) var(--space-md);
-    font-size: 0.85rem;
+    font-size: 0.85rem; 
+    
 }
 
 .empty-state {
@@ -41,6 +45,7 @@
     background: var(--bg-secondary);
     border-radius: var(--radius-2xl);
     border: 2px dashed var(--border-medium);
+    
 }
 
 .empty-state-icon {
