@@ -31,7 +31,6 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/anuncios")
 public class AnuncioController {
 
-
     @Autowired
     private AnuncioRepository anuncioRepository;
 
@@ -52,27 +51,28 @@ public class AnuncioController {
     // ================= CRUD ANÚNCIO =================
 
     @GetMapping("/novo")
-    @PreAuthorize("@activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String showAnuncioForm(Model model) {
         model.addAttribute("anuncio", new Anuncio());
         return "anuncio-form";
     }
 
     @PostMapping("/salvar")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String salvarAnuncio(@ModelAttribute Anuncio anuncioForm,
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
         Usuario usuarioLogado = usuarioRepository.findByEmail(authentication.getName()).orElseThrow();
 
-        if (anuncioForm.getId() == null) { // NOVO ANÚNCIO
+        // Verifica se é um novo anúncio ou uma edição
+        if (anuncioForm.getId() == null) {
             anuncioForm.setAnunciante(usuarioLogado);
             anuncioForm.setDataPostagem(LocalDateTime.now());
             anuncioForm.setStatus(StatusAnuncio.ATIVO);
             anuncioRepository.save(anuncioForm);
             redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
-        } else { // EDIÇÃO
+        } else {
             Anuncio anuncioExistente = anuncioRepository.findById(anuncioForm.getId())
                     .orElseThrow(
                             () -> new IllegalArgumentException("Anúncio inválido para edição:" + anuncioForm.getId()));
@@ -94,7 +94,7 @@ public class AnuncioController {
     }
 
     @GetMapping("/editar/{id}")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String showEditForm(@PathVariable Long id, Model model, Authentication authentication) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
         if (!isAnunciante(anuncio, authentication)) {
@@ -105,7 +105,7 @@ public class AnuncioController {
     }
 
     @PostMapping("/apagar/{id}")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String apagarAnuncio(@PathVariable Long id, Authentication authentication,
             RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -118,7 +118,7 @@ public class AnuncioController {
     }
 
     @PostMapping("/status/{id}")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String alterarStatusAnuncio(@PathVariable Long id, Authentication authentication,
             RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -139,7 +139,7 @@ public class AnuncioController {
     }
 
     @PostMapping("/arquivar/{id}")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String arquivarAnuncio(@PathVariable Long id, Authentication authentication,
             RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -153,7 +153,7 @@ public class AnuncioController {
     }
 
     @PostMapping("/desarquivar/{id}")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String desarquivarAnuncio(@PathVariable Long id, Authentication authentication,
             RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -167,7 +167,7 @@ public class AnuncioController {
     }
 
     @GetMapping("/gerenciar/{id}")
-    @PreAuthorize("hasAuthority('EMPREGADOR')")
+    @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String showGerenciarVaga(@PathVariable Long id, Model model, Authentication authentication,
             RedirectAttributes redirectAttributes) {
         Anuncio anuncio = anuncioRepository.findById(id)
@@ -209,7 +209,6 @@ public class AnuncioController {
                 System.out.println("DEBUG: Objeto Usuario encontrado: ID=" + usuarioLogado.getId() +
                         ", TipoRegistro=" + usuarioLogado.getTipo());
 
-                // Verifica se o usuário é o anunciante
                 if (anuncio.getAnunciante() != null &&
                         anuncio.getAnunciante().getId().equals(usuarioLogado.getId())) {
 
@@ -218,7 +217,6 @@ public class AnuncioController {
                     nomeUsuarioLogado = usuarioLogado.getNome();
 
                 } else {
-                    // Controle de visualizações únicas por sessão
                     @SuppressWarnings("unchecked")
                     Set<Long> viewedAnnouncements = (Set<Long>) session.getAttribute("viewedAnnouncements");
                     if (viewedAnnouncements == null) {
@@ -236,7 +234,6 @@ public class AnuncioController {
                         System.out.println("DEBUG: View JÁ contada nesta sessão para anúncio ID=" + id);
                     }
 
-                    // Verifica se o usuário já se candidatou (SEM CHECAGEM DE TIPO)
                     System.out.println("DEBUG: Verificando candidatura existente para Colaborador ID=" +
                             usuarioLogado.getId() + " e Anuncio ID=" + anuncio.getId());
                     jaCandidatado = candidaturaRepository.existsByColaboradorAndAnuncio(usuarioLogado, anuncio);
