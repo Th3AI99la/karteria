@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,24 +29,55 @@ public class Usuario implements UserDetails {
     private Long id;
 
     private String nome;
-    private String email;
-    private String senha;
 
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    private String senha;
     private String sobrenome;
     private String telefone;
+    private String telefone2;
     private String cpf;
     private String endereco;
+
+    private boolean cadastroCompleto = false; 
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipo;
 
-    @OneToMany(mappedBy = "anunciante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "anunciante", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Anuncio> anuncios;
 
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
 
-    // --- Getters e Setters Manuais ---
+    // --- Construtores ---
+    public Usuario() {
+    }
+
+    public Usuario(String nome, String email, String senha, TipoUsuario tipo) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.tipo = tipo;
+    }
+
+    // --- Getters e Setters ---
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
     public String getSobrenome() {
         return sobrenome;
@@ -55,12 +87,36 @@ public class Usuario implements UserDetails {
         this.sobrenome = sobrenome;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
     public String getTelefone() {
         return telefone;
     }
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getTelefone2() {
+        return telefone2;
+    }
+
+    public void setTelefone2(String telefone2) {
+        this.telefone2 = telefone2;
     }
 
     public String getCpf() {
@@ -79,36 +135,12 @@ public class Usuario implements UserDetails {
         this.endereco = endereco;
     }
 
-    public Long getId() {
-        return id;
+    public boolean isCadastroCompleto() {
+        return cadastroCompleto;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setCadastroCompleto(boolean cadastroCompleto) {
+        this.cadastroCompleto = cadastroCompleto;
     }
 
     public TipoUsuario getTipo() {
@@ -143,7 +175,12 @@ public class Usuario implements UserDetails {
         this.resetTokenExpiry = resetTokenExpiry;
     }
 
-    // --- UserDetails ---
+    // --- Métodos auxiliares ---
+    public boolean isResetTokenValid() {
+        return resetToken != null && resetTokenExpiry != null && LocalDateTime.now().isBefore(resetTokenExpiry);
+    }
+
+    // --- Métodos do UserDetails ---
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.tipo == null)
@@ -179,5 +216,31 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    // --- equals, hashCode e toString ---
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Usuario))
+            return false;
+        Usuario other = (Usuario) o;
+        return id != null && id.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", tipo=" + tipo +
+                ", cadastroCompleto=" + cadastroCompleto +
+                '}';
     }
 }

@@ -38,7 +38,7 @@ public class SecurityConfig {
                         // 1. REGRAS PÚBLICAS
                         .requestMatchers(
                                 "/", "/login", "/register", "/esqueci-senha",
-                                "/resetar-senha", "/css/**", "/js/**", "/images/**")
+                                "/resetar-senha", "/completar-cadastro", "/css/**", "/js/**", "/images/**")
                         .permitAll()
 
                         // 2. REGRAS EMPREGADOR
