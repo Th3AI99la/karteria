@@ -2,15 +2,61 @@
    CSS Específico para completar-cadastro.html
    ======================================== */
 
-/* Define uma largura maior para o card nesta página específica */
+/* Largura card */
 .form-card {
-    max-width: 700px !important; /* Sobrescreve a largura padrão de karteria-forms.css */
+    max-width: 1000px !important;
+    margin: auto;
+}
+/* ========================================
+   Ajustes de Layout para Formulário
+   ======================================== */
+.input-group .form-row {
+    display: block;
 }
 
-/* Ajuste para garantir que o rótulo do endereço não fique muito longo (opcional) */
-/* Se necessário, podemos ajustar o flex-basis dos labels aqui */
-/*
-.input-group .form-row .input-label {
-    flex-basis: 120px;
+.input-group .input-label {
+    flex-basis: auto;
+    text-align: left; 
+    margin-bottom: 0.25rem;
+    display: block; 
+    padding-left: 0; 
 }
-*/
+
+/* Remove padding-left extra da mensagem de erro quando label está acima */
+.error-message {
+    padding-left: 0 !important;
+    padding: 3px;
+}
+
+/* Mantém o layout lado a lado APENAS para as linhas (.row) que definimos */
+.row .input-group .form-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: var(--space-xs);
+}
+.row .input-group .input-label {
+    flex: 0 0 110px;
+    text-align: start;
+    margin-bottom: 0; 
+    display: inline-block;
+}
+/* Readiciona padding-left na msg de erro para campos lado a lado */
+.row .error-message {
+    padding-left: 10px !important;
+}
+/* Ajuste específico para label UF (mais curto) */
+.row .col-md-2 .input-label {
+    flex-basis: 10px !important;
+}
+.row .col-md-2 .error-message {
+    padding-left: 10px !important;
+}
+
+/* Ajuste fino no checkbox */
+.form-check {
+    padding-left: 0;
+}
+.form-check-label {
+    font-size: 0.85rem;
+}
