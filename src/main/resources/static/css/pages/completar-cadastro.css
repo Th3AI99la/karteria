@@ -1,0 +1,16 @@
+/* ========================================
+   CSS Específico para completar-cadastro.html
+   ======================================== */
+
+/* Define uma largura maior para o card nesta página específica */
+.form-card {
+    max-width: 700px !important; /* Sobrescreve a largura padrão de karteria-forms.css */
+}
+
+/* Ajuste para garantir que o rótulo do endereço não fique muito longo (opcional) */
+/* Se necessário, podemos ajustar o flex-basis dos labels aqui */
+/*
+.input-group .form-row .input-label {
+    flex-basis: 120px;
+}
+*/
