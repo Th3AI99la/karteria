@@ -21,3 +21,23 @@
     /* Estilo simples para "mascarar" CPF visualmente */
     font-family: monospace;
 }
+
+/* ========================================
+   ESTILOS PARA MODAL DE EDIÇÃO DE PERFIL
+   ======================================== */
+
+/* Aplica opacidade e cursor 'não permitido' aos inputs desabilitados DENTRO do modal de perfil */
+#modalEditarPerfil .modal-body .form-control:disabled,
+#modalEditarPerfil .modal-body .form-control[readonly] {
+    opacity: 0.65 !important; /* Adiciona transparência */
+    cursor: not-allowed !important; /* Muda o cursor */
+    background-color: var(--bg-tertiary); /* Garante um fundo ligeiramente diferente (opcional) */
+}
+
+/* Garante o estilo correto no dark mode também */
+[data-theme="dark"] #modalEditarPerfil .modal-body .form-control:disabled,
+[data-theme="dark"] #modalEditarPerfil .modal-body .form-control[readonly] {
+    background-color: var(--karteria-gray-800) !important; /* Fundo mais escuro */
+    border-color: var(--karteria-gray-700);
+    opacity: 0.5 !important; /* Pode ajustar a opacidade para dark mode */
+}
