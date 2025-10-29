@@ -27,8 +27,6 @@ body {
         background-color var(--transition-normal),
         color var(--transition-normal);
     overflow-x: hidden;
-    /* padding-top removido pois o layout mudou para sidenav */
-    /* padding-top: 100px; */
 }
 
 /* === LAYOUT DO DASHBOARD (COM SIDENAV) === */
@@ -446,8 +444,6 @@ body.dashboard-layout {
 .btn-empregador:hover,
 .btn-colaborador:hover { color: white; transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
-/* === ESTILOS SIDENAV REMOVIDOS DAQUI === */
-/* O bloco que começava com .sidenav foi movido para _navbar_dashboard.css */
 
 /* === ESTILOS PARA DATA DE PUBLICAÇÃO NO CARD === */
 /* Mantido pois é usado em area-empregador.html */
