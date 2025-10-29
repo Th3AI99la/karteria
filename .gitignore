@@ -70,3 +70,13 @@ Desktop.ini
 
 # Linux
 *~
+
+# Swap files
+.swapfile
+.swp
+.swo
+.DS_Store
+._*.DS_Store
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
