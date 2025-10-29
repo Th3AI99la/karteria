@@ -27,8 +27,35 @@ body {
         background-color var(--transition-normal),
         color var(--transition-normal);
     overflow-x: hidden;
-    padding-top: 100px;
+    /* padding-top removido pois o layout mudou para sidenav */
+    /* padding-top: 100px; */
 }
+
+/* === LAYOUT DO DASHBOARD (COM SIDENAV) === */
+/* Estas regras SÃO necessárias */
+body.dashboard-layout {
+    display: flex;
+    padding-top: 0; /* Garante que não haja padding superior */
+}
+
+.dashboard-content {
+    margin-left: 260px; /* Espaço para a sidenav padrão */
+    width: calc(100% - 260px); /* Ocupa o restante */
+    padding: var(--space-xl);
+    transition: margin-left var(--transition-normal); /* Para animação da sidenav */
+    flex-grow: 1; /* Garante que o conteúdo principal cresça */
+    min-height: 100vh; /* Ocupa a altura da tela */
+}
+
+/* Ajuste para sidenav recolhida */
+@media (max-width: 992px) {
+    .dashboard-content {
+        margin-left: 70px; /* Espaço para a sidenav recolhida */
+         width: calc(100% - 70px);
+    }
+}
+/* ============================================= */
+
 
 /* === CUSTOMIZAÇÃO DE COMPONENTES BOOTSTRAP === */
 .btn-primary-karteria {
@@ -95,12 +122,13 @@ body {
     color: var(--text-secondary) !important;
 }
 
-/* === ESTRUTURA DAS SEÇÕES === */
+/* === ESTRUTURA DAS SEÇÕES (PÁGINA INICIAL) === */
+/* Mantido para a index.html */
 .section-padding {
     padding: var(--space-3xl) 0;
     display: flex;
     align-items: center;
-    min-height: 80vh;
+    min-height: 80vh; /* Altura mínima para seções como a hero */
 }
 
 .section-title {
@@ -131,12 +159,19 @@ body {
     margin: 0 auto var(--space-2xl);
 }
 
-/* === SEÇÃO HERO (PRINCIPAL) === */
-.hero-subtitle {
-    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-    margin-bottom: var(--space-2xl);
-    opacity: 0.9;
-    font-weight: 400;
+/* === SEÇÃO HERO (PÁGINA INICIAL) === */
+/* Mantido para a index.html */
+.hero-section {
+    position: relative; /* Necessário para o ::before */
+    overflow: hidden; /* Evita que gradientes vazem */
+     /* Garante que o padding-top original do body seja considerado aqui, se necessário */
+     /* Ou define uma altura mínima */
+     min-height: calc(100vh - 100px); /* Exemplo: altura da tela menos altura da navbar antiga */
+     display: flex; /* Para centralizar conteúdo */
+     align-items: center;
+     justify-content: center;
+     /* Padding superior pode ser removido se body não tiver mais */
+     /* padding-top: 100px; */
 }
 
 .hero-section::before {
@@ -151,16 +186,22 @@ body {
         radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
     pointer-events: none;
+    z-index: 1; /* Fica atrás do conteúdo */
 }
 
 .hero-content {
     position: relative;
     z-index: 2;
     text-align: center;
-    color: white;
+    /* Ajuste na cor do texto base para hero, caso necessário */
+    color: var(--text-primary); /* Assume cor base do tema */
     max-width: 800px;
     padding: var(--space-xl);
 }
+[data-theme="dark"] .hero-content {
+     color: var(--text-primary); /* Garante cor clara no dark mode */
+}
+
 
 .hero-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
@@ -176,11 +217,11 @@ body {
     font-weight: 400;
 }
 
+/* Ajuste para o brand-text dentro do hero */
 .hero-title .brand-text {
-    /* Define a cor do texto para um verde-escuro da nossa paleta */
-    color: var(--karteria-green-800);
-
-    /* Reseta as propriedades do gradiente para usar uma cor sólida */
+    /* Usa a cor primária da marca */
+    color: var(--brand-primary);
+    /* Reseta gradiente se houver */
     background: none;
     -webkit-background-clip: initial;
     -webkit-text-fill-color: initial;
@@ -194,7 +235,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* === COMPONENTES GERAIS (CARDS, ÍCONES) === */
+/* === COMPONENTES GERAIS (CARDS, ÍCONES - PÁGINA INICIAL) === */
 .card-modern {
     background: var(--bg-secondary);
     border-radius: var(--radius-xl);
@@ -203,7 +244,7 @@ body {
     border: 1px solid var(--border-light);
     transition: all var(--transition-normal);
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; Removido para não cortar dropdowns */
 }
 
 .card-modern:hover {
@@ -241,7 +282,8 @@ body {
     margin-top: var(--space-2xl);
 }
 
-/* === NAVEGAÇÃO === */
+/* === NAVEGAÇÃO (NAVBAR SUPERIOR - PÁGINA INICIAL) === */
+/* Mantido para a index.html */
 .navbar-modern {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -264,7 +306,7 @@ body {
     font-size: 1.5rem;
     font-weight: 700;
     text-decoration: none;
-    color: var(--text-primary);
+    /* color: var(--text-primary); Removido para usar brand-text */
 }
 
 .navbar-nav-modern {
@@ -279,6 +321,7 @@ body {
     font-weight: 500;
     transition: color var(--transition-fast);
     position: relative;
+    padding: 0.5rem 0; /* Adiciona padding vertical */
 }
 
 .nav-link-modern:hover {
@@ -288,7 +331,7 @@ body {
 .nav-link-modern::after {
     content: "";
     position: absolute;
-    bottom: -5px;
+    bottom: 0px; /* Ajusta para ficar abaixo do padding */
     left: 0;
     width: 0;
     height: 2px;
@@ -300,6 +343,7 @@ body {
     width: 100%;
 }
 
+/* Botão de Tema na Navbar Superior */
 .theme-toggle {
     background: var(--bg-secondary);
     border: 2px solid var(--border-medium);
@@ -327,7 +371,7 @@ body {
     transition: all var(--transition-normal);
 }
 
-/* === RODAPÉ === */
+/* === RODAPÉ (PÁGINA INICIAL) === */
 .footer-modern {
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-light);
@@ -346,67 +390,30 @@ body {
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* === RESPONSIVIDADE === */
+/* === RESPONSIVIDADE (PÁGINA INICIAL) === */
 @media (max-width: 768px) {
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .btn-primary-karteria,
-    .btn-outline-secondary {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .navbar-nav-modern {
-        flex-direction: column;
-        gap: var(--space-md);
-    }
-
-    .features-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-lg);
-    }
-
-    .hero-content {
-        padding: var(--space-lg);
-    }
+    body { padding-top: 80px; } /* Ajuste para navbar menor? */
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .btn-primary-karteria, .btn-outline-secondary { width: 100%; max-width: 300px; }
+    .navbar-nav-modern { flex-direction: column; gap: var(--space-md); }
+    .features-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+    .hero-content { padding: var(--space-lg); }
 }
 
 @media (max-width: 480px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-
-    .card-modern {
-        padding: var(--space-lg);
-    }
-
-    .section-padding {
-        padding: var(--space-2xl) 0;
-    }
+    .hero-title { font-size: 2rem; }
+    .hero-subtitle { font-size: 1rem; }
+    .card-modern { padding: var(--space-lg); }
+    .section-padding { padding: var(--space-2xl) 0; }
 }
 
 /* === ACESSIBILIDADE === */
 @media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 .btn-primary-karteria:focus,
@@ -417,30 +424,13 @@ body {
 }
 
 /* === SCROLLBAR E SELEÇÃO === */
-::-webkit-scrollbar {
-    width: 8px;
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: var(--radius-sm); }
+::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
+::selection { background: var(--brand-primary); color: white; }
 
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-medium);
-    border-radius: var(--radius-sm);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--brand-primary);
-}
-
-::selection {
-    background: var(--brand-primary);
-    color: white;
-}
-
-/* === BOTÕES ESPECÍFICOS DE PERFIL === */
-
+/* === BOTÕES ESPECÍFICOS DE PERFIL (ESCOLHER-PERFIL) === */
 .btn-empregador,
 .btn-colaborador {
     color: white;
@@ -451,168 +441,16 @@ body {
     border: none;
     width: 100%;
 }
-
-.btn-empregador {
-    background-color: var(--karteria-blue-600);
-}
-
-.btn-colaborador {
-    background-color: var(--karteria-green-600);
-}
-
+.btn-empregador { background-color: var(--karteria-blue-600); }
+.btn-colaborador { background-color: var(--karteria-green-600); }
 .btn-empregador:hover,
-.btn-colaborador:hover {
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
+.btn-colaborador:hover { color: white; transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
-body.dashboard-layout {
-    display: flex;
-    padding-top: 0;
-}
+/* === ESTILOS SIDENAV REMOVIDOS DAQUI === */
+/* O bloco que começava com .sidenav foi movido para _navbar_dashboard.css */
 
-.sidenav {
-    width: 260px;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: var(--bg-secondary);
-    border-right: 1px solid var(--border-light);
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-lg);
-    transition: width var(--transition-normal);
-}
-
-.dashboard-content {
-    margin-left: 260px;
-    width: 100%;
-    padding: var(--space-xl);
-    transition: margin-left var(--transition-normal);
-}
-
-/* --- Itens da Sidenav --- */
-
-.sidenav-header {
-    margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-lg);
-    border-bottom: 1px solid var(--border-light);
-}
-
-/* Logo (Karteria) */
-.sidenav-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-decoration: none;
-    color: var(--text-primary);
-}
-
-/* Lista de navegação principal */
-.sidenav-nav {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidenav-nav-item {
-    margin-bottom: var(--space-sm);
-}
-
-.sidenav-nav-link {
-    display: flex;
-    align-items: center;
-    padding: var(--space-sm) var(--space-md);
-    text-decoration: none;
-    color: var(--text-secondary);
-    border-radius: var(--radius-md);
-    font-weight: 500;
-    transition: all var(--transition-fast);
-}
-
-.sidenav-nav-link i {
-    width: 30px; /* Alinha os ícones */
-    font-size: 1.1rem;
-    margin-right: var(--space-sm);
-}
-
-.sidenav-nav-link:hover {
-    background-color: var(--bg-tertiary);
-    color: var(--brand-primary);
-}
-
-/* Rodapé da Sidenav (Usuário e Tema) */
-.sidenav-footer {
-    padding-top: var(--space-lg);
-    border-top: 1px solid var(--border-light);
-}
-
-.user-dropdown .dropdown-toggle {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: var(--text-primary);
-    padding: var(--space-sm);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-}
-.user-dropdown .dropdown-toggle:hover {
-    background-color: var(--bg-tertiary);
-}
-.user-dropdown .dropdown-toggle i {
-    font-size: 1.5rem;
-    margin-right: var(--space-md);
-}
-.user-dropdown .dropdown-toggle::after {
-    margin-left: auto;
-}
-
-/* Alinha o botão de tema */
-.sidenav-footer .theme-toggle {
-    width: 100%;
-    justify-content: flex-start;
-    padding: var(--space-md);
-    border: none;
-    background: transparent;
-}
-.sidenav-footer .theme-toggle:hover {
-    background-color: var(--bg-tertiary);
-    color: var(--brand-primary);
-}
-
-/* Responsividade (em telas pequenas, esconde o menu) */
-@media (max-width: 992px) {
-    .sidenav {
-        width: 70px; /* Encolhe o menu */
-    }
-    .sidenav .sidenav-brand span,
-    .sidenav .sidenav-nav-link span,
-    .sidenav .user-dropdown span,
-    .sidenav .user-dropdown .dropdown-toggle::after {
-        display: none; /* Esconde os textos */
-    }
-    .sidenav .sidenav-nav-link i {
-        margin-right: 0;
-    }
-    .dashboard-content {
-        margin-left: 70px;
-    }
-    .user-dropdown .dropdown-toggle i {
-        margin-right: 0;
-    }
-}
-
-/* Adicionar este bloco */
-.sidenav-nav-link.text-danger {
-    color: var(--danger) !important;
-}
-.sidenav-nav-link.text-danger:hover {
-    background-color: var(--danger-bg);
-    color: var(--danger) !important;
-}
-
-/* Estilo para data de publicação no card */
+/* === ESTILOS PARA DATA DE PUBLICAÇÃO NO CARD === */
+/* Mantido pois é usado em area-empregador.html */
 .anuncio-card-data {
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -621,116 +459,36 @@ body.dashboard-layout {
     border-top: 1px dashed var(--border-light);
 }
 
-/* === MODAL E DROPDOWN MENU EM DARK MODE === */
-
+/* === CORREÇÕES DARK THEME P/ BOOTSTRAP COMPONENTS === */
+/* Mantido pois aplica a modais e dropdowns usados em várias páginas */
 [data-theme="dark"] {
     /* === MODAL === */
-    .modal-content {
-        background-color: var(--bg-secondary);
-        color: var(--text-primary);
-        border: 1px solid var(--border-medium);
-    }
+    .modal-content { background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-medium); }
+    .modal-header { border-bottom-color: var(--border-light); }
+    .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+    .modal-footer { border-top-color: var(--border-light); }
+    .modal-body .form-control, .modal-body .form-select { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-medium); }
+    .modal-body .form-control:focus, .modal-body .form-select:focus { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--brand-primary); box-shadow: 0 0 0 0.25rem rgba(var(--karteria-green-500-rgb), 0.15); }
 
-    .modal-header {
-        border-bottom-color: var(--border-light);
-    }
-    /* Botão de fechar (X) no header do modal */
-    .modal-header .btn-close {
-        filter: invert(1) grayscale(100%) brightness(200%);
-    }
-
-    .modal-footer {
-        border-top-color: var(--border-light);
-    }
-
-    /* Campos de formulário DENTRO do modal (se necessário) */
-    .modal-body .form-control,
-    .modal-body .form-select {
-        background-color: var(--bg-tertiary);
-        color: var(--text-primary);
-        border-color: var(--border-medium);
-    }
-    .modal-body .form-control:focus,
-    .modal-body .form-select:focus {
-        background-color: var(--bg-tertiary);
-        color: var(--text-primary);
-        border-color: var(--brand-primary);
-        box-shadow: 0 0 0 0.25rem rgba(var(--karteria-green-500-rgb), 0.15);
-    }
-
-    /* === CORREÇÃO DROPDOWN MENU === */
-    .dropdown-menu {
-        background-color: var(--bg-secondary);
-        border-color: var(--border-medium);
-        box-shadow: var(--shadow-lg);
-    }
-
-    .dropdown-item {
-        color: var(--text-secondary);
-    }
-
-    /* Hover/Focus do item normal */
-    .dropdown-item:hover,
-    .dropdown-item:focus {
-        background-color: var(--bg-tertiary);
-        color: var(--brand-primary);
-    }
-
-    /* Hover/Focus do item vermelho (Apagar/Sair) */
-    .dropdown-item.text-danger:hover,
-    .dropdown-item.text-danger:focus {
-        background-color: var(--danger-bg);
-        color: var(--danger) !important;
-    }
-
-    /* Divisor dentro do dropdown */
-    .dropdown-divider {
-        border-top-color: var(--border-light);
-    }
+    /* === DROPDOWN MENU === */
+    .dropdown-menu { background-color: var(--bg-secondary); border-color: var(--border-medium); box-shadow: var(--shadow-lg); }
+    .dropdown-item { color: var(--text-secondary); }
+    .dropdown-item:hover, .dropdown-item:focus { background-color: var(--bg-tertiary); color: var(--brand-primary); }
+    .dropdown-item.text-danger:hover, .dropdown-item.text-danger:focus { background-color: var(--danger-bg); color: var(--danger) !important; }
+    .dropdown-divider { border-top-color: var(--border-light); }
 
     /* === INPUT DE BUSCA (Dark Mode) === */
-    .search-bar .form-control {
-        background-color: var(--bg-tertiary);
-        color: var(--text-primary);
-        border-color: var(--border-medium);
-    }
-    .search-bar .form-control::placeholder {
-        color: var(--text-muted);
-    }
-    .search-bar .form-control:focus {
-        background-color: var(--bg-tertiary);
-        color: var(--text-primary);
-        border-color: var(--brand-primary);
-        box-shadow: 0 0 0 0.25rem rgba(var(--karteria-green-500-rgb), 0.15);
-    }
+    .search-bar .form-control { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-medium); }
+    .search-bar .form-control::placeholder { color: var(--text-muted); }
+    .search-bar .form-control:focus { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--brand-primary); box-shadow: 0 0 0 0.25rem rgba(var(--karteria-green-500-rgb), 0.15); }
 }
 
-/* Adiciona variável RGB para sombra do form-control no dark mode */
-:root {
-    --karteria-green-500-rgb: 34, 197, 94;
-}
+/* Variável RGB (mantida) */
+:root { --karteria-green-500-rgb: 34, 197, 94; }
 
-
-/* ========================================
-   FORÇAR ESTILO DO BOTÃO SECUNDÁRIO DESABILITADO
-   ======================================== */
-
-/* Aplica em ambos os temas (claro e escuro) */
+/* === ESTILO BOTÃO SECUNDÁRIO DESABILITADO === */
+/* Mantido pois pode ser usado em outras páginas */
 .btn-secondary.disabled,
-.btn-secondary:disabled {
-    color: var(--text-muted) !important; 
-    background-color: var(--bg-tertiary) !important; 
-    border-color: var(--border-medium) !important; 
-    opacity: 0.65 !important; 
-    cursor: not-allowed !important; 
-    box-shadow: none !important;
-    transform: none !important;
-}
-
-/* Ajuste específico para garantir contraste no Dark Mode, se necessário */
+.btn-secondary:disabled { color: var(--text-muted) !important; background-color: var(--bg-tertiary) !important; border-color: var(--border-medium) !important; opacity: 0.65 !important; cursor: not-allowed !important; box-shadow: none !important; transform: none !important; }
 [data-theme="dark"] .btn-secondary.disabled,
-[data-theme="dark"] .btn-secondary:disabled {
-    color: var(--karteria-gray-500) !important; /* Tom de cinza ligeiramente diferente para contraste */
-    background-color: var(--karteria-gray-800) !important; /* Fundo escuro */
-    border-color: var(--karteria-gray-700) !important; /* Borda escura */
-}
+[data-theme="dark"] .btn-secondary:disabled { color: var(--karteria-gray-500) !important; background-color: var(--karteria-gray-800) !important; border-color: var(--karteria-gray-700) !important; opacity: 0.5 !important;}
