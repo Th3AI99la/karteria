@@ -34,8 +34,37 @@
 
                 <div class="card-modern" data-aos="fade-up">
                     <div class="card-body p-4">
-                        <h2 class="brand-text mb-3" th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}">R$ 150,00</h2>
+                        <h2 class="brand-text mb-3">
+                            <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
+                                R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1, 'POINT', 0, 'COMMA')}]]
+                            </span>
+                            <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]</span>
+                            <small class="text-muted" th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</small>
+                            <small class="text-muted" th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</small>
+                            <small class="text-muted" th:if="${anuncio.tipoPagamento == 'UNICO'}">(Valor Total)</small>
+                        </h2>
+
                         <hr style="border-color: var(--border-light)" />
+
+                        <!-- Se o empregador marcou "Exibir Telefone" -->
+                        <div th:if="${anuncio.exibirTelefone}" class="alert alert-info" role="alert">
+                            <h5 class="alert-heading">
+                                <i class="fas fa-phone me-2"></i>
+                                Contato do Empregador
+                            </h5>
+                            <p>O empregador optou por exibir seu telefone:</p>
+                            <hr />
+                            <!-- Busca o telefone do objeto 'anunciante' dentro do 'anuncio' -->
+                            <p class="mb-0 fw-bold" th:text="${anuncio.anunciante?.telefone}"></p>
+                        </div>
+
+                        <!-- Se o empregador desmarcou "Permitir Contato" -->
+                        <div th:if="${!anuncio.permitirContato}" class="alert alert-warning" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Atenção:</strong>
+                            O empregador não permite contato direto. Você deve se candidatar e aguardar o contato dele.
+                        </div>
+
                         <div class="mt-4">
                             <p class="detail-item mb-3">
                                 <i class="fas fa-info-circle fa-fw me-2"></i>
@@ -45,12 +74,12 @@
                             <p class="detail-item mb-3">
                                 <i class="fas fa-map-marker-alt fa-fw me-2"></i>
                                 <strong>Localização:</strong>
-                                <span th:text="${anuncio.localizacao}">...</span>
+                                <span th:text="${anuncio.localizacao != null ? #strings.arraySplit(anuncio.localizacao, ' (CEP:')[0] : ''}">...</span>
                             </p>
                             <p class="detail-item mb-3">
                                 <i class="fas fa-user-tie fa-fw me-2"></i>
                                 <strong>Publicado por:</strong>
-                                <span th:text="${anuncio.anunciante.nome}">...</span>
+                                <span th:text="${anuncio.anunciante?.nome}">...</span>
                             </p>
                             <p class="detail-item mb-3">
                                 <i class="fas fa-calendar-alt fa-fw me-2"></i>
@@ -89,6 +118,7 @@
             </div>
         </main>
 
+        <!-- Modal de Confirmação -->
         <div class="modal fade" id="confirmarCandidaturaModal" tabindex="-1" aria-labelledby="confirmarCandidaturaModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">

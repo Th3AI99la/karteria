@@ -77,12 +77,25 @@
                             <div class="anuncio-card-colab h-100" data-aos="fade-up">
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title fw-bold brand-text card-titulo" th:text="${anuncio.titulo}"></h5>
-                                    <h6 class="card-subtitle mb-3 text-muted card-valor" th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}"></h6>
+
+                                    <h6 class="card-subtitle mb-3 text-muted card-valor">
+                                        <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
+                                            R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1, 'POINT', 0,
+                                            'COMMA')}]]
+                                        </span>
+                                        <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">
+                                            R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]
+                                        </span>
+                                        <span th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</span>
+                                        <span th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</span>
+                                        <span th:if="${anuncio.tipoPagamento == 'UNICO'}">(Valor Total)</span>
+                                    </h6>
+
                                     <p class="card-text text-secondary small" style="min-height: 60px" th:text="${#strings.abbreviate(anuncio.descricao, 100)}"></p>
                                     <div class="mt-auto">
                                         <p class="card-text text-muted small mb-3 card-localizacao">
                                             <i class="fas fa-map-marker-alt me-2"></i>
-                                            <span th:text="${anuncio.localizacao}"></span>
+                                            <span th:text="${anuncio.localizacao != null ? #strings.arraySplit(anuncio.localizacao, ' (CEP:')[0] : ''}"></span>
                                         </p>
                                         <a th:href="@{/anuncios/detalhes/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria w-100">
                                             <i class="fas fa-arrow-right me-2"></i>
