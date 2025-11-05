@@ -1,4 +1,3 @@
-
 /**
  * Função para validar CPF
  *
@@ -158,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === ANEXA VALIDAÇÃO DE CPF EM TEMPO REAL ===
     // (Este bloco estava fora do DOMContentLoaded no arquivo original)
-    
+
     const cpfInput = document.getElementById('cpf');
     const cpfErrorDiv = document.getElementById('cpfError'); // Div de erro do CPF
 
@@ -201,4 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.warn('Campos de CPF (cpf ou cpfError) não encontrados para anexar validação.');
     }
+
+    // === ANEXA CAPITALIZAÇÃO (CAMPOS DO ANUNCIO-FORM) ===
+    capitalizeFirstLetter(document.getElementById('tituloVaga'));
+    capitalizeFirstLetter(document.getElementById('descricaoVaga'));
 });

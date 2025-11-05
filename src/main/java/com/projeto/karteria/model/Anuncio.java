@@ -1,6 +1,5 @@
 package com.projeto.karteria.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,9 +28,15 @@ public class Anuncio {
     // --- Campos de Dados ---
     private String titulo;
     private String descricao;
-    private BigDecimal valor;
     private String localizacao;
     private LocalDateTime dataPostagem;
+
+    private Double valorMin;
+    private Double valorMax;
+    private String tipoPagamento;
+
+    private boolean exibirTelefone = false;
+    private boolean permitirContato = true;
 
     @Enumerated(EnumType.STRING)
     private StatusAnuncio status;
@@ -68,14 +73,6 @@ public class Anuncio {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
     }
 
     public String getLocalizacao() {
@@ -125,4 +122,45 @@ public class Anuncio {
     public void setVisualizacoes(int visualizacoes) {
         this.visualizacoes = visualizacoes;
     }
+
+    public Double getValorMin() {
+        return valorMin;
+    }
+
+    public void setValorMin(Double valorMin) {
+        this.valorMin = valorMin;
+    }
+
+    public Double getValorMax() {
+        return valorMax;
+    }
+
+    public void setValorMax(Double valorMax) {
+        this.valorMax = valorMax;
+    }
+
+    public String getTipoPagamento() {
+        return tipoPagamento;
+    }
+
+    public void setTipoPagamento(String tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
+    }
+
+    public boolean isExibirTelefone() {
+        return exibirTelefone;
+    }
+
+    public void setExibirTelefone(boolean exibirTelefone) {
+        this.exibirTelefone = exibirTelefone;
+    }
+
+    public boolean isPermitirContato() {
+        return permitirContato;
+    }
+
+    public void setPermitirContato(boolean permitirContato) {
+        this.permitirContato = permitirContato;
+    }
+
 }

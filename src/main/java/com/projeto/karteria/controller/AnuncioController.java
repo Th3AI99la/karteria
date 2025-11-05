@@ -40,7 +40,7 @@ public class AnuncioController {
     @Autowired
     private CandidaturaRepository candidaturaRepository;
 
-    // ================= Helper =================
+    // Verifica se o usuário autenticado é o anunciante do anúncio
     private boolean isAnunciante(Anuncio anuncio, Authentication auth) {
         if (auth == null || !auth.isAuthenticated())
             return false;
@@ -48,12 +48,45 @@ public class AnuncioController {
         return anuncio.getAnunciante() != null && email.equals(anuncio.getAnunciante().getEmail());
     }
 
-    // ================= CRUD ANÚNCIO =================
+    // Formata a localização para exibição (ex: "Bairro, Cidade/UF")
+    @SuppressWarnings("unused")
+    private String formatarLocalizacao(String enderecoCompleto) {
+        if (enderecoCompleto == null || enderecoCompleto.isEmpty()) {
+            return "";
+        }
 
+        // Regex para extrair bairro e cidade/UF
+        java.util.regex.Pattern pattern = java.util.regex.Pattern
+                .compile(".* - ([^-(]+?) - ([^-(]+?/\\w{2})\\s\\(CEP:.*");
+        java.util.regex.Matcher matcher = pattern.matcher(enderecoCompleto);
+
+        // Se encontrar correspondência, retorna no formato desejado
+        if (matcher.find() && matcher.groupCount() == 2) {
+            String bairro = matcher.group(1).trim();
+            String cidadeUf = matcher.group(2).trim();
+            return bairro + ", " + cidadeUf;
+        }
+
+        return enderecoCompleto;
+    }
+
+    // --- NOVO ANÚNCIO ---
     @GetMapping("/novo")
     @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
-    public String showAnuncioForm(Model model) {
-        model.addAttribute("anuncio", new Anuncio());
+    public String showAnuncioForm(Model model, Authentication authentication) {
+
+        Usuario usuarioLogado = usuarioRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Anuncio novoAnuncio = new Anuncio();
+
+        String enderecoCompleto = usuarioLogado.getEndereco();
+
+        String localizacaoFormatada = formatarLocalizacao(enderecoCompleto);
+
+        novoAnuncio.setLocalizacao(localizacaoFormatada);
+
+        model.addAttribute("anuncio", novoAnuncio);
         return "anuncio-form";
     }
 
@@ -67,12 +100,17 @@ public class AnuncioController {
 
         // Verifica se é um novo anúncio ou uma edição
         if (anuncioForm.getId() == null) {
+            // --- NOVO ANÚNCIO ---
             anuncioForm.setAnunciante(usuarioLogado);
             anuncioForm.setDataPostagem(LocalDateTime.now());
             anuncioForm.setStatus(StatusAnuncio.ATIVO);
+
+            // O save já inclui os novos campos (valorMin, tipoPagamento, toggles)
+            // vindos do th:field no formulário
             anuncioRepository.save(anuncioForm);
             redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
         } else {
+            // --- EDITANDO ANÚNCIO ---
             Anuncio anuncioExistente = anuncioRepository.findById(anuncioForm.getId())
                     .orElseThrow(
                             () -> new IllegalArgumentException("Anúncio inválido para edição:" + anuncioForm.getId()));
@@ -82,10 +120,18 @@ public class AnuncioController {
                 return "redirect:/home";
             }
 
+            // Atualiza campos antigos
             anuncioExistente.setTitulo(anuncioForm.getTitulo());
             anuncioExistente.setDescricao(anuncioForm.getDescricao());
-            anuncioExistente.setValor(anuncioForm.getValor());
-            anuncioExistente.setLocalizacao(anuncioForm.getLocalizacao());
+            anuncioExistente.setLocalizacao(anuncioForm.getLocalizacao()); // Salva a localização (editada ou não)
+
+            // Atualiza os NOVOS campos
+            anuncioExistente.setTipoPagamento(anuncioForm.getTipoPagamento());
+            anuncioExistente.setValorMin(anuncioForm.getValorMin());
+            anuncioExistente.setValorMax(anuncioForm.getValorMax());
+            anuncioExistente.setExibirTelefone(anuncioForm.isExibirTelefone());
+            anuncioExistente.setPermitirContato(anuncioForm.isPermitirContato());
+
             anuncioRepository.save(anuncioExistente);
             redirectAttributes.addFlashAttribute("sucesso", "Vaga atualizada com sucesso!");
         }
@@ -93,6 +139,7 @@ public class AnuncioController {
         return "redirect:/home";
     }
 
+    // --- EDIÇÃO DE ANÚNCIO ---
     @GetMapping("/editar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String showEditForm(@PathVariable Long id, Model model, Authentication authentication) {
@@ -104,6 +151,7 @@ public class AnuncioController {
         return "anuncio-form";
     }
 
+    // --- APAGAR ANÚNCIO ---
     @PostMapping("/apagar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String apagarAnuncio(@PathVariable Long id, Authentication authentication,
@@ -117,6 +165,7 @@ public class AnuncioController {
         return "redirect:/home";
     }
 
+    // --- ALTERAR STATUS ANÚNCIO (ATIVO/PAUSADO) ---
     @PostMapping("/status/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String alterarStatusAnuncio(@PathVariable Long id, Authentication authentication,
@@ -138,6 +187,7 @@ public class AnuncioController {
         return "redirect:/home";
     }
 
+    // --- ARQUIVAR ANÚNCIO ---
     @PostMapping("/arquivar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String arquivarAnuncio(@PathVariable Long id, Authentication authentication,
@@ -152,6 +202,7 @@ public class AnuncioController {
         return "redirect:/home";
     }
 
+    // --- DESARQUIVAR ANÚNCIO ---
     @PostMapping("/desarquivar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String desarquivarAnuncio(@PathVariable Long id, Authentication authentication,
@@ -166,6 +217,7 @@ public class AnuncioController {
         return "redirect:/home";
     }
 
+    // ================= GERENCIAR VAGA =================
     @GetMapping("/gerenciar/{id}")
     @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
     public String showGerenciarVaga(@PathVariable Long id, Model model, Authentication authentication,

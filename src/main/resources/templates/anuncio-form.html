@@ -13,7 +13,7 @@
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     </head>
 
-    <body>
+    <body data-bs-theme="dark">
         <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand-modern brand-text" th:href="@{/home}">
@@ -44,23 +44,66 @@
                                 <input type="hidden" th:field="*{id}" />
 
                                 <div class="mb-3">
-                                    <label for="titulo" class="form-label">Título da Vaga</label>
-                                    <input type="text" th:field="*{titulo}" id="titulo" class="form-control form-control-lg" required />
+                                    <label for="tituloVaga" class="form-label">Título da Vaga *</label>
+                                    <input type="text" th:field="*{titulo}" id="tituloVaga" class="form-control form-control-lg" required />
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="descricao" class="form-label">Descrição Detalhada</label>
-                                    <textarea th:field="*{descricao}" id="descricao" class="form-control" rows="5" required></textarea>
+                                    <label for="descricaoVaga" class="form-label">Descrição Detalhada *</label>
+                                    <textarea th:field="*{descricao}" id="descricaoVaga" class="form-control" rows="5" required></textarea>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="valor" class="form-label">Valor Oferecido (R$)</label>
-                                        <input type="number" th:field="*{valor}" id="valor" class="form-control" step="0.01" required />
+                                <div class="mb-3 p-3" style="background: var(--bg-tertiary); border-radius: var(--radius-md)">
+                                    <label for="tipoPagamentoSelect" class="form-label d-block">Valor Oferecido (R$) *</label>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small">Tipo de Pagamento</label>
+                                        <select th:field="*{tipoPagamento}" class="form-select" required id="tipoPagamentoSelect">
+                                            <option value="" disabled>Selecione...</option>
+                                            <option value="POR_HORA">Por Hora</option>
+                                            <option value="POR_DIA">Por Dia</option>
+                                            <option value="UNICO">Valor Único (Total)</option>
+                                        </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="localizacao" class="form-label">Localização (Bairro, Cidade)</label>
-                                        <input type="text" th:field="*{localizacao}" id="localizacao" class="form-control" required />
+
+                                    <div class="row" id="valorIntervaloGroup" style="display: none">
+                                        <div class="col-md-6">
+                                            <label for="valorMin" class="form-label small">Valor Mínimo (Ex: 40)</label>
+                                            <input type="number" th:field="*{valorMin}" id="valorMin" class="form-control" step="0.01" placeholder="40" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="valorMax" class="form-label small">Valor Máximo (Ex: 80) (Opcional)</label>
+                                            <input type="number" th:field="*{valorMax}" id="valorMax" class="form-control" step="0.01" placeholder="80" />
+                                        </div>
+                                    </div>
+
+                                    <div id="valorUnicoGroup" style="display: none">
+                                        <label for="valorUnico" class="form-label small">Valor Único (Ex: 500)</label>
+                                        <input type="number" th:field="*{valorMin}" id="valorUnico" class="form-control" step="0.01" placeholder="500" />
+                                    </div>
+
+                                    <small class="form-text text-muted" id="valorHelpText" style="display: none">Para valor fixo (Ex: R$50/dia), preencha só o Mínimo.</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="localizacao" class="form-label">Localização (Bairro, Cidade) *</label>
+                                    <input type="text" th:field="*{localizacao}" id="localizacao" class="form-control" required />
+                                    <small class="form-text text-muted">Pré-preenchido com base no seu perfil. Você pode editar.</small>
+                                </div>
+
+                                <hr class="my-4" />
+
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="exibirTelefone" th:field="*{exibirTelefone}" />
+                                    <label class="form-check-label" for="exibirTelefone">Exibir meu telefone na publicação</label>
+                                    <div class="form-text text-muted small">Se marcado, seu telefone (do perfil) ficará visível para todos.</div>
+                                </div>
+
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="permitirContato" th:field="*{permitirContato}" />
+                                    <label class="form-check-label" for="permitirContato">Permitir que usuários entrem em contato comigo</label>
+                                    <div class="form-text text-muted small" id="permitirContatoHelp">
+                                        Se desmarcado, você (empregador) deverá iniciar o contato com os candidatos.
                                     </div>
                                 </div>
 
@@ -81,8 +124,87 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-main.js}"></script>
+        <script th:src="@{/js/form-masks-validations.js}"></script>
+
         <script>
             AOS.init({ once: true, duration: 600 });
+
+            // Executa quando o DOM estiver pronto
+            document.addEventListener("DOMContentLoaded", () => {
+                // --- 1. LÓGICA DE CAPITALIZAÇÃO (TÍTULO E DESCRIÇÃO) ---
+                try {
+                    if (typeof capitalizeFirstLetter === "function") {
+                        capitalizeFirstLetter(document.getElementById("tituloVaga"));
+                        capitalizeFirstLetter(document.getElementById("descricaoVaga"));
+                    } else {
+                        console.warn("Função capitalizeFirstLetter() não encontrada.");
+                    }
+                } catch (e) {
+                    console.error("Erro na capitalização:", e);
+                }
+
+                // --- 2. LÓGICA DO TIPO DE PAGAMENTO (VALOR) ---
+                const tipoPagamentoSelect = document.getElementById("tipoPagamentoSelect");
+                const valorIntervaloGroup = document.getElementById("valorIntervaloGroup");
+                const valorUnicoGroup = document.getElementById("valorUnicoGroup");
+                const valorHelpText = document.getElementById("valorHelpText");
+
+                // Inputs
+                const valorMinInput = document.getElementById("valorMin");
+                const valorMaxInput = document.getElementById("valorMax");
+                const valorUnicoInput = document.getElementById("valorUnico");
+
+                function atualizarCamposValor() {
+                    const tipo = tipoPagamentoSelect.value;
+
+                    // Oculta todos e limpa os valores
+                    valorIntervaloGroup.style.display = "none";
+                    valorUnicoGroup.style.display = "none";
+                    valorHelpText.style.display = "none";
+
+                    if (tipo === "POR_HORA" || tipo === "POR_DIA") {
+                        valorIntervaloGroup.style.display = "flex"; // 'flex' para manter o layout em linha (row)
+                        valorHelpText.style.display = "block";
+                        // Limpa o campo único
+                        valorUnicoInput.value = "";
+                    } else if (tipo === "UNICO") {
+                        valorUnicoGroup.style.display = "block";
+                        // Limpa os campos de intervalo
+                        valorMinInput.value = "";
+                        valorMaxInput.value = "";
+                    }
+                }
+
+                // Adiciona o "ouvinte"
+                tipoPagamentoSelect.addEventListener("change", atualizarCamposValor);
+                // Executa uma vez no carregamento (caso seja uma edição)
+                atualizarCamposValor();
+
+                // --- 3. LÓGICA DOS TOGGLES (CONTATO) ---
+                const toggleTelefone = document.getElementById("exibirTelefone");
+                const toggleContato = document.getElementById("permitirContato");
+                const helpContato = document.getElementById("permitirContatoHelp");
+
+                function atualizarLogicaToggles() {
+                    // Implementando sua lógica: Se "Exibir Telefone" for NÃO, "Permitir Contato" é bloqueado
+                    if (toggleTelefone.checked) {
+                        // Se SIM, Exibir Telefone:
+                        toggleContato.disabled = false; // Ativa o toggle de baixo
+                        toggleContato.checked = true; // Marca "Permitir Contato" automaticamente
+                        helpContato.textContent = "Se desmarcado, você (empregador) deverá iniciar o contato com os candidatos.";
+                    } else {
+                        // Se NÃO, Exibir Telefone:
+                        toggleContato.disabled = true; // Desativa (bloqueia) o toggle de baixo
+                        toggleContato.checked = false; // Desmarca "Permitir Contato"
+                        helpContato.textContent = "Para permitir o contato, você deve exibir seu telefone.";
+                    }
+                }
+
+                // Adiciona o "ouvinte"
+                toggleTelefone.addEventListener("change", atualizarLogicaToggles);
+                // Executa uma vez no carregamento (caso seja uma edição)
+                atualizarLogicaToggles();
+            });
         </script>
     </body>
 </html>
