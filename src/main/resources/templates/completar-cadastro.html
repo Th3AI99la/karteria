@@ -456,7 +456,7 @@
                 });
 
                 // Atualiza endereço completo
-const atualizarEnderecoCompleto = () => {
+                const atualizarEnderecoCompleto = () => {
                     // 1. Cria um objeto com os dados
                     const enderecoObj = {
                         rua: ruaInput.value || "",
@@ -475,23 +475,29 @@ const atualizarEnderecoCompleto = () => {
                     enderecoCompletoHidden.value = jsonEndereco;
                 };
 
-                // Validação checkbox termos
-                const completeForm = document.getElementById("completeRegisterForm");
-                const termsCheckbox = document.getElementById("termsComplete");
-                const termsErrorDiv = document.getElementById("termsError");
-                if (completeForm && termsCheckbox && termsErrorDiv) {
-                    completeForm.addEventListener("submit", (e) => {
-                        if (!termsCheckbox.checked) {
-                            e.preventDefault();
-                            termsErrorDiv.textContent = "Você deve aceitar os termos para continuar.";
-                            termsCheckbox.focus();
-                        } else termsErrorDiv.textContent = "";
-                    });
-                    termsCheckbox.addEventListener("change", () => {
-                        if (termsCheckbox.checked) termsErrorDiv.textContent = "";
-                    });
-                }
-            });
+                    // Validação checkbox termos
+                    const completeForm = document.getElementById("completeRegisterForm");
+                    const termsCheckbox = document.getElementById("termsComplete");
+                    const termsErrorDiv = document.getElementById("termsError");
+                    if (completeForm && termsCheckbox && termsErrorDiv) {
+                        completeForm.addEventListener("submit", (e) => {
+                            
+                            // ===============================================
+                            // === ADICIONE ESTA LINHA AQUI ===
+                            atualizarEnderecoCompleto();
+                            // ===============================================
+
+                            if (!termsCheckbox.checked) {
+                                e.preventDefault();
+                                termsErrorDiv.textContent = "Você deve aceitar os termos para continuar.";
+                                termsCheckbox.focus();
+                            } else termsErrorDiv.textContent = "";
+                        });
+                        termsCheckbox.addEventListener("change", () => {
+                            if (termsCheckbox.checked) termsErrorDiv.textContent = "";
+                        });
+                    }
+                });
         </script>
     </body>
 </html>
