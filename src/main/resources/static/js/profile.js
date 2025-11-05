@@ -203,16 +203,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // MONTA O ENDEREÇO COMPLETO E ATUALIZA MODAL 1
 
+        // (Dentro do arquivo profile.js)
+
+        // MONTA O ENDEREÇO COMPLETO E ATUALIZA MODAL 1
         const atualizarEnderecoCompleto = () => {
             if (!enderecoHiddenInput || !enderecoDisplayInput) return;
+
+            // --- INÍCIO DA CORREÇÃO ---
+            // Captura os valores individuais
+            const cidadeFormatada = cidadeSelect.value || '';
+            const estadoFormatado = estadoSelect.value ? `/${estadoSelect.value}` : '';
+            const cidadeEstado =
+                cidadeFormatada || estadoFormatado ? [cidadeFormatada, estadoFormatado].filter(Boolean).join('') : '';
+            const bairroFormatado = bairroInput.value || '';
+
+            // Constrói a parte de localização COM O SEPARADOR CORRETO
+            let localizacao = '';
+            if (bairroFormatado && cidadeEstado) {
+                // ESTA É A CORREÇÃO: Adiciona " - " entre o bairro e a cidade
+                localizacao = ` - ${bairroFormatado} - ${cidadeEstado}`;
+            } else if (bairroFormatado) {
+                localizacao = ` - ${bairroFormatado}`;
+            } else if (cidadeEstado) {
+                localizacao = ` - ${cidadeEstado}`;
+            }
+            // --- FIM DA CORREÇÃO ---
 
             const partes = [
                 ruaInput.value,
                 numeroInput.value ? `, ${numeroInput.value}` : '',
                 complementoInput.value ? ` - ${complementoInput.value}` : '',
-                bairroInput.value ? ` - ${bairroInput.value}` : '',
-                cidadeSelect.value || '',
-                estadoSelect.value ? `/${estadoSelect.value}` : '',
+                localizacao, // Usa a variável 'localizacao' corrigida
                 cepInput.value ? ` (CEP: ${cepInput.value})` : ''
             ];
 
@@ -224,14 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log('Endereço Completo (hidden) atualizado:', enderecoCompleto);
         };
-
-        // Atualiza o endereço a cada mudança de campo
-        [ruaInput, numeroInput, complementoInput, bairroInput, cidadeSelect, estadoSelect, cepInput].forEach((el) => {
-            if (el) {
-                el.addEventListener('change', atualizarEnderecoCompleto);
-                el.addEventListener('input', atualizarEnderecoCompleto);
-            }
-        });
 
         // MUDANÇA PRINCIPAL: CONFIRMAÇÃO DO MODAL 2
 
@@ -270,27 +283,5 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Submetendo formulário principal (Modal 1) com o novo endereço...');
             formModal1.submit();
         });
-    }
-
-    // 3. CORRIGE FORMATAÇÃO DO ENDEREÇO EXIBIDO NA PÁGINA (GABIARRA)
-
-    // ISSO É GABIARRA PARA COLOCAR VÍRGULA APÓS O NOME DA CIDADE
-    try {
-        const spanEndereco = document.getElementById('endereco-display-texto');
-
-        if (spanEndereco && spanEndereco.textContent && spanEndereco.textContent.trim() !== '-') {
-            const textoOriginal = spanEndereco.textContent;
-
-            const regex = /(-\s*[^-]+?)([A-Z][a-zá-çã-ú]+)(\/\w{2})/;
-
-            const jaTemVirgula = /,\s*[A-Z]/.test(textoOriginal);
-
-            if (!jaTemVirgula) {
-                const textoCorrigido = textoOriginal.replace(regex, '$1, $2$3');
-                spanEndereco.textContent = textoCorrigido;
-            }
-        }
-    } catch (e) {
-        console.error('Erro ao tentar corrigir a formatação do endereço:', e.message);
     }
 });
