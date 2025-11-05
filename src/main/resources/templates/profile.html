@@ -62,7 +62,7 @@
                         </div>
                         <div class="profile-item">
                             <strong>Endereço:</strong>
-                            <span th:text="${usuario.endereco ?: '-'}"></span>
+                            <span id="endereco-display-texto" th:text="${usuario.endereco ?: '-'}"></span>
                         </div>
                     </div>
                 </div>
@@ -146,7 +146,7 @@
             </div>
         </div>
 
- <div class="modal fade" id="modalEditarEndereco" tabindex="-1" aria-labelledby="modalEditarEnderecoLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalEditarEndereco" tabindex="-1" aria-labelledby="modalEditarEnderecoLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -193,8 +193,8 @@
                         </div>
 
                         <div class="row">
-                             <div class="col-md-5">
-                                 <div class="input-group mb-3">
+                            <div class="col-md-5">
+                                <div class="input-group mb-3">
                                     <label for="edit-bairroInput" class="input-label mb-1">Bairro: *</label>
                                     <div class="input-wrapper position-relative w-100">
                                         <i class="input-icon fas fa-map-signs"></i>
@@ -202,7 +202,7 @@
                                     </div>
                                 </div>
                             </div>
-                             <div class="col-md-2">
+                            <div class="col-md-2">
                                 <div class="input-group mb-3">
                                     <label for="edit-estadoSelect" class="input-label mb-1">UF: *</label>
                                     <div class="input-wrapper position-relative w-100">

@@ -1,32 +1,29 @@
-/**
- * Lógica específica para a página profile.html
- */
+// Perfil.js - Lógica dos Modais de Edição de Perfil e Endereço
+
 document.addEventListener('DOMContentLoaded', () => {
-    // === 1. APLICA MÁSCARAS NO MODAL 1 (EDITAR PERFIL) ===
+    // 1. APLICA MÁSCARAS E VALIDAÇÕES NO MODAL 1 (EDITAR PERFIL)
+
     try {
+        // Aplica máscara de telefone, se a função existir
         if (typeof applyPhoneMask === 'function') {
             applyPhoneMask(document.getElementById('editTelefone'));
             applyPhoneMask(document.getElementById('editTelefone2'));
         }
+
+        // Permite apenas letras e espaços em nome/sobrenome
         if (typeof allowOnlyLettersAndSpaces === 'function') {
             allowOnlyLettersAndSpaces(document.getElementById('editNome'));
             allowOnlyLettersAndSpaces(document.getElementById('editSobrenome'));
         }
-        // Aplica "apenas números" no modal de endereço
-        if (typeof allowOnlyNumbers === 'function') {
-            allowOnlyNumbers(document.getElementById('edit-numeroInput'));
-        }
-        // Aplica máscaras no modal de endereço
-        if (typeof applyCpfMask === 'function') {
-        }
     } catch (e) {
-        console.error('Erro ao aplicar máscaras/validações:', e.message);
+        console.error('Erro ao aplicar máscaras/validações no Modal 1:', e.message);
     }
 
-    // === 2. LÓGICA DO MODAL 2 (EDITAR ENDEREÇO) ===
+    // 2. LÓGICA DO MODAL 2 (EDITAR ENDEREÇO)
+
     const modalEndereco = document.getElementById('modalEditarEndereco');
     if (modalEndereco) {
-        // Seletores para campos DENTRO do modal 2
+        // ---- Seletores dos campos dentro do Modal 2 ----
         const cepInput = modalEndereco.querySelector('#edit-cepInput');
         const ruaInput = modalEndereco.querySelector('#edit-ruaInput');
         const bairroInput = modalEndereco.querySelector('#edit-bairroInput');
@@ -37,13 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const cepErrorDiv = modalEndereco.querySelector('#edit-cepError');
         const btnConfirmar = modalEndereco.querySelector('#btnConfirmarEndereco');
 
-        // Seletores para campos NO MODAL 1 (os alvos)
+        // ---- Seletores dos campos no Modal 1 (perfil) ----
         const enderecoDisplayInput = document.getElementById('editEnderecoDisplay');
         const enderecoHiddenInput = document.getElementById('editEnderecoHidden');
 
         const bootstrapModalEndereco = new bootstrap.Modal(modalEndereco);
 
-        // --- Populando Estados (Lista Completa) ---
+        // POPULAÇÃO DOS ESTADOS (LISTA FIXA DE UF)
+
         const estados = [
             { sigla: 'AC', nome: 'Acre' },
             { sigla: 'AL', nome: 'Alagoas' },
@@ -73,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { sigla: 'SE', nome: 'Sergipe' },
             { sigla: 'TO', nome: 'Tocantins' }
         ];
+
         if (estadoSelect) {
             estadoSelect.innerHTML = '<option value="" disabled selected>UF</option>';
             estados.sort((a, b) => a.sigla.localeCompare(b.sigla));
@@ -84,50 +83,46 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- Populando Cidades (API IBGE) ---
+        // CARREGAMENTO DINÂMICO DE CIDADES (API IBGE)
+
         const carregarCidades = async (uf) => {
             if (!uf || !cidadeSelect) {
                 cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
                 cidadeSelect.disabled = true;
                 return;
             }
+
             cidadeSelect.disabled = true;
             cidadeSelect.innerHTML = '<option value="" disabled selected>Carregando...</option>';
+
             const url = `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Erro ao buscar cidades');
+
                 const cidades = await response.json();
                 cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione a Cidade</option>';
                 cidades.sort((a, b) => a.nome.localeCompare(b.nome));
+
                 cidades.forEach((cidade) => {
                     const option = document.createElement('option');
                     option.value = cidade.nome;
                     option.textContent = cidade.nome;
                     cidadeSelect.appendChild(option);
                 });
+
                 cidadeSelect.disabled = false;
             } catch (error) {
                 cidadeSelect.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
             }
         };
+
+        // Evento para atualizar cidades ao trocar o estado
         estadoSelect.addEventListener('change', (e) => carregarCidades(e.target.value));
 
-        // --- Lógica do CEP (ViaCEP) ---
-        const limparCamposEndereco = () => {
-            ruaInput.value = '';
-            bairroInput.value = '';
-            cidadeSelect.value = '';
-            estadoSelect.value = '';
-            cepErrorDiv.textContent = '';
-            cepInput.closest('.input-group').classList.remove('error');
-            ruaInput.readOnly = false;
-            bairroInput.readOnly = false;
-            estadoSelect.disabled = false;
-            cidadeSelect.disabled = true;
-            cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
-        };
-
+        // ===============================================================
+        // === LÓGICA DE BUSCA DE CEP (API VIACEP)
+        // ===============================================================
         const preencherCamposViaCep = (dados) => {
             if (dados.erro) {
                 cepErrorDiv.textContent = 'CEP não encontrado. Preencha manualmente.';
@@ -142,10 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Preenche os campos com os dados retornados
+            // Preenche automaticamente os campos retornados
             ruaInput.value = dados.logradouro || '';
             ruaInput.readOnly = !!dados.logradouro;
-
             bairroInput.value = dados.bairro || '';
             bairroInput.readOnly = !!dados.bairro;
             estadoSelect.value = dados.uf || '';
@@ -162,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         cidadeSelect.disabled = false;
                     }
                     numeroInput.focus();
-                    // Chama a atualização do hidden field assim que o CEP preenche
                     atualizarEnderecoCompleto();
                 });
             } else {
@@ -170,21 +163,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 cidadeSelect.disabled = true;
                 cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
                 numeroInput.focus();
-                atualizarEnderecoCompleto(); // Atualiza o hidden field
+                atualizarEnderecoCompleto();
             }
         };
 
         const buscarCep = async (cep) => {
             const cepLimpo = cep.replace(/\D/g, '');
-            if (cepLimpo.length !== 8) {
-                return;
-            }
+            if (cepLimpo.length !== 8) return;
+
             const url = `https://viacep.com.br/ws/${cepLimpo}/json/`;
             try {
                 const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Erro');
-                }
+                if (!response.ok) throw new Error('Erro');
                 const dados = await response.json();
                 preencherCamposViaCep(dados);
             } catch (error) {
@@ -199,28 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Função para montar o endereço completo (sem alterações, mas agora receberá a 'rua' correta)
-        const atualizarEnderecoCompleto = () => {
-            if (!enderecoHiddenInput || !enderecoDisplayInput) return;
-            const partes = [
-                ruaInput.value,
-                numeroInput.value ? `, ${numeroInput.value}` : '',
-                complementoInput.value ? ` - ${complementoInput.value}` : '',
-                bairroInput.value ? ` - ${bairroInput.value}` : '',
-                cidadeSelect.value || '',
-                estadoSelect.value ? `/${estadoSelect.value}` : '',
-                cepInput.value ? ` (CEP: ${cepInput.value})` : ''
-            ];
-            const enderecoCompleto = partes.filter((p) => p && p.trim() !== '').join('');
-
-            // Atualiza os dois campos no Modal 1
-            enderecoDisplayInput.value = enderecoCompleto;
-            enderecoHiddenInput.value = enderecoCompleto;
-
-            console.log('Endereço Completo (hidden) atualizado:', enderecoCompleto);
-        };
-
-        // Listener CEP (com máscara)
+        // Input com debounce para evitar múltiplas chamadas à API
         let debounceTimer;
         cepInput.addEventListener('input', (event) => {
             let value = event.target.value.replace(/\D/g, '');
@@ -232,21 +201,96 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Adiciona listeners para atualizar endereço hidden em TODOS os campos relevantes
+        // MONTA O ENDEREÇO COMPLETO E ATUALIZA MODAL 1
+
+        const atualizarEnderecoCompleto = () => {
+            if (!enderecoHiddenInput || !enderecoDisplayInput) return;
+
+            const partes = [
+                ruaInput.value,
+                numeroInput.value ? `, ${numeroInput.value}` : '',
+                complementoInput.value ? ` - ${complementoInput.value}` : '',
+                bairroInput.value ? ` - ${bairroInput.value}` : '',
+                cidadeSelect.value || '',
+                estadoSelect.value ? `/${estadoSelect.value}` : '',
+                cepInput.value ? ` (CEP: ${cepInput.value})` : ''
+            ];
+
+            const enderecoCompleto = partes.filter((p) => p && p.trim() !== '').join('');
+
+            // Atualiza os dois campos do Modal 1 (exibição e hidden)
+            enderecoDisplayInput.value = enderecoCompleto;
+            enderecoHiddenInput.value = enderecoCompleto;
+
+            console.log('Endereço Completo (hidden) atualizado:', enderecoCompleto);
+        };
+
+        // Atualiza o endereço a cada mudança de campo
         [ruaInput, numeroInput, complementoInput, bairroInput, cidadeSelect, estadoSelect, cepInput].forEach((el) => {
             if (el) {
-                el.addEventListener('change', atualizarEnderecoCompleto); // 'change' para selects
-                el.addEventListener('input', atualizarEnderecoCompleto); // 'input' para inputs de texto
+                el.addEventListener('change', atualizarEnderecoCompleto);
+                el.addEventListener('input', atualizarEnderecoCompleto);
             }
         });
 
-        // --- Confirmação do Modal 2 ---
+        // MUDANÇA PRINCIPAL: CONFIRMAÇÃO DO MODAL 2
+
         btnConfirmar.addEventListener('click', () => {
-            // 1. Garante que o endereço hidden está 100% atualizado com os últimos dados
+            // 1. Encontra o formulário principal (Modal 1)
+            const formModal1 = document.querySelector('#modalEditarPerfil form');
+            if (!formModal1) {
+                console.error('ERRO: Formulário principal #modalEditarPerfil não encontrado!');
+                return;
+            }
+
+            // 2. Atualiza o endereço completo antes de submeter
             atualizarEnderecoCompleto();
 
-            // 2. Fecha o Modal 2
-            bootstrapModalEndereco.hide();
+            // 3. Validação dos campos obrigatórios do endereço
+            if (
+                !ruaInput.value ||
+                !numeroInput.value ||
+                !bairroInput.value ||
+                !cidadeSelect.value ||
+                !estadoSelect.value
+            ) {
+                alert('Por favor, preencha todos os campos de endereço obrigatórios (*).');
+                // Restaura o botão
+                btnConfirmar.disabled = false;
+                btnConfirmar.innerHTML = 'Confirmar';
+                return;
+            }
+
+            // 4. Feedback visual de carregamento
+            btnConfirmar.disabled = true;
+            btnConfirmar.innerHTML =
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+
+            // 5. Submete o formulário principal (Modal 1)
+            console.log('Submetendo formulário principal (Modal 1) com o novo endereço...');
+            formModal1.submit();
         });
+    }
+
+    // 3. CORRIGE FORMATAÇÃO DO ENDEREÇO EXIBIDO NA PÁGINA (GABIARRA)
+
+    // ISSO É GABIARRA PARA COLOCAR VÍRGULA APÓS O NOME DA CIDADE
+    try {
+        const spanEndereco = document.getElementById('endereco-display-texto');
+
+        if (spanEndereco && spanEndereco.textContent && spanEndereco.textContent.trim() !== '-') {
+            const textoOriginal = spanEndereco.textContent;
+
+            const regex = /(-\s*[^-]+?)([A-Z][a-zá-çã-ú]+)(\/\w{2})/;
+
+            const jaTemVirgula = /,\s*[A-Z]/.test(textoOriginal);
+
+            if (!jaTemVirgula) {
+                const textoCorrigido = textoOriginal.replace(regex, '$1, $2$3');
+                spanEndereco.textContent = textoCorrigido;
+            }
+        }
+    } catch (e) {
+        console.error('Erro ao tentar corrigir a formatação do endereço:', e.message);
     }
 });
