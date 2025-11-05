@@ -5,53 +5,82 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Completar Cadastro - Karteria</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
         <link rel="stylesheet" th:href="@{/css/karteria-colors.css}" />
         <link rel="stylesheet" th:href="@{/css/karteria-forms.css}" />
         <link rel="stylesheet" th:href="@{/css/pages/completar-cadastro.css}" />
-        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+            rel="stylesheet" />
     </head>
     <body>
         <main class="form-container position-relative">
-            <section class="form-card" data-aos="zoom-in" data-aos-duration="600">
-                <button class="theme-toggle-form" id="themeToggle" aria-label="Alternar tema"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <section class="form-card" data-aos="zoom-in"
+                data-aos-duration="600">
+                <button class="theme-toggle-form" id="themeToggle"
+                    aria-label="Alternar tema"><i class="fas fa-moon"
+                        id="themeIcon"></i></button>
 
-                <header class="form-header" data-aos="fade-down" data-aos-delay="200">
+                <header class="form-header" data-aos="fade-down"
+                    data-aos-delay="200">
                     <h1 class="form-title">Complete o Cadastro</h1>
-                    <p class="form-subtitle">Quase lá! Precisamos de mais algumas informações.</p>
-                    <p class="small text-muted" th:text="'Para a conta: ' + ${userEmail}"></p>
+                    <p class="form-subtitle">Quase lá! Precisamos de mais
+                        algumas informações.</p>
+                    <p class="small text-muted"
+                        th:text="'Para a conta: ' + ${userEmail}"></p>
                 </header>
 
-                <div th:if="${#fields.hasErrors('${usuario.*}')}" class="alert alert-danger" data-aos="fade-in" data-aos-delay="300">Por favor, corrija os erros abaixo.</div>
+                <div th:if="${#fields.hasErrors('${usuario.*}')}"
+                    class="alert alert-danger" data-aos="fade-in"
+                    data-aos-delay="300">Por favor, corrija os erros
+                    abaixo.</div>
 
-                <form th:action="@{/completar-cadastro}" th:object="${usuario}" method="post" id="completeRegisterForm" data-aos="fade-up" data-aos-delay="400" novalidate>
+                <form th:action="@{/completar-cadastro}" th:object="${usuario}"
+                    method="post" id="completeRegisterForm" data-aos="fade-up"
+                    data-aos-delay="400" novalidate>
                     <!-- Nome -->
                     <div class="input-group mb-3">
                         <label for="nome" class="input-label mb-1">Nome:</label>
                         <div class="input-wrapper position-relative w-100">
                             <i class="input-icon fas fa-user"></i>
-                            <input type="text" id="nome" th:field="*{nome}" class="form-input" placeholder="Seu primeiro nome" autocomplete="given-name" required />
+                            <input type="text" id="nome" th:field="*{nome}"
+                                class="form-input"
+                                placeholder="Seu primeiro nome"
+                                autocomplete="given-name" required />
                         </div>
-                        <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="error-message" style="display: block"></div>
+                        <div th:if="${#fields.hasErrors('nome')}"
+                            th:errors="*{nome}" class="error-message"
+                            style="display: block"></div>
                     </div>
 
                     <!-- Sobrenome -->
                     <div class="input-group mb-3">
-                        <label for="sobrenome" class="input-label mb-1">Sobrenome:</label>
+                        <label for="sobrenome"
+                            class="input-label mb-1">Sobrenome:</label>
                         <div class="input-wrapper position-relative w-100">
                             <i class="input-icon fas fa-user"></i>
-                            <input type="text" id="sobrenome" th:field="*{sobrenome}" class="form-input" placeholder="Seu sobrenome" autocomplete="family-name" required />
+                            <input type="text" id="sobrenome"
+                                th:field="*{sobrenome}" class="form-input"
+                                placeholder="Seu sobrenome"
+                                autocomplete="family-name" required />
                         </div>
-                        <div th:if="${#fields.hasErrors('sobrenome')}" th:errors="*{sobrenome}" class="error-message" style="display: block"></div>
+                        <div th:if="${#fields.hasErrors('sobrenome')}"
+                            th:errors="*{sobrenome}" class="error-message"
+                            style="display: block"></div>
                     </div>
 
                     <!-- Telefones -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="input-group mb-3">
-                                <label for="telefone" class="input-label mb-1">Telefone 1 (Obrigatório):</label>
-                                <div class="input-wrapper position-relative w-100">
+                                <label for="telefone"
+                                    class="input-label mb-1">Telefone 1
+                                    (Obrigatório):</label>
+                                <div
+                                    class="input-wrapper position-relative w-100">
                                     <i class="input-icon fas fa-phone"></i>
                                     <input
                                         type="tel"
@@ -63,13 +92,19 @@
                                         required
                                         maxlength="15" />
                                 </div>
-                                <div th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="error-message" style="display: block"></div>
+                                <div th:if="${#fields.hasErrors('telefone')}"
+                                    th:errors="*{telefone}"
+                                    class="error-message"
+                                    style="display: block"></div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group mb-3">
-                                <label for="telefone2" class="input-label mb-1">Telefone 2 (Opcional):</label>
-                                <div class="input-wrapper position-relative w-100">
+                                <label for="telefone2"
+                                    class="input-label mb-1">Telefone 2
+                                    (Opcional):</label>
+                                <div
+                                    class="input-wrapper position-relative w-100">
                                     <i class="input-icon fas fa-phone"></i>
                                     <input
                                         type="tel"
@@ -86,7 +121,8 @@
 
                     <!-- CPF -->
                     <div class="input-group mb-3">
-                        <label for="cpf" class="input-label mb-1">CPF (Obrigatório):</label>
+                        <label for="cpf" class="input-label mb-1">CPF
+                            (Obrigatório):</label>
                         <div class="input-wrapper position-relative w-100">
                             <i class="input-icon fas fa-id-card"></i>
                             <input
@@ -100,49 +136,69 @@
                                 aria-describedby="cpfJsError cpfSpringError" />
                         </div>
 
-                        <div id="cpfSpringError" class="error-message" style="display: block; padding-left: 0" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
+                        <div id="cpfSpringError" class="error-message"
+                            style="display: block; padding-left: 0"
+                            th:if="${#fields.hasErrors('cpf')}"
+                            th:errors="*{cpf}"></div>
 
-                        <div id="cpfError" class="error-message" style="display: block; padding-left: 0"></div>
+                        <div id="cpfError" class="error-message"
+                            style="display: block; padding-left: 0"></div>
                     </div>
 
                     <!-- CEP -->
                     <div class="input-group mb-3">
-                        <label for="cepInput" class="input-label mb-1">CEP (Opcional):</label>
+                        <label for="cepInput" class="input-label mb-1">CEP
+                            (Opcional):</label>
                         <div class="input-wrapper position-relative w-100">
                             <i class="input-icon fas fa-mail-bulk"></i>
-                            <input type="text" id="cepInput" class="form-input" placeholder="00000-000 (preenche endereço)" maxlength="9" />
+                            <input type="text" id="cepInput" class="form-input"
+                                placeholder="00000-000 (preenche endereço)"
+                                maxlength="9" />
                         </div>
-                        <div class="error-message" id="cepError" style="display: block"></div>
+                        <div class="error-message" id="cepError"
+                            style="display: block"></div>
                     </div>
 
                     <!-- Rua -->
                     <div class="input-group mb-3">
-                        <label for="ruaInput" class="input-label mb-1">Rua:</label>
+                        <label for="ruaInput"
+                            class="input-label mb-1">Rua:</label>
                         <div class="input-wrapper position-relative w-100">
                             <i class="input-icon fas fa-road"></i>
-                            <input type="text" id="ruaInput" class="form-input" placeholder="Nome da Rua" required />
+                            <input type="text" id="ruaInput" class="form-input"
+                                placeholder="Nome da Rua" required />
                         </div>
-                        <div class="error-message" id="ruaError" style="display: block"></div>
+                        <div class="error-message" id="ruaError"
+                            style="display: block"></div>
                     </div>
 
                     <!-- Número e Complemento -->
                     <div class="row">
                         <div class="col-md-4">
                             <div class="input-group mb-3">
-                                <label for="numeroInput" class="input-label mb-1">Número:</label>
-                                <div class="input-wrapper position-relative w-100">
+                                <label for="numeroInput"
+                                    class="input-label mb-1">Número:</label>
+                                <div
+                                    class="input-wrapper position-relative w-100">
                                     <i class="input-icon fas fa-hashtag"></i>
-                                    <input type="text" id="numeroInput" class="form-input" placeholder="Nº" required />
+                                    <input type="text" id="numeroInput"
+                                        class="form-input" placeholder="Nº"
+                                        required />
                                 </div>
-                                <div class="error-message" id="numeroError" style="display: block"></div>
+                                <div class="error-message" id="numeroError"
+                                    style="display: block"></div>
                             </div>
                         </div>
                         <div class="col-md-8">
                             <div class="input-group mb-3">
-                                <label for="complementoInput" class="input-label mb-1">Complemento:</label>
-                                <div class="input-wrapper position-relative w-100">
+                                <label for="complementoInput"
+                                    class="input-label mb-1">Complemento:</label>
+                                <div
+                                    class="input-wrapper position-relative w-100">
                                     <i class="input-icon fas fa-building"></i>
-                                    <input type="text" id="complementoInput" class="form-input" placeholder="Apto, Bloco, Casa (Opcional)" />
+                                    <input type="text" id="complementoInput"
+                                        class="form-input"
+                                        placeholder="Apto, Bloco, Casa (Opcional)" />
                                 </div>
                             </div>
                         </div>
@@ -152,72 +208,100 @@
                     <div class="row">
                         <div class="col-md-5">
                             <div class="input-group mb-3">
-                                <label for="bairroInput" class="input-label mb-1">Bairro:</label>
-                                <div class="input-wrapper position-relative w-100">
+                                <label for="bairroInput"
+                                    class="input-label mb-1">Bairro:</label>
+                                <div
+                                    class="input-wrapper position-relative w-100">
                                     <i class="input-icon fas fa-map-signs"></i>
-                                    <input type="text" id="bairroInput" class="form-input" placeholder="Bairro" required />
+                                    <input type="text" id="bairroInput"
+                                        class="form-input" placeholder="Bairro"
+                                        required />
                                 </div>
-                                <div class="error-message" id="bairroError" style="display: block"></div>
+                                <div class="error-message" id="bairroError"
+                                    style="display: block"></div>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="input-group mb-3">
-                                <label for="estadoSelect" class="input-label mb-1">UF:</label>
-                                <div class="input-wrapper position-relative w-100">
+                                <label for="estadoSelect"
+                                    class="input-label mb-1">UF:</label>
+                                <div
+                                    class="input-wrapper position-relative w-100">
                                     <i class="input-icon fas fa-flag"></i>
-                                    <select id="estadoSelect" class="form-select form-input" required>
-                                        <option value="" disabled selected>UF</option>
+                                    <select id="estadoSelect"
+                                        class="form-select form-input" required>
+                                        <option value disabled
+                                            selected>UF</option>
                                     </select>
                                 </div>
-                                <div class="error-message" id="estadoError" style="display: block"></div>
+                                <div class="error-message" id="estadoError"
+                                    style="display: block"></div>
                             </div>
                         </div>
 
                         <div class="col-md-5">
                             <div class="input-group mb-3">
-                                <label for="cidadeSelect" class="input-label mb-1">Cidade:</label>
-                                <div class="input-wrapper position-relative w-100">
+                                <label for="cidadeSelect"
+                                    class="input-label mb-1">Cidade:</label>
+                                <div
+                                    class="input-wrapper position-relative w-100">
                                     <i class="input-icon fas fa-city"></i>
-                                    <select id="cidadeSelect" class="form-select form-input" required disabled>
-                                        <option value="" disabled selected>Selecione o Estado</option>
+                                    <select id="cidadeSelect"
+                                        class="form-select form-input" required
+                                        disabled>
+                                        <option value disabled
+                                            selected>Selecione o Estado</option>
                                     </select>
                                 </div>
-                                <div class="error-message" id="cidadeError" style="display: block"></div>
+                                <div class="error-message" id="cidadeError"
+                                    style="display: block"></div>
                             </div>
                         </div>
                     </div>
 
-                    <input type="hidden" id="enderecoCompleto" th:field="*{endereco}" />
+                    <input type="hidden" id="enderecoCompleto"
+                        th:field="*{endereco}" />
 
                     <!-- Termos -->
                     <div class="input-group mb-3">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="termsComplete" required />
-                            <label class="form-check-label text-muted small" for="termsComplete">
+                            <input class="form-check-input" type="checkbox"
+                                id="termsComplete" required />
+                            <label class="form-check-label text-muted small"
+                                for="termsComplete">
                                 Confirmo que li e concordo com os
-                                <a href="#" class="form-link primary" target="_blank" rel="noopener noreferrer">Termos de Uso</a>
+                                <a href="#" class="form-link primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer">Termos de Uso</a>
                                 e
-                                <a href="#" class="form-link primary" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+                                <a href="#" class="form-link primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer">Política de
+                                    Privacidade</a>
                             </label>
                         </div>
-                        <div class="error-message" id="termsError" style="display: block"></div>
+                        <div class="error-message" id="termsError"
+                            style="display: block"></div>
                     </div>
 
-                    <button type="submit" class="form-button mb-3" id="submitCompleteButton">
+                    <button type="submit" class="form-button mb-3"
+                        id="submitCompleteButton">
                         <i class="fas fa-check-circle me-2"></i>
                         Finalizar Cadastro
                     </button>
 
                     <div class="text-center">
-                        <a th:href="@{/logout}" class="form-link small">Cancelar e Sair</a>
+                        <a th:href="@{/logout}" class="form-link small">Cancelar
+                            e Sair</a>
                     </div>
                 </form>
             </section>
         </main>
 
         <!-- Scripts -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-forms.js}"></script>
         <script th:src="@{/js/form-masks-validations.js}"></script>
@@ -372,25 +456,24 @@
                 });
 
                 // Atualiza endereço completo
-                const atualizarEnderecoCompleto = () => {
-                    const partes = [
-                        ruaInput.value,
-                        numeroInput.value ? `, ${numeroInput.value}` : "",
-                        complementoInput.value ? ` - ${complementoInput.value}` : "",
-                        bairroInput.value ? ` - ${bairroInput.value}` : "",
-                        cidadeSelect.value || "",
-                        estadoSelect.value ? `/${estadoSelect.value}` : "",
-                        cepInput.value ? ` (CEP: ${cepInput.value})` : ""
-                    ];
-                    enderecoCompletoHidden.value = partes.filter((p) => p && p.trim() !== "").join("");
-                };
+const atualizarEnderecoCompleto = () => {
+                    // 1. Cria um objeto com os dados
+                    const enderecoObj = {
+                        rua: ruaInput.value || "",
+                        numero: numeroInput.value || "",
+                        complemento: complementoInput.value || "",
+                        bairro: bairroInput.value || "",
+                        cidade: cidadeSelect.value || "",
+                        uf: estadoSelect.value || "",
+                        cep: cepInput.value || ""
+                    };
 
-                [ruaInput, numeroInput, complementoInput, bairroInput, cidadeSelect, estadoSelect, cepInput].forEach((el) => {
-                    if (el) el.addEventListener("change", atualizarEnderecoCompleto);
-                });
-                [ruaInput, numeroInput, complementoInput, bairroInput, cepInput].forEach((el) => {
-                    if (el) el.addEventListener("input", atualizarEnderecoCompleto);
-                });
+                    // 2. Converte o objeto para uma String JSON
+                    const jsonEndereco = JSON.stringify(enderecoObj);
+
+                    // 3. Salva a String JSON no campo 'hidden' que vai para o back-end
+                    enderecoCompletoHidden.value = jsonEndereco;
+                };
 
                 // Validação checkbox termos
                 const completeForm = document.getElementById("completeRegisterForm");

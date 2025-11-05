@@ -1,17 +1,10 @@
 package com.projeto.karteria.controller;
 
-import com.projeto.karteria.model.Anuncio;
-import com.projeto.karteria.model.Candidatura;
-import com.projeto.karteria.model.StatusAnuncio;
-import com.projeto.karteria.model.Usuario;
-import com.projeto.karteria.repository.AnuncioRepository;
-import com.projeto.karteria.repository.CandidaturaRepository;
-import com.projeto.karteria.repository.UsuarioRepository;
-import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -24,19 +17,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.projeto.karteria.model.Anuncio;
+import com.projeto.karteria.model.Candidatura;
+import com.projeto.karteria.model.StatusAnuncio;
+import com.projeto.karteria.model.Usuario;
+import com.projeto.karteria.repository.AnuncioRepository;
+import com.projeto.karteria.repository.CandidaturaRepository;
+import com.projeto.karteria.repository.UsuarioRepository;
+
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/anuncios")
 public class AnuncioController {
 
-  @Autowired private AnuncioRepository anuncioRepository;
+  @Autowired
+  private AnuncioRepository anuncioRepository;
 
-  @Autowired private UsuarioRepository usuarioRepository;
+  @Autowired
+  private UsuarioRepository usuarioRepository;
 
-  @Autowired private CandidaturaRepository candidaturaRepository;
+  @Autowired
+  private CandidaturaRepository candidaturaRepository;
+
+  @Autowired
+  private ObjectMapper objectMapper;
 
   // Verifica se o usuário autenticado é o anunciante do anúncio
   private boolean isAnunciante(Anuncio anuncio, Authentication auth) {
-    if (auth == null || !auth.isAuthenticated()) return false;
+    if (auth == null || !auth.isAuthenticated())
+      return false;
     String email = auth.getName();
     return anuncio.getAnunciante() != null && email.equals(anuncio.getAnunciante().getEmail());
   }
@@ -48,41 +60,67 @@ public class AnuncioController {
       return "";
     }
 
-    java.util.regex.Pattern pattern1 =
-        java.util.regex.Pattern.compile(".* - ([^-(]+?) - ([^-(]+?/\\w{2})\\s*\\(CEP:.*");
-    java.util.regex.Matcher matcher1 = pattern1.matcher(enderecoCompleto);
+    // 1. Tenta ler como JSON (Novo formato)
+    try {
+      JsonNode rootNode = objectMapper.readTree(enderecoCompleto);
 
-    if (matcher1.find() && matcher1.groupCount() == 2) {
-      String bairro = matcher1.group(1).trim();
-      String cidadeUf = matcher1.group(2).trim();
-      return bairro + ", " + cidadeUf;
+      String bairro = rootNode.has("bairro") ? rootNode.get("bairro").asText("") : "";
+      String cidade = rootNode.has("cidade") ? rootNode.get("cidade").asText("") : "";
+      String uf = rootNode.has("uf") ? rootNode.get("uf").asText("") : "";
+
+      String cidadeUf = cidade;
+      if (!uf.isEmpty() && !cidade.isEmpty()) {
+        cidadeUf = cidade + "/" + uf;
+      } else if (!uf.isEmpty()) {
+        cidadeUf = uf;
+      }
+
+      // Retorna "Bairro, Cidade/UF"
+      if (!bairro.isEmpty() && !cidadeUf.isEmpty()) {
+        return bairro + ", " + cidadeUf;
+      } else {
+        return bairro + cidadeUf; // Fallback caso um deles falte
+      }
+
+    } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+      // 2. Não é JSON. É o formato antigo (String). Tenta o Regex antigo.
+      try {
+        java.util.regex.Pattern pattern1 = java.util.regex.Pattern
+            .compile(".* - ([^-(]+?) - ([^-(]+?/\\w{2})\\s*\\(CEP:.*");
+        java.util.regex.Matcher matcher1 = pattern1.matcher(enderecoCompleto);
+
+        if (matcher1.find() && matcher1.groupCount() == 2) {
+          String bairro = matcher1.group(1).trim();
+          String cidadeUf = matcher1.group(2).trim();
+          return bairro + ", " + cidadeUf;
+        }
+
+        java.util.regex.Pattern pattern2 = java.util.regex.Pattern
+            .compile(".* - (.+?)" + "([A-Z][^/]+/[A-Z]{2})" + "\\s*\\(CEP:.*");
+        java.util.regex.Matcher matcher2 = pattern2.matcher(enderecoCompleto);
+
+        if (matcher2.find() && matcher2.groupCount() >= 2) {
+          String bairro = matcher2.group(1).trim();
+          String cidadeUf = matcher2.group(2).trim();
+          return bairro + ", " + cidadeUf;
+        }
+      } catch (Exception ex) {
+        // Ignora erros de Regex
+      }
+
+      // 3. Fallback final: não é JSON e o Regex falhou. Retorna a string como estava.
+      return enderecoCompleto;
     }
-
-    java.util.regex.Pattern pattern2 =
-        java.util.regex.Pattern.compile(".* - (.+?)" + "([A-Z][^/]+/[A-Z]{2})" + "\\s*\\(CEP:.*");
-    java.util.regex.Matcher matcher2 = pattern2.matcher(enderecoCompleto);
-
-    if (matcher2.find() && matcher2.groupCount() >= 2) {
-      String bairro = matcher2.group(1).trim();
-      String cidadeUf = matcher2.group(2).trim();
-
-      return bairro + ", " + cidadeUf;
-    }
-
-    // Se não conseguir extrair, retorna o endereço completo
-    return enderecoCompleto;
   }
 
   // --- NOVO ANÚNCIO ---
   @GetMapping("/novo")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String showAnuncioForm(Model model, Authentication authentication) {
 
-    Usuario usuarioLogado =
-        usuarioRepository
-            .findByEmail(authentication.getName())
-            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    Usuario usuarioLogado = usuarioRepository
+        .findByEmail(authentication.getName())
+        .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
     Anuncio novoAnuncio = new Anuncio();
 
@@ -97,8 +135,7 @@ public class AnuncioController {
   }
 
   @PostMapping("/salvar")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String salvarAnuncio(
       @ModelAttribute Anuncio anuncioForm,
       Authentication authentication,
@@ -119,13 +156,11 @@ public class AnuncioController {
       redirectAttributes.addFlashAttribute("sucesso", "Vaga publicada com sucesso!");
     } else {
       // --- EDITANDO ANÚNCIO ---
-      Anuncio anuncioExistente =
-          anuncioRepository
-              .findById(anuncioForm.getId())
-              .orElseThrow(
-                  () ->
-                      new IllegalArgumentException(
-                          "Anúncio inválido para edição:" + anuncioForm.getId()));
+      Anuncio anuncioExistente = anuncioRepository
+          .findById(anuncioForm.getId())
+          .orElseThrow(
+              () -> new IllegalArgumentException(
+                  "Anúncio inválido para edição:" + anuncioForm.getId()));
 
       if (!isAnunciante(anuncioExistente, authentication)) {
         redirectAttributes.addFlashAttribute(
@@ -155,8 +190,7 @@ public class AnuncioController {
 
   // --- EDIÇÃO DE ANÚNCIO ---
   @GetMapping("/editar/{id}")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String showEditForm(@PathVariable Long id, Model model, Authentication authentication) {
     Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
     if (!isAnunciante(anuncio, authentication)) {
@@ -168,8 +202,7 @@ public class AnuncioController {
 
   // --- APAGAR ANÚNCIO ---
   @PostMapping("/apagar/{id}")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String apagarAnuncio(
       @PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
     Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -183,8 +216,7 @@ public class AnuncioController {
 
   // --- ALTERAR STATUS ANÚNCIO (ATIVO/PAUSADO) ---
   @PostMapping("/status/{id}")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String alterarStatusAnuncio(
       @PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
     Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -206,8 +238,7 @@ public class AnuncioController {
 
   // --- ARQUIVAR ANÚNCIO ---
   @PostMapping("/arquivar/{id}")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String arquivarAnuncio(
       @PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
     Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -222,8 +253,7 @@ public class AnuncioController {
 
   // --- DESARQUIVAR ANÚNCIO ---
   @PostMapping("/desarquivar/{id}")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String desarquivarAnuncio(
       @PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
     Anuncio anuncio = anuncioRepository.findById(id).orElseThrow();
@@ -239,17 +269,15 @@ public class AnuncioController {
 
   // ================= GERENCIAR VAGA =================
   @GetMapping("/gerenciar/{id}")
-  @PreAuthorize(
-      "hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String showGerenciarVaga(
       @PathVariable Long id,
       Model model,
       Authentication authentication,
       RedirectAttributes redirectAttributes) {
-    Anuncio anuncio =
-        anuncioRepository
-            .findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
+    Anuncio anuncio = anuncioRepository
+        .findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
 
     if (!isAnunciante(anuncio, authentication)) {
       redirectAttributes.addFlashAttribute(
@@ -257,8 +285,7 @@ public class AnuncioController {
       return "redirect:/home";
     }
 
-    List<Candidatura> candidaturas =
-        candidaturaRepository.findByAnuncioOrderByDataCandidaturaDesc(anuncio);
+    List<Candidatura> candidaturas = candidaturaRepository.findByAnuncioOrderByDataCandidaturaDesc(anuncio);
     model.addAttribute("anuncio", anuncio);
     model.addAttribute("candidaturas", candidaturas);
 
@@ -271,10 +298,9 @@ public class AnuncioController {
       @PathVariable Long id, Model model, Authentication authentication, HttpSession session) {
     System.out.println("DEBUG: Entrando em showAnuncioDetalhes para ID: " + id);
 
-    Anuncio anuncio =
-        anuncioRepository
-            .findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido: " + id));
+    Anuncio anuncio = anuncioRepository
+        .findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido: " + id));
 
     boolean isAnunciante = false;
     String nomeUsuarioLogado = null;
@@ -324,8 +350,7 @@ public class AnuncioController {
                   + usuarioLogado.getId()
                   + " e Anuncio ID="
                   + anuncio.getId());
-          jaCandidatado =
-              candidaturaRepository.existsByColaboradorAndAnuncio(usuarioLogado, anuncio);
+          jaCandidatado = candidaturaRepository.existsByColaboradorAndAnuncio(usuarioLogado, anuncio);
           System.out.println("DEBUG: Resultado de existsByColaboradorAndAnuncio: " + jaCandidatado);
         }
       } else {
