@@ -340,14 +340,19 @@
 
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', () => {
+                // 1. Seleciona OS DOIS elementos que precisam ser atualizados
                 const displaySpan = document.getElementById('endereco-display-texto');
-                if (displaySpan) {
+                const modalInput = document.getElementById('editEnderecoDisplay');
+                
+                if (displaySpan && modalInput) {
                     const rawData = displaySpan.textContent;
+                    let formattedAddress = rawData; 
+
                     try {
-                        // 1. Tenta parsear o JSON
+                        // 2. Tenta processar o JSON
                         const data = JSON.parse(rawData);
 
-                        // 2. Formata no padrão ideal que você pediu
+                        // 3. Formata no padrão ideal
                         const partes = [
                             data.rua,
                             data.numero ? `, N°${data.numero}` : "",
@@ -357,14 +362,15 @@
                             data.cep ? ` (CEP: ${data.cep})` : ""
                         ];
                         
-                        // 3. Insere o texto formatado na página
-                        displaySpan.textContent = partes.filter(p => p && p.trim() !== "").join("");
+                        formattedAddress = partes.filter(p => p && p.trim() !== "").join("");
 
                     } catch (e) {
-                        // 4. Se não for JSON, é um endereço antigo.
-                        
-                        displaySpan.textContent = rawData;
+                        // Se não for JSON (dado antigo), apenas deixa o rawData
                     }
+                    
+                    // 4. Atualiza OS DOIS lugares com o endereço formatado
+                    displaySpan.textContent = formattedAddress;
+                    modalInput.value = formattedAddress; 
                 }
             });
         </script>
