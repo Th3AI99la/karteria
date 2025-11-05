@@ -40,9 +40,16 @@
                             <strong>Descrição:</strong>
                             <span th:text="${anuncio.descricao}"></span>
                         </p>
+
                         <p>
                             <strong>Valor:</strong>
-                            <span th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.valor, 1, 'POINT', 2, 'COMMA')}"></span>
+                            <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
+                                R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1, 'POINT', 0, 'COMMA')}]]
+                            </span>
+                            <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]</span>
+                            <span th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</span>
+                            <span th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</span>
+                            <span th:if="${anuncio.tipoPagamento == 'UNICO'}">(Valor Total)</span>
                         </p>
                         <p>
                             <strong>Localização:</strong>
