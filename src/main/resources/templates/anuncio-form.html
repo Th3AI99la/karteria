@@ -100,7 +100,7 @@
                                 </div>
 
                                 <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="permitirContato" th:field="*{permitirContato}" />
+                                    <input class="form-check-input" type="checkbox" role="switch" id="permitirContato" th:field="*{permitirContato}" disabled />
                                     <label class="form-check-label" for="permitirContato">Permitir que usuários entrem em contato comigo</label>
                                     <div class="form-text text-muted small" id="permitirContatoHelp">
                                         Se desmarcado, você (empregador) deverá iniciar o contato com os candidatos.
@@ -132,6 +132,7 @@
             // Executa quando o DOM estiver pronto
             document.addEventListener("DOMContentLoaded", () => {
                 // --- 1. LÓGICA DE CAPITALIZAÇÃO (TÍTULO E DESCRIÇÃO) ---
+                // (Esta parte permanece a mesma)
                 try {
                     if (typeof capitalizeFirstLetter === "function") {
                         capitalizeFirstLetter(document.getElementById("tituloVaga"));
@@ -144,66 +145,68 @@
                 }
 
                 // --- 2. LÓGICA DO TIPO DE PAGAMENTO (VALOR) ---
+                // (Esta parte permanece a mesma)
                 const tipoPagamentoSelect = document.getElementById("tipoPagamentoSelect");
                 const valorIntervaloGroup = document.getElementById("valorIntervaloGroup");
                 const valorUnicoGroup = document.getElementById("valorUnicoGroup");
                 const valorHelpText = document.getElementById("valorHelpText");
 
-                // Inputs
                 const valorMinInput = document.getElementById("valorMin");
                 const valorMaxInput = document.getElementById("valorMax");
                 const valorUnicoInput = document.getElementById("valorUnico");
 
                 function atualizarCamposValor() {
                     const tipo = tipoPagamentoSelect.value;
-
-                    // Oculta todos e limpa os valores
                     valorIntervaloGroup.style.display = "none";
                     valorUnicoGroup.style.display = "none";
                     valorHelpText.style.display = "none";
 
                     if (tipo === "POR_HORA" || tipo === "POR_DIA") {
-                        valorIntervaloGroup.style.display = "flex"; // 'flex' para manter o layout em linha (row)
+                        valorIntervaloGroup.style.display = "flex";
                         valorHelpText.style.display = "block";
-                        // Limpa o campo único
                         valorUnicoInput.value = "";
                     } else if (tipo === "UNICO") {
                         valorUnicoGroup.style.display = "block";
-                        // Limpa os campos de intervalo
                         valorMinInput.value = "";
                         valorMaxInput.value = "";
                     }
                 }
-
-                // Adiciona o "ouvinte"
                 tipoPagamentoSelect.addEventListener("change", atualizarCamposValor);
-                // Executa uma vez no carregamento (caso seja uma edição)
                 atualizarCamposValor();
 
-                // --- 3. LÓGICA DOS TOGGLES (CONTATO) ---
-                const toggleTelefone = document.getElementById("exibirTelefone");
-                const toggleContato = document.getElementById("permitirContato");
-                const helpContato = document.getElementById("permitirContatoHelp");
+                // --- 3. LÓGICA DOS TOGGLES (CONTATO) - REVISADA ---
+                // (Esta é a nova lógica que você pediu)
 
-                function atualizarLogicaToggles() {
-                    // Implementando sua lógica: Se "Exibir Telefone" for NÃO, "Permitir Contato" é bloqueado
+                const toggleTelefone = document.getElementById("exibirTelefone"); // Toggle de Cima
+                const toggleContato = document.getElementById("permitirContato"); // Toggle de Baixo
+
+                // Função 1: O que acontece quando mexe no toggle de CIMA (Telefone)
+                function logicaToggleTelefone() {
                     if (toggleTelefone.checked) {
-                        // Se SIM, Exibir Telefone:
-                        toggleContato.disabled = false; // Ativa o toggle de baixo
-                        toggleContato.checked = true; // Marca "Permitir Contato" automaticamente
-                        helpContato.textContent = "Se desmarcado, você (empregador) deverá iniciar o contato com os candidatos.";
-                    } else {
-                        // Se NÃO, Exibir Telefone:
-                        toggleContato.disabled = true; // Desativa (bloqueia) o toggle de baixo
-                        toggleContato.checked = false; // Desmarca "Permitir Contato"
-                        helpContato.textContent = "Para permitir o contato, você deve exibir seu telefone.";
+                        // Se eu marco "Exibir Telefone" (Cima),
+                        // eu *automaticamente* tenho que permitir contato (Baixo).
+                        toggleContato.checked = true;
                     }
                 }
 
-                // Adiciona o "ouvinte"
-                toggleTelefone.addEventListener("change", atualizarLogicaToggles);
-                // Executa uma vez no carregamento (caso seja uma edição)
-                atualizarLogicaToggles();
+                // Função 2: O que acontece quando mexe no toggle de BAIXO (Contato)
+                function logicaToggleContato() {
+                    if (!toggleContato.checked) {
+                        // Se eu desmarco "Permitir Contato" (Baixo),
+                        // eu *automaticamente* devo parar de exibir meu telefone (Cima).
+                        // (Esta é a lógica que você solicitou)
+                        toggleTelefone.checked = false;
+                    }
+                }
+
+                // Adiciona os "ouvintes"
+                toggleTelefone.addEventListener("change", logicaToggleTelefone);
+                toggleContato.addEventListener("change", logicaToggleContato);
+
+                // Executa a lógica uma vez no carregamento para garantir
+                // que o estado inicial (vindo do banco) seja consistente
+                logicaToggleContato();
+                logicaToggleTelefone();
             });
         </script>
     </body>

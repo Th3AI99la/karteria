@@ -49,24 +49,57 @@ public class AnuncioController {
     }
 
     // Formata a localização para exibição (ex: "Bairro, Cidade/UF")
-    @SuppressWarnings("unused")
+
+    /**
+     * Tenta extrair 'Bairro, Cidade/UF' da string de endereço completa.
+     * Trata tanto o formato "Bairro - Cidade/UF" quanto "BairroCidade/UF".
+     */
     private String formatarLocalizacao(String enderecoCompleto) {
         if (enderecoCompleto == null || enderecoCompleto.isEmpty()) {
             return "";
         }
 
-        // Regex para extrair bairro e cidade/UF
-        java.util.regex.Pattern pattern = java.util.regex.Pattern
+        // Regex 1: Tenta o formato "Correto" (com espaço)
+        // Ex: "... - Bairro - Cidade/UF (CEP:..."
+        java.util.regex.Pattern pattern1 = java.util.regex.Pattern
                 .compile(".* - ([^-(]+?) - ([^-(]+?/\\w{2})\\s\\(CEP:.*");
-        java.util.regex.Matcher matcher = pattern.matcher(enderecoCompleto);
+        java.util.regex.Matcher matcher1 = pattern1.matcher(enderecoCompleto);
 
-        // Se encontrar correspondência, retorna no formato desejado
-        if (matcher.find() && matcher.groupCount() == 2) {
-            String bairro = matcher.group(1).trim();
-            String cidadeUf = matcher.group(2).trim();
-            return bairro + ", " + cidadeUf;
+        if (matcher1.find() && matcher1.groupCount() == 2) {
+            String bairro = matcher1.group(1).trim();
+            String cidadeUf = matcher1.group(2).trim();
+            return bairro + ", " + cidadeUf; // Ex: "Centro, Goiânia/GO"
         }
 
+        // --- CORREÇÃO AQUI ---
+        // Regex 2: Tenta o formato "Agrupado" (gerado pelo seu JS)
+        // Ex: "... - Jardim Novo MundoGoiânia/GO (CEP:..."
+        // Esta Regex foi corrigida para separar (Grupo 1: Bairro) do (Grupo 2:
+        // Cidade/UF)
+        // O (Grupo 1) agora captura tudo que NÃO é uma letra maiúscula no início da
+        // cidade.
+        java.util.regex.Pattern pattern2 = java.util.regex.Pattern.compile(
+                ".* - (.*?)" + // Grupo 1: O Bairro (ex: "Jardim Novo Mundo")
+                        "([A-Z][a-zá-çã-ú]+(?:[ ]?[A-Za-z][a-zá-çã-ú]+)*\\/[A-Z]{2})" + // Grupo 2: A Cidade/UF (ex:
+                                                                                        // "Goiânia/GO")
+                        "\\s\\(CEP:.*" // O restante da string
+        );
+        java.util.regex.Matcher matcher2 = pattern2.matcher(enderecoCompleto);
+
+        if (matcher2.find() && matcher2.groupCount() >= 2) {
+            String bairro = matcher2.group(1).trim();
+            String cidadeUf = matcher2.group(2).trim();
+
+            // Se o bairro estiver vazio, retorna só a cidade
+            if (bairro.isEmpty()) {
+                return cidadeUf;
+            }
+
+            // A MÁGICA ESTÁ AQUI: Adiciona a vírgula e o espaço que não existiam
+            return bairro + ", " + cidadeUf; // Ex: "Jardim Novo Mundo, Goiânia/GO"
+        }
+
+        // Se ambas as Regex falharem, retorna o endereço original para edição manual.
         return enderecoCompleto;
     }
 
