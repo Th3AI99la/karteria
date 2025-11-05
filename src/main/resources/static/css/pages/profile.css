@@ -1,4 +1,8 @@
-/* Conteúdo para css/pages/profile.css */
+/* ========================================
+   CSS Específico para profile.html
+   ======================================== */
+
+/* --- 1. Estilos da Página de Visualização --- */
 .profile-item {
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -17,27 +21,61 @@
 .profile-item span {
     font-size: 1.1rem;
 }
-.cpf-mask {
-    /* Estilo simples para "mascarar" CPF visualmente */
-    font-family: monospace;
-}
 
-/* ========================================
-   ESTILOS PARA MODAL DE EDIÇÃO DE PERFIL
-   ======================================== */
+/* --- 2. Estilos para o Modal 1 (Editar Perfil) --- */
 
-/* Aplica opacidade e cursor 'não permitido' aos inputs desabilitados DENTRO do modal de perfil */
+/* Aplica opacidade e cursor 'não permitido' aos inputs desabilitados (Email, CPF) */
 #modalEditarPerfil .modal-body .form-control:disabled,
 #modalEditarPerfil .modal-body .form-control[readonly] {
-    opacity: 0.65 !important; /* Adiciona transparência */
-    cursor: not-allowed !important; /* Muda o cursor */
-    background-color: var(--bg-tertiary); /* Garante um fundo ligeiramente diferente (opcional) */
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+    background-color: var(--bg-tertiary);
 }
 
 /* Garante o estilo correto no dark mode também */
 [data-theme="dark"] #modalEditarPerfil .modal-body .form-control:disabled,
 [data-theme="dark"] #modalEditarPerfil .modal-body .form-control[readonly] {
-    background-color: var(--karteria-gray-800) !important; /* Fundo mais escuro */
+    background-color: var(--karteria-gray-800) !important;
     border-color: var(--karteria-gray-700);
-    opacity: 0.5 !important; /* Pode ajustar a opacidade para dark mode */
+    opacity: 0.5 !important;
 }
+
+/* --- 3. Estilos para o Modal 2 (Editar Endereço) --- */
+/* (Copiado de completar-cadastro.css para layout de label acima) */
+
+#modalEditarEndereco .input-group .form-row {
+    display: block;
+}
+
+#modalEditarEndereco .input-group .input-label {
+    flex-basis: auto;
+    text-align: left; 
+    margin-bottom: 0.25rem;
+    display: block; 
+    padding-left: 0; 
+}
+
+#modalEditarEndereco .error-message {
+    padding-left: 0 !important;
+    display: block; /* Garante que o espaço do erro seja visível */
+}
+
+/* Garante que o form-select funcione com o ícone */
+#modalEditarEndereco .form-select.form-input {
+    padding-left: 2.8rem;
+}
+
+/* Sobrescreve layout lado-a-lado de karteria-forms.css DENTRO do modal 2 */
+#modalEditarEndereco .row .input-group .form-row {
+    display: block !important;
+}
+#modalEditarEndereco .row .input-group .input-label {
+    flex: none !important;
+    text-align: left !important;
+    margin-bottom: 0.25rem !important;
+    display: block !important;
+}
+#modalEditarEndereco .row .error-message {
+    padding-left: 0 !important;
+}
+

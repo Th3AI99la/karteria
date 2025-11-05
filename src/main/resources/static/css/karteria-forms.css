@@ -106,8 +106,9 @@ html[data-theme="dark"] .text-muted {
 .input-label {
     flex: 0 0 110px;
     font-weight: 600;
-    color: var(--text-secondary); /* ESSE */
+    color: var(--text-secondary);
     text-align: start;
+    padding: 3px;
 }
 
 .input-wrapper {

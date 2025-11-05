@@ -384,3 +384,67 @@
 [data-theme="dark"] .hero-welcome {
     color: var(--text-secondary); /* leve ajuste no modo escuro para contraste */
 }
+
+
+/* ========================================
+   ESTILOS GLOBAIS PARA INPUTS DENTRO DE MODAIS
+   ======================================== */
+
+/* --- TEMA CLARO (Padrão) --- */
+
+.modal-body .form-control,
+.modal-body .form-select {
+    background-color: var(--bg-secondary); /* Fundo branco no modo claro */
+    color: var(--text-primary); /* Texto escuro no modo claro */
+    border-color: var(--border-medium);
+}
+
+.modal-body .form-control::placeholder,
+.modal-body .form-select::placeholder {
+    color: var(--text-muted); /* Cor do placeholder no modo claro */
+    opacity: 0.7;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    background-color: var(--bg-secondary); /* Fundo no foco (claro) */
+    color: var(--text-primary); /* Texto no foco (claro) */
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--karteria-green-500-rgb), 0.15);
+}
+
+.modal-body .form-select {
+    /* Seta para modo claro (cor #343a40) */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    appearance: none;
+}
+
+/* --- TEMA ESCURO (Ajustes) --- */
+/* Adiciona as regras de placeholder que faltavam para o dark mode */
+[data-theme="dark"] .modal-body .form-control::placeholder,
+[data-theme="dark"] .modal-body .form-select::placeholder {
+    color: var(--text-muted); /* Cor do placeholder no modo escuro */
+    opacity: 0.7;
+}
+
+[data-theme="dark"] .modal-body .form-select {
+     /* Seta para dark mode (cor #adb5bd) */
+     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23adb5bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+/* Garante que campos desabilitados no modal fiquem corretos (já estava no profile.css, mas bom ter global) */
+.modal-body .form-control:disabled,
+.modal-body .form-control[readonly] {
+     opacity: 0.65;
+     cursor: not-allowed;
+     background-color: var(--bg-tertiary);
+}
+[data-theme="dark"] .modal-body .form-control:disabled,
+[data-theme="dark"] .modal-body .form-control[readonly] {
+    background-color: var(--karteria-gray-800) !important;
+    border-color: var(--karteria-gray-700);
+    opacity: 0.5 !important;
+}
