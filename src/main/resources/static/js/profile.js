@@ -2,9 +2,7 @@
  * Lógica específica para a página profile.html
  */
 document.addEventListener('DOMContentLoaded', () => {
-
     // === 1. APLICA MÁSCARAS NO MODAL 1 (EDITAR PERFIL) ===
-    // (Chama as funções do form-masks-validations.js)
     try {
         if (typeof applyPhoneMask === 'function') {
             applyPhoneMask(document.getElementById('editTelefone'));
@@ -14,8 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
             allowOnlyLettersAndSpaces(document.getElementById('editNome'));
             allowOnlyLettersAndSpaces(document.getElementById('editSobrenome'));
         }
+        // Aplica "apenas números" no modal de endereço
+        if (typeof allowOnlyNumbers === 'function') {
+            allowOnlyNumbers(document.getElementById('edit-numeroInput'));
+        }
+        // Aplica máscaras no modal de endereço
+        if (typeof applyCpfMask === 'function') {
+        }
     } catch (e) {
-        console.error("Erro ao aplicar máscaras/validações no Modal 1:", e.message);
+        console.error('Erro ao aplicar máscaras/validações:', e.message);
     }
 
     // === 2. LÓGICA DO MODAL 2 (EDITAR ENDEREÇO) ===
@@ -36,25 +41,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const enderecoDisplayInput = document.getElementById('editEnderecoDisplay');
         const enderecoHiddenInput = document.getElementById('editEnderecoHidden');
 
-        // Pega a instância do Modal Bootstrap 2
         const bootstrapModalEndereco = new bootstrap.Modal(modalEndereco);
 
         // --- Populando Estados (Lista Completa) ---
         const estados = [
-            { sigla: 'AC', nome: 'Acre' }, { sigla: 'AL', nome: 'Alagoas' }, { sigla: 'AP', nome: 'Amapá' },
-            { sigla: 'AM', nome: 'Amazonas' }, { sigla: 'BA', nome: 'Bahia' }, { sigla: 'CE', nome: 'Ceará' },
-            { sigla: 'DF', nome: 'Distrito Federal' }, { sigla: 'ES', nome: 'Espírito Santo' }, { sigla: 'GO', nome: 'Goiás' },
-            { sigla: 'MA', nome: 'Maranhão' }, { sigla: 'MT', nome: 'Mato Grosso' }, { sigla: 'MS', nome: 'Mato Grosso do Sul' },
-            { sigla: 'MG', nome: 'Minas Gerais' }, { sigla: 'PA', nome: 'Pará' }, { sigla: 'PB', nome: 'Paraíba' },
-            { sigla: 'PR', nome: 'Paraná' }, { sigla: 'PE', nome: 'Pernambuco' }, { sigla: 'PI', nome: 'Piauí' },
-            { sigla: 'RJ', nome: 'Rio de Janeiro' }, { sigla: 'RN', nome: 'Rio Grande do Norte' }, { sigla: 'RS', nome: 'Rio Grande do Sul' },
-            { sigla: 'RO', nome: 'Rondônia' }, { sigla: 'RR', nome: 'Roraima' }, { sigla: 'SC', nome: 'Santa Catarina' },
-            { sigla: 'SP', nome: 'São Paulo' }, { sigla: 'SE', nome: 'Sergipe' }, { sigla: 'TO', nome: 'Tocantins' }
+            { sigla: 'AC', nome: 'Acre' },
+            { sigla: 'AL', nome: 'Alagoas' },
+            { sigla: 'AP', nome: 'Amapá' },
+            { sigla: 'AM', nome: 'Amazonas' },
+            { sigla: 'BA', nome: 'Bahia' },
+            { sigla: 'CE', nome: 'Ceará' },
+            { sigla: 'DF', nome: 'Distrito Federal' },
+            { sigla: 'ES', nome: 'Espírito Santo' },
+            { sigla: 'GO', nome: 'Goiás' },
+            { sigla: 'MA', nome: 'Maranhão' },
+            { sigla: 'MT', nome: 'Mato Grosso' },
+            { sigla: 'MS', nome: 'Mato Grosso do Sul' },
+            { sigla: 'MG', nome: 'Minas Gerais' },
+            { sigla: 'PA', nome: 'Pará' },
+            { sigla: 'PB', nome: 'Paraíba' },
+            { sigla: 'PR', nome: 'Paraná' },
+            { sigla: 'PE', nome: 'Pernambuco' },
+            { sigla: 'PI', nome: 'Piauí' },
+            { sigla: 'RJ', nome: 'Rio de Janeiro' },
+            { sigla: 'RN', nome: 'Rio Grande do Norte' },
+            { sigla: 'RS', nome: 'Rio Grande do Sul' },
+            { sigla: 'RO', nome: 'Rondônia' },
+            { sigla: 'RR', nome: 'Roraima' },
+            { sigla: 'SC', nome: 'Santa Catarina' },
+            { sigla: 'SP', nome: 'São Paulo' },
+            { sigla: 'SE', nome: 'Sergipe' },
+            { sigla: 'TO', nome: 'Tocantins' }
         ];
-        if(estadoSelect){
+        if (estadoSelect) {
             estadoSelect.innerHTML = '<option value="" disabled selected>UF</option>';
             estados.sort((a, b) => a.sigla.localeCompare(b.sigla));
-            estados.forEach(uf => {
+            estados.forEach((uf) => {
                 const option = document.createElement('option');
                 option.value = uf.sigla;
                 option.textContent = uf.sigla;
@@ -78,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cidades = await response.json();
                 cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione a Cidade</option>';
                 cidades.sort((a, b) => a.nome.localeCompare(b.nome));
-                cidades.forEach(cidade => {
+                cidades.forEach((cidade) => {
                     const option = document.createElement('option');
                     option.value = cidade.nome;
                     option.textContent = cidade.nome;
@@ -86,60 +108,119 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 cidadeSelect.disabled = false;
             } catch (error) {
-                 cidadeSelect.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
+                cidadeSelect.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
             }
         };
         estadoSelect.addEventListener('change', (e) => carregarCidades(e.target.value));
 
         // --- Lógica do CEP (ViaCEP) ---
         const limparCamposEndereco = () => {
-            ruaInput.value = ''; bairroInput.value = ''; cidadeSelect.value = ''; estadoSelect.value = '';
-            cepErrorDiv.textContent = ''; cepInput.closest('.input-group').classList.remove('error');
-            ruaInput.readOnly = false; bairroInput.readOnly = false; estadoSelect.disabled = false;
-            cidadeSelect.disabled = true; cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
+            ruaInput.value = '';
+            bairroInput.value = '';
+            cidadeSelect.value = '';
+            estadoSelect.value = '';
+            cepErrorDiv.textContent = '';
+            cepInput.closest('.input-group').classList.remove('error');
+            ruaInput.readOnly = false;
+            bairroInput.readOnly = false;
+            estadoSelect.disabled = false;
+            cidadeSelect.disabled = true;
+            cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
         };
 
         const preencherCamposViaCep = (dados) => {
             if (dados.erro) {
                 cepErrorDiv.textContent = 'CEP não encontrado. Preencha manualmente.';
                 cepInput.closest('.input-group').classList.add('error');
-                ruaInput.readOnly = false; bairroInput.readOnly = false; estadoSelect.disabled = false;
-                cidadeSelect.disabled = true; estadoSelect.value = '';
+                ruaInput.readOnly = false;
+                bairroInput.readOnly = false;
+                estadoSelect.disabled = false;
+                cidadeSelect.disabled = true;
+                estadoSelect.value = '';
                 cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
-                ruaInput.focus(); return;
+                ruaInput.focus();
+                return;
             }
-            ruaInput.value = dados.logouro || ''; ruaInput.readOnly = !!dados.logouro;
-            bairroInput.value = dados.bairro || ''; bairroInput.readOnly = !!dados.bairro;
-            estadoSelect.value = dados.uf || ''; estadoSelect.disabled = !!dados.uf;
-            cepErrorDiv.textContent = ''; cepInput.closest('.input-group').classList.remove('error');
+
+            // Preenche os campos com os dados retornados
+            ruaInput.value = dados.logradouro || '';
+            ruaInput.readOnly = !!dados.logradouro;
+
+            bairroInput.value = dados.bairro || '';
+            bairroInput.readOnly = !!dados.bairro;
+            estadoSelect.value = dados.uf || '';
+            estadoSelect.disabled = !!dados.uf;
+            cepErrorDiv.textContent = '';
+            cepInput.closest('.input-group').classList.remove('error');
+
             if (dados.uf) {
                 carregarCidades(dados.uf).then(() => {
-                     if(dados.localidade) { cidadeSelect.value = dados.localidade; cidadeSelect.disabled = true; }
-                     else { cidadeSelect.disabled = false; }
-                     numeroInput.focus();
+                    if (dados.localidade) {
+                        cidadeSelect.value = dados.localidade;
+                        cidadeSelect.disabled = true;
+                    } else {
+                        cidadeSelect.disabled = false;
+                    }
+                    numeroInput.focus();
+                    // Chama a atualização do hidden field assim que o CEP preenche
+                    atualizarEnderecoCompleto();
                 });
             } else {
-                estadoSelect.disabled = false; cidadeSelect.disabled = true;
+                estadoSelect.disabled = false;
+                cidadeSelect.disabled = true;
                 cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
                 numeroInput.focus();
+                atualizarEnderecoCompleto(); // Atualiza o hidden field
             }
         };
 
         const buscarCep = async (cep) => {
-            const cepLimpo = cep.replace(/\D/g, ''); if (cepLimpo.length !== 8) { return; }
+            const cepLimpo = cep.replace(/\D/g, '');
+            if (cepLimpo.length !== 8) {
+                return;
+            }
             const url = `https://viacep.com.br/ws/${cepLimpo}/json/`;
             try {
-                const response = await fetch(url); if (!response.ok) { throw new Error('Erro'); }
-                const dados = await response.json(); preencherCamposViaCep(dados);
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Erro');
+                }
+                const dados = await response.json();
+                preencherCamposViaCep(dados);
             } catch (error) {
                 cepErrorDiv.textContent = 'Erro ao buscar CEP. Preencha manualmente.';
                 cepInput.closest('.input-group').classList.add('error');
-                ruaInput.readOnly = false; bairroInput.readOnly = false; estadoSelect.disabled = false;
-                cidadeSelect.disabled = true; cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
+                ruaInput.readOnly = false;
+                bairroInput.readOnly = false;
+                estadoSelect.disabled = false;
+                cidadeSelect.disabled = true;
+                cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
                 ruaInput.focus();
             }
         };
 
+        // Função para montar o endereço completo (sem alterações, mas agora receberá a 'rua' correta)
+        const atualizarEnderecoCompleto = () => {
+            if (!enderecoHiddenInput || !enderecoDisplayInput) return;
+            const partes = [
+                ruaInput.value,
+                numeroInput.value ? `, ${numeroInput.value}` : '',
+                complementoInput.value ? ` - ${complementoInput.value}` : '',
+                bairroInput.value ? ` - ${bairroInput.value}` : '',
+                cidadeSelect.value || '',
+                estadoSelect.value ? `/${estadoSelect.value}` : '',
+                cepInput.value ? ` (CEP: ${cepInput.value})` : ''
+            ];
+            const enderecoCompleto = partes.filter((p) => p && p.trim() !== '').join('');
+
+            // Atualiza os dois campos no Modal 1
+            enderecoDisplayInput.value = enderecoCompleto;
+            enderecoHiddenInput.value = enderecoCompleto;
+
+            console.log('Endereço Completo (hidden) atualizado:', enderecoCompleto);
+        };
+
+        // Listener CEP (com máscara)
         let debounceTimer;
         cepInput.addEventListener('input', (event) => {
             let value = event.target.value.replace(/\D/g, '');
@@ -151,27 +232,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Adiciona listeners para atualizar endereço hidden em TODOS os campos relevantes
+        [ruaInput, numeroInput, complementoInput, bairroInput, cidadeSelect, estadoSelect, cepInput].forEach((el) => {
+            if (el) {
+                el.addEventListener('change', atualizarEnderecoCompleto); // 'change' para selects
+                el.addEventListener('input', atualizarEnderecoCompleto); // 'input' para inputs de texto
+            }
+        });
+
         // --- Confirmação do Modal 2 ---
         btnConfirmar.addEventListener('click', () => {
-            // Monta a string de endereço (lógica copiada)
-            const partes = [
-                ruaInput.value,
-                numeroInput.value ? `, ${numeroInput.value}` : '',
-                complementoInput.value ? ` - ${complementoInput.value}` : '',
-                bairroInput.value ? ` - ${bairroInput.value}` : '',
-                cidadeSelect.value || '',
-                estadoSelect.value ? `/${estadoSelect.value}` : '',
-                cepInput.value ? ` (CEP: ${cepInput.value})` : ''
-            ];
-            const enderecoCompleto = partes.filter(p => p && p.trim() !== '').join('');
+            // 1. Garante que o endereço hidden está 100% atualizado com os últimos dados
+            atualizarEnderecoCompleto();
 
-            // Atualiza os inputs do Modal 1
-            if (enderecoDisplayInput) enderecoDisplayInput.value = enderecoCompleto;
-            if (enderecoHiddenInput) enderecoHiddenInput.value = enderecoCompleto;
-
-            // Fecha o Modal 2
-             bootstrapModalEndereco.hide();
-             // A reabertura do Modal 1 é tratada pelos atributos data-bs-target dos botões "Cancelar" e "X"
+            // 2. Fecha o Modal 2
+            bootstrapModalEndereco.hide();
         });
     }
 });
