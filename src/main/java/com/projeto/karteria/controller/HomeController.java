@@ -1,16 +1,5 @@
 package com.projeto.karteria.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import com.projeto.karteria.model.Anuncio;
 import com.projeto.karteria.model.Notificacao;
 import com.projeto.karteria.model.StatusAnuncio;
@@ -19,91 +8,103 @@ import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
 import com.projeto.karteria.repository.NotificacaoRepository;
 import com.projeto.karteria.repository.UsuarioRepository;
-
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private AnuncioRepository anuncioRepository;
-    @Autowired
-    private NotificacaoRepository notificacaoRepository;
+  @Autowired private UsuarioRepository usuarioRepository;
+  @Autowired private AnuncioRepository anuncioRepository;
+  @Autowired private NotificacaoRepository notificacaoRepository;
 
-    @GetMapping("/")
-    public String showIndexPage() {
-        return "index";
+  @GetMapping("/")
+  public String showIndexPage() {
+    return "index";
+  }
+
+  @GetMapping("/home")
+  public String showHomePage(HttpSession session, Model model, Authentication authentication) {
+    TipoUsuario perfilAtivo = (TipoUsuario) session.getAttribute("perfilAtivo");
+
+    if (perfilAtivo == null) {
+      return "redirect:/escolher-perfil";
     }
 
-    @GetMapping("/home")
-    public String showHomePage(HttpSession session, Model model, Authentication authentication) {
-        TipoUsuario perfilAtivo = (TipoUsuario) session.getAttribute("perfilAtivo");
+    Usuario usuarioLogado = getUsuarioLogado(authentication);
 
-        if (perfilAtivo == null) {
-            return "redirect:/escolher-perfil";
-        }
+    // --- Contagem e lista de notificações não lidas ---
+    long contagemNaoLidas = contarNotificacoesNaoLidas(usuarioLogado);
+    List<Notificacao> notificacoesNaoLidas = buscarNotificacoesNaoLidas(usuarioLogado);
 
-        Usuario usuarioLogado = getUsuarioLogado(authentication);
+    model.addAttribute("contagemNotificacoesNaoLidas", contagemNaoLidas);
+    model.addAttribute("notificacoesNaoLidas", notificacoesNaoLidas);
 
-        // --- Contagem e lista de notificações não lidas ---
-        long contagemNaoLidas = contarNotificacoesNaoLidas(usuarioLogado);
-        List<Notificacao> notificacoesNaoLidas = buscarNotificacoesNaoLidas(usuarioLogado);
-
-        model.addAttribute("contagemNotificacoesNaoLidas", contagemNaoLidas);
-        model.addAttribute("notificacoesNaoLidas", notificacoesNaoLidas);
-
-        if (perfilAtivo == TipoUsuario.EMPREGADOR) {
-            prepararHomeEmpregador(model, usuarioLogado);
-            return "area-empregador";
-        } else {
-            prepararHomeColaborador(model);
-            return "area-colaborador";
-        }
+    if (perfilAtivo == TipoUsuario.EMPREGADOR) {
+      prepararHomeEmpregador(model, usuarioLogado);
+      return "area-empregador";
+    } else {
+      prepararHomeColaborador(model);
+      return "area-colaborador";
     }
+  }
 
-    // ===================== MÉTODOS AUXILIARES =====================
+  // ===================== MÉTODOS AUXILIARES =====================
 
-    private Usuario getUsuarioLogado(Authentication authentication) {
-        String email = authentication.getName();
-        return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + email));
-    }
+  private Usuario getUsuarioLogado(Authentication authentication) {
+    String email = authentication.getName();
+    return usuarioRepository
+        .findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + email));
+  }
 
-    private long contarNotificacoesNaoLidas(Usuario usuario) {
-        return notificacaoRepository.countByUsuarioDestinatarioAndLidaIsFalse(usuario);
-    }
+  private long contarNotificacoesNaoLidas(Usuario usuario) {
+    return notificacaoRepository.countByUsuarioDestinatarioAndLidaIsFalse(usuario);
+  }
 
-    private List<Notificacao> buscarNotificacoesNaoLidas(Usuario usuario) {
-        return notificacaoRepository.findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(usuario);
-    }
+  private List<Notificacao> buscarNotificacoesNaoLidas(Usuario usuario) {
+    return notificacaoRepository.findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(
+        usuario);
+  }
 
-    private void prepararHomeEmpregador(Model model, Usuario usuarioLogado) {
-        List<Anuncio> todosAnuncios = anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado);
+  private void prepararHomeEmpregador(Model model, Usuario usuarioLogado) {
+    List<Anuncio> todosAnuncios =
+        anuncioRepository.findByAnuncianteOrderByDataPostagemDesc(usuarioLogado);
 
-        // Agrupa por status
-        Map<StatusAnuncio, List<Anuncio>> anunciosPorStatus = todosAnuncios.stream()
-                .collect(Collectors.groupingBy(Anuncio::getStatus));
+    // Agrupa por status
+    Map<StatusAnuncio, List<Anuncio>> anunciosPorStatus =
+        todosAnuncios.stream().collect(Collectors.groupingBy(Anuncio::getStatus));
 
-        List<Anuncio> vagasAtivas = anunciosPorStatus.getOrDefault(StatusAnuncio.ATIVO, new ArrayList<>());
-        List<Anuncio> vagasPausadas = anunciosPorStatus.getOrDefault(StatusAnuncio.PAUSADO, new ArrayList<>());
-        List<Anuncio> vagasArquivadas = anunciosPorStatus.getOrDefault(StatusAnuncio.ARQUIVADO, new ArrayList<>());
+    List<Anuncio> vagasAtivas =
+        anunciosPorStatus.getOrDefault(StatusAnuncio.ATIVO, new ArrayList<>());
+    List<Anuncio> vagasPausadas =
+        anunciosPorStatus.getOrDefault(StatusAnuncio.PAUSADO, new ArrayList<>());
+    List<Anuncio> vagasArquivadas =
+        anunciosPorStatus.getOrDefault(StatusAnuncio.ARQUIVADO, new ArrayList<>());
 
-        List<Anuncio> todasAsVagas = new ArrayList<>();
-        todasAsVagas.addAll(vagasAtivas);
-        todasAsVagas.addAll(vagasPausadas);
-        todasAsVagas.addAll(vagasArquivadas);
+    List<Anuncio> todasAsVagas = new ArrayList<>();
+    todasAsVagas.addAll(vagasAtivas);
+    todasAsVagas.addAll(vagasPausadas);
+    todasAsVagas.addAll(vagasArquivadas);
 
-        model.addAttribute("vagasAtivas", vagasAtivas);
-        model.addAttribute("vagasPausadas", vagasPausadas);
-        model.addAttribute("vagasArquivadas", vagasArquivadas);
-        model.addAttribute("todasAsVagas", todasAsVagas);
-    }
+    model.addAttribute("vagasAtivas", vagasAtivas);
+    model.addAttribute("vagasPausadas", vagasPausadas);
+    model.addAttribute("vagasArquivadas", vagasArquivadas);
+    model.addAttribute("todasAsVagas", todasAsVagas);
+  }
 
-    private void prepararHomeColaborador(Model model) {
-        List<Anuncio> anunciosAtivos = anuncioRepository.findByStatusOrderByDataPostagemDesc(StatusAnuncio.ATIVO);
-        model.addAttribute("anuncios", anunciosAtivos);
-        model.addAttribute("totalAnunciosAtivos", anunciosAtivos.size());
-    }
+  private void prepararHomeColaborador(Model model) {
+    List<Anuncio> anunciosAtivos =
+        anuncioRepository.findByStatusOrderByDataPostagemDesc(StatusAnuncio.ATIVO);
+    model.addAttribute("anuncios", anunciosAtivos);
+    model.addAttribute("totalAnunciosAtivos", anunciosAtivos.size());
+  }
 }

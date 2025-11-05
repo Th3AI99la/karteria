@@ -6,7 +6,7 @@ Uma plataforma para conectar prestadores de serviços informais a clientes. O pr
 
 ## 💻 Tecnologias Utilizadas
 
-* **Java 17**
+* **Java 21**
 * **Spring Boot**
 * **Maven**
 * **JPA / Hibernate**
