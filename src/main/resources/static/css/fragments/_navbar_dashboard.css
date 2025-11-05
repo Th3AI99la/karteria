@@ -1,0 +1,119 @@
+/* ========================================
+   CSS ESPECÍFICO PARA _navbar_dashboard.html
+   ======================================== */
+
+/* 2. A Sidenav (o fragmento _navbar_dashboard) */
+.sidenav {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-lg);
+    transition: width var(--transition-normal);
+    z-index: 1010; /* Garante que fique acima do conteúdo */
+}
+
+
+/* --- Itens da Sidenav --- */
+
+.sidenav-header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Logo (Karteria) */
+.sidenav-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text-primary);
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center;
+}
+.sidenav-brand i {
+    margin-right: var(--space-sm); /* Espaço entre ícone e texto */
+}
+
+/* Lista de navegação principal (e rodapé que usa a mesma classe) */
+.sidenav-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    /* flex-grow: 1; Removido anteriormente */
+}
+
+.sidenav-nav-item {
+    margin-bottom: var(--space-sm);
+}
+
+.sidenav-nav-link {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    text-decoration: none;
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.sidenav-nav-link i {
+    width: 30px; /* Alinha os ícones */
+    font-size: 1.1rem;
+    margin-right: var(--space-sm);
+    text-align: center; /* Centraliza o ícone */
+}
+
+.sidenav-nav-link:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--brand-primary);
+}
+
+/* Estilos específicos para botões dentro da nav (Tema, Sair) */
+.sidenav-nav-link[type="button"],
+.sidenav-nav-link[type="submit"] {
+    cursor: pointer;
+    text-align: left; /* Garante alinhamento do texto */
+}
+
+/* Link/Botão Vermelho (Sair) */
+.sidenav-nav-link.text-danger {
+    color: var(--danger) !important;
+}
+.sidenav-nav-link.text-danger:hover {
+    background-color: var(--danger-bg);
+    color: var(--danger) !important;
+}
+
+
+/* Responsividade (encolher a sidenav em telas menores) */
+@media (max-width: 992px) {
+    .sidenav {
+        width: 70px; /* Encolhe o menu */
+    }
+    .sidenav .sidenav-brand span, /* Esconde texto da marca */
+    .sidenav .sidenav-nav-link span { /* Esconde textos dos links */
+        display: none;
+    }
+    .sidenav .sidenav-nav-link i {
+        margin-right: 0; /* Remove margem do ícone */
+    }
+     /* Centraliza o logo encolhido (opcional) */
+    .sidenav-header {
+        padding-bottom: var(--space-md);
+    }
+    .sidenav-brand {
+         justify-content: center;
+    }
+     .sidenav-brand i {
+         margin-right: 0;
+     }
+}
+
+
