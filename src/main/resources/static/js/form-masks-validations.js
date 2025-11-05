@@ -1,8 +1,43 @@
-/**
- * Funções reutilizáveis para máscaras e validações de formulário
- */
 
-// Função para aplicar máscara de CPF (###.###.###-##)
+/**
+ * Função para validar CPF
+ *
+ */
+function validaCPF(cpf) {
+    cpf = String(cpf).replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+
+    if (cpf.length !== 11) return false;
+
+    // Verifica se todos os dígitos são iguais (ex: "111.111.111-11"), o que é inválido
+    if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+    let soma = 0;
+    let resto;
+
+    // Valida o primeiro dígito verificador (DV)
+    for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+
+    soma = 0;
+    // Valida o segundo dígito verificador (DV)
+    for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(10, 11))) return false;
+
+    return true; // CPF é válido
+}
+
+/**
+ * Função para aplicar máscara de CPF (###.###.###-##)
+ *
+ */
 function applyCpfMask(inputElement) {
     if (!inputElement) return;
     inputElement.addEventListener('input', (e) => {
@@ -17,7 +52,10 @@ function applyCpfMask(inputElement) {
     });
 }
 
-// Função para aplicar máscara de Telefone ((XX) XXXXX-XXXX ou (XX) XXXX-XXXX)
+/**
+ * Função para aplicar máscara de Telefone ((XX) XXXXX-XXXX ou (XX) XXXX-XXXX)
+ *
+ */
 function applyPhoneMask(inputElement) {
     if (!inputElement) return;
     inputElement.addEventListener('input', (e) => {
@@ -38,7 +76,10 @@ function applyPhoneMask(inputElement) {
     });
 }
 
-// Função para permitir apenas números em um input
+/**
+ * Função para permitir apenas números em um input
+ *
+ */
 function allowOnlyNumbers(inputElement) {
     if (!inputElement) return;
     inputElement.addEventListener('input', (e) => {
@@ -46,31 +87,10 @@ function allowOnlyNumbers(inputElement) {
     });
 }
 
-// Adiciona um listener global para aplicar as máscaras quando o DOM carregar
-// Para isso funcionar, os inputs precisam ter os IDs corretos
-document.addEventListener('DOMContentLoaded', () => {
-    // Máscaras (existentes)
-    applyCpfMask(document.getElementById('cpf'));
-    applyPhoneMask(document.getElementById('telefone'));
-    applyPhoneMask(document.getElementById('telefone2'));
-
-    // Validações de Tipo (existentes + novas)
-    allowOnlyNumbers(document.getElementById('numeroInput'));
-    allowOnlyLettersAndSpaces(document.getElementById('nome'));
-    allowOnlyLettersAndSpaces(document.getElementById('sobrenome'));
-
-    // Capitalização (novas)
-    capitalizeWords(document.getElementById('nome'));
-    capitalizeWords(document.getElementById('sobrenome'));
-    capitalizeFirstLetter(document.getElementById('ruaInput')); // Capitaliza só a primeira da rua
-    capitalizeFirstLetter(document.getElementById('complementoInput')); // Capitaliza só a primeira do complemento
-    capitalizeFirstLetter(document.getElementById('bairroInput')); // Capitaliza só a primeira do bairro
-    // Cidade e Estado já vêm capitalizados das APIs
-
-    console.log("Máscaras e validações aplicadas."); // Log de confirmação
-});
-
-// Função para permitir apenas letras e espaços (remove números e caracteres especiais)
+/**
+ * Função para permitir apenas letras e espaços (remove números e caracteres especiais)
+ *
+ */
 function allowOnlyLettersAndSpaces(inputElement) {
     if (!inputElement) return;
     inputElement.addEventListener('input', (e) => {
@@ -79,8 +99,10 @@ function allowOnlyLettersAndSpaces(inputElement) {
     });
 }
 
-// Função para capitalizar a primeira letra de cada palavra (Title Case)
-// Usaremos no 'change' para não atrapalhar a digitação
+/**
+ * Função para capitalizar a primeira letra de cada palavra (Title Case)
+ *
+ */
 function capitalizeWords(inputElement) {
     if (!inputElement) return;
     inputElement.addEventListener('change', (e) => {
@@ -96,8 +118,10 @@ function capitalizeWords(inputElement) {
     });
 }
 
-// Função para capitalizar apenas a primeira letra da string inteira
-// Usaremos no 'change'
+/**
+ * Função para capitalizar apenas a primeira letra da string inteira
+ *
+ */
 function capitalizeFirstLetter(inputElement) {
     if (!inputElement) return;
     inputElement.addEventListener('change', (e) => {
@@ -107,3 +131,74 @@ function capitalizeFirstLetter(inputElement) {
         }
     });
 }
+
+// =================================================================
+// === 2. EXECUÇÃO (QUANDO O DOM ESTIVER PRONTO)
+// =================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // === ANEXA MÁSCARAS ===
+    applyCpfMask(document.getElementById('cpf'));
+    applyPhoneMask(document.getElementById('telefone'));
+    applyPhoneMask(document.getElementById('telefone2'));
+
+    // === ANEXA VALIDAÇÕES DE TIPO ===
+    allowOnlyNumbers(document.getElementById('numeroInput'));
+    allowOnlyLettersAndSpaces(document.getElementById('nome'));
+    allowOnlyLettersAndSpaces(document.getElementById('sobrenome'));
+
+    // === ANEXA CAPITALIZAÇÃO ===
+    capitalizeWords(document.getElementById('nome'));
+    capitalizeWords(document.getElementById('sobrenome'));
+    capitalizeFirstLetter(document.getElementById('ruaInput'));
+    capitalizeFirstLetter(document.getElementById('complementoInput'));
+    capitalizeFirstLetter(document.getElementById('bairroInput'));
+
+    console.log('Máscaras e validações de tipo aplicadas.');
+
+    // === ANEXA VALIDAÇÃO DE CPF EM TEMPO REAL ===
+    // (Este bloco estava fora do DOMContentLoaded no arquivo original)
+    
+    const cpfInput = document.getElementById('cpf');
+    const cpfErrorDiv = document.getElementById('cpfError'); // Div de erro do CPF
+
+    if (cpfInput && cpfErrorDiv) {
+        // Gatilho: quando o usuário sai do campo
+        cpfInput.addEventListener('blur', () => {
+            const cpf = cpfInput.value;
+
+            // Não valida se estiver vazio (o 'required' cuidará disso no submit)
+            if (cpf.trim() === '') {
+                cpfErrorDiv.textContent = ''; // Limpa erro JS
+                cpfInput.closest('.input-group').classList.remove('error', 'success');
+                return;
+            }
+
+            // Se não estiver vazio, valida o formato
+            if (validaCPF(cpf)) {
+                // Válido
+                cpfErrorDiv.textContent = ''; // Limpa qualquer mensagem de erro
+                cpfInput.closest('.input-group').classList.remove('error');
+                // (Opcional) Adiciona classe de sucesso
+                // cpfInput.closest('.input-group').classList.add('success');
+            } else {
+                // Inválido
+                cpfErrorDiv.textContent = 'CPF inválido.';
+                cpfInput.closest('.input-group').classList.add('error');
+                cpfInput.closest('.input-group').classList.remove('success');
+            }
+        });
+
+        // Limpa o erro de JS assim que o usuário começar a corrigir
+        cpfInput.addEventListener('input', () => {
+            if (cpfErrorDiv.textContent === 'CPF inválido.') {
+                cpfErrorDiv.textContent = '';
+                cpfInput.closest('.input-group').classList.remove('error', 'success');
+            }
+        });
+
+        console.log('Validação de CPF em tempo real anexada com sucesso.');
+    } else {
+        console.warn('Campos de CPF (cpf ou cpfError) não encontrados para anexar validação.');
+    }
+});

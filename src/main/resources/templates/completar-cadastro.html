@@ -89,9 +89,20 @@
                         <label for="cpf" class="input-label mb-1">CPF (Obrigatório):</label>
                         <div class="input-wrapper position-relative w-100">
                             <i class="input-icon fas fa-id-card"></i>
-                            <input type="text" id="cpf" th:field="*{cpf}" class="form-input" placeholder="000.000.000-00" required maxlength="14" />
+                            <input
+                                type="text"
+                                id="cpf"
+                                th:field="*{cpf}"
+                                class="form-input"
+                                placeholder="000.000.000-00"
+                                required
+                                maxlength="14"
+                                aria-describedby="cpfJsError cpfSpringError" />
                         </div>
-                        <div th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="error-message" style="display: block"></div>
+
+                        <div id="cpfSpringError" class="error-message" style="display: block; padding-left: 0" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
+
+                        <div id="cpfError" class="error-message" style="display: block; padding-left: 0"></div>
                     </div>
 
                     <!-- CEP -->
