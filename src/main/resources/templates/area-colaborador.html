@@ -95,7 +95,7 @@
                                     <div class="mt-auto">
                                         <p class="card-text text-muted small mb-3 card-localizacao">
                                             <i class="fas fa-map-marker-alt me-2"></i>
-                                            <span th:text="${anuncio.localizacao != null ? #strings.arraySplit(anuncio.localizacao, ' (CEP:')[0] : ''}"></span>
+                                            <span th:text="${anuncio.localizacao}"></span>
                                         </p>
                                         <a th:href="@{/anuncios/detalhes/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria w-100">
                                             <i class="fas fa-arrow-right me-2"></i>
