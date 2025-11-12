@@ -13,7 +13,7 @@
             initThemeToggle();
             initPasswordToggle(form);
             initFormValidation(form);
-            initSubmissionHandler(form);
+            initSubmissionHandler(form); // Loader de Botão
             if (form.id === 'registerForm') {
                 initPasswordStrength(form);
             }
@@ -144,6 +144,8 @@
      */
     function validateInput(input) {
         const group = input.closest('.input-group');
+        if (!group) return true; // Se não estiver em um 'input-group', ignora
+
         const errorElement = group.querySelector('.error-message');
         let isValid = true;
         let errorMessage = '';
@@ -175,27 +177,34 @@
     }
 
     /**
-     * Controla o estado de "loading" do botão de envio
+     * Controla o estado de "loading" do botão de envio (COM DEBUG)
      */
     function initSubmissionHandler(form) {
-        form.addEventListener('submit', function () {
+        form.addEventListener('submit', function (event) {
             const submitButton = form.querySelector('button[type="submit"]');
-            if (!submitButton) return;
+            if (!submitButton) {
+                console.log('DEBUG (Botão): Formulário enviado, mas NENHUM botão [type="submit"] foi encontrado.');
+                return;
+            }
+            console.log('DEBUG (Botão): Evento "submit" capturado no formulário:', form.id);
 
-            // A validação já terá prevenido o envio se o form for inválido.
+            // Usamos setTimeout(..., 0) para garantir que a validação do navegador
+            // rode ANTES de desabilitarmos o botão.
             setTimeout(() => {
-                // Dupla verificação de validade
-                if (!form.checkValidity()) return;
+                // Dupla verificação de validade (HTML5)
+                if (!form.checkValidity()) {
+                    console.log('DEBUG (Botão): Envio bloqueado. Formulário inválido.');
+                    return;
+                }
 
+                console.log('DEBUG (Botão): Formulário VÁLIDO. Desabilitando botão e mostrando loader.');
                 submitButton.disabled = true;
 
-                // Salva o conteúdo original para restaurar se o usuário voltar
                 const originalContent = submitButton.innerHTML;
                 submitButton.setAttribute('data-original-content', originalContent);
 
-                // Adiciona um listener para o caso de o usuário navegar "Voltar"
-                // e encontrar o botão travado
                 window.addEventListener('pageshow', () => {
+                    console.log('DEBUG (Botão): Evento "pageshow" (clique em Voltar). Restaurando botão.');
                     submitButton.disabled = false;
                     if (submitButton.getAttribute('data-original-content')) {
                         submitButton.innerHTML = originalContent;

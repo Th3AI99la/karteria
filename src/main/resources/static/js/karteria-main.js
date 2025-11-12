@@ -9,29 +9,50 @@
         initAnimations();
         initInteractions();
         initAccessibility();
-        initGlobalLoader();
+        initGlobalLoader(); // Loader de Página (Tela Cheia)
     });
 
+    // Função do Loader de Página (Tela Cheia) com Debugs
     function initGlobalLoader() {
         const globalLoader = document.getElementById('global-loader');
-        if (!globalLoader) return;
+        if (!globalLoader) {
+            console.log('DEBUG (Loader): #global-loader NÃO encontrado no HTML desta página.');
+            return;
+        }
+        console.log('DEBUG (Loader): initGlobalLoader() executado com sucesso.');
 
         document.querySelectorAll('a').forEach((link) => {
             link.addEventListener('click', (e) => {
                 const href = link.getAttribute('href');
-                if (!href || href.startsWith('#') || link.getAttribute('data-bs-toggle')) return;
-                if (link.getAttribute('target') === '_blank') return;
-                if (href.startsWith('javascript:')) return;
+
+                // Filtros para NÃO mostrar o loader
+                if (!href || href.startsWith('#') || link.getAttribute('data-bs-toggle')) {
+                    console.log('DEBUG (Loader): Link ignorado (âncora, modal ou dropdown).');
+                    return;
+                }
+                if (link.getAttribute('target') === '_blank') {
+                    console.log('DEBUG (Loader): Link ignorado (nova aba).');
+                    return;
+                }
+                if (href.startsWith('javascript:')) {
+                    console.log('DEBUG (Loader): Link ignorado (javascript).');
+                    return;
+                }
+
+                // Se passou, MOSTRA o loader
+                console.log('DEBUG (Loader): NAVEGAÇÃO DETECTADA! Mostrando loader...');
                 document.body.classList.add('is-loading');
             });
         });
 
         window.addEventListener('load', () => {
+            console.log('DEBUG (Loader): Página carregada (load). Escondendo loader.');
             document.body.classList.remove('is-loading');
         });
 
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) {
+                console.log('DEBUG (Loader): Página restaurada do cache (pageshow). Escondendo loader.');
                 document.body.classList.remove('is-loading');
             }
         });
@@ -166,6 +187,8 @@
         });
     }
 
+    // === FUNÇÃO CORRIGIDA ===
+    // O bloco 'form.addEventListener' foi REMOVIDO daqui
     function initAnimations() {
         document.querySelectorAll('.card-modern').forEach((card) => {
             card.addEventListener('mouseenter', function () {
@@ -180,16 +203,8 @@
         document.querySelectorAll('.btn-primary-karteria, .form-button').forEach((button) => {
             button.addEventListener('click', createRipple);
         });
-
-        document.querySelectorAll('form').forEach((form) => {
-            form.addEventListener('submit', function () {
-                const submitButton = this.querySelector('button[type="submit"]');
-                if (submitButton && !submitButton.classList.contains('loading')) {
-                    addLoadingState(submitButton);
-                }
-            });
-        });
     }
+    // === FIM DA FUNÇÃO CORRIGIDA ===
 
     function createRipple(event) {
         const button = event.currentTarget;
@@ -214,17 +229,8 @@
         }, 600);
     }
 
-    function addLoadingState(button) {
-        const originalText = button.innerHTML;
-        button.classList.add('loading');
-        button.disabled = true;
-
-        setTimeout(() => {
-            button.classList.remove('loading');
-            button.disabled = false;
-            button.innerHTML = originalText;
-        }, 2000);
-    }
+    // === FUNÇÃO 'addLoadingState' DELETADA ===
+    // (O código conflitante estava aqui)
 
     function initInteractions() {
         initTooltips();
@@ -438,6 +444,7 @@
     };
 })();
 
+// O restante do seu arquivo (dynamicStyles) permanece o mesmo
 const dynamicStyles = `
     .ripple {
         position: absolute;
