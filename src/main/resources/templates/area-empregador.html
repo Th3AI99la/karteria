@@ -5,21 +5,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Painel Empregador - Karteria</title>
 
+        <!-- CSS Externo -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+        <!-- CSS Interno -->
         <link rel="stylesheet" th:href="@{/css/karteria-colors.css}" />
         <link rel="stylesheet" th:href="@{/css/karteria-main.css}" />
         <link rel="stylesheet" th:href="@{/css/fragments/_navbar_dashboard.css}" />
         <link rel="stylesheet" th:href="@{/css/fragments/_notification_dropdown.css}" />
         <link rel="stylesheet" th:href="@{/css/pages/empregador.css}" />
-        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     </head>
 
     <body class="dashboard-layout">
+        <!-- Navbar -->
         <div th:replace="~{_navbar_dashboard :: dashboard_nav}"></div>
 
         <main class="dashboard-content">
             <div class="container">
+                <!-- Cabeçalho do Dashboard -->
                 <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h1>
@@ -29,20 +34,20 @@
                         <p class="lead text-secondary mb-0">Gerencie seus anúncios e encontre talentos.</p>
                     </div>
 
+                    <!-- Dropdown de Notificações -->
                     <div class="dropdown">
                         <a
                             href="#"
-                            class="btn btn-outline-secondary position-relative"
-                            style="border-radius: var(--radius-xl); padding: var(--space-sm); width: 50px; height: 50px; border-color: var(--border-medium)"
+                            class="btn btn-outline-secondary position-relative notification-btn"
                             title="Notificações"
                             id="notificationDropdown"
                             data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            <i class="fas fa-bell" style="font-size: 1.2rem"></i>
+                            <i class="fas fa-bell"></i>
+                            <!-- Badge de notificações não lidas -->
                             <span
                                 th:if="${contagemNotificacoesNaoLidas > 0}"
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                style="font-size: 0.6em">
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
                                 [[${contagemNotificacoesNaoLidas}]]
                                 <span class="visually-hidden">notificações não lidas</span>
                             </span>
@@ -51,8 +56,10 @@
                     </div>
                 </div>
 
+                <!-- Mensagem de Sucesso -->
                 <div th:if="${sucesso}" class="alert alert-success mt-4" th:text="${sucesso}"></div>
 
+                <!-- Barra de Ferramentas -->
                 <div class="dashboard-toolbar mt-4">
                     <div class="search-bar">
                         <input type="search" id="searchInput" class="form-control" placeholder="Buscar por Título, Valor ou Localização..." />
@@ -63,6 +70,7 @@
                     </a>
                 </div>
 
+                <!-- Abas de Navegação -->
                 <ul class="nav nav-tabs nav-tabs-karteria mt-4" id="vagasTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="ativas-tab" data-bs-toggle="tab" data-bs-target="#ativas-content" type="button" role="tab">
@@ -84,6 +92,7 @@
                     </li>
                 </ul>
 
+                <!-- Informações de Contagem -->
                 <div class="text-muted small mt-3 mb-3" id="vagasCountInfo">
                     Exibindo
                     <span th:text="${#lists.size(vagasAtivas)}">0</span>
@@ -92,17 +101,136 @@
                     no total.
                 </div>
 
+                <!-- Conteúdo das Abas -->
                 <div class="tab-content" id="vagasTabContent">
+                    <!-- ABA ATIVAS -->
                     <div class="tab-pane fade show active" id="ativas-content" role="tabpanel">
-                        <div th:if="${#lists.isEmpty(vagasAtivas)}" class="empty-state" data-aos="zoom-in"></div>
+                        <!-- Estado vazio -->
+                        <div th:if="${#lists.isEmpty(vagasAtivas)}" class="empty-state" data-aos="zoom-in">
+                            <div class="empty-state-icon mb-3"><i class="fas fa-briefcase"></i></div>
+                            <h3 class="fw-bold">Nenhuma vaga ativa</h3>
+                            <p class="text-muted">Publique sua primeira vaga para começar a receber candidaturas.</p>
+                            <a th:href="@{/anuncios/novo}" class="btn btn-primary-karteria mt-3">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                Publicar Primeira Vaga
+                            </a>
+                        </div>
 
+                        <!-- Cards de Vagas Ativas -->
                         <div class="row g-4" id="ativasCardContainer">
                             <div th:each="anuncio : ${vagasAtivas}" class="col-lg-4 col-md-6 vaga-card-column">
                                 <div class="anuncio-card h-100" data-aos="fade-up">
                                     <div class="card-body d-flex flex-column">
+                                        <!-- Cabeçalho do Card -->
                                         <div class="anuncio-card-header">
                                             <h5 class="anuncio-card-title card-titulo" th:text="${anuncio.titulo}"></h5>
                                             <span class="badge text-bg-success" th:text="${anuncio.status}"></span>
+                                        </div>
+
+                                        <!-- Valor da Vaga -->
+                                        <h6 class="card-subtitle mb-2 text-muted card-valor">
+                                            <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
+                                                R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1,
+                                                'POINT', 0, 'COMMA')}]]
+                                            </span>
+                                            <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">
+                                                R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]
+                                            </span>
+                                            <span th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</span>
+                                            <span th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</span>
+                                            <span th:if="${anuncio.tipoPagamento == 'UNICO'}">(Valor Total)</span>
+                                        </h6>
+
+                                        <!-- Localização -->
+                                        <p class="card-text text-secondary small card-localizacao">
+                                            <i class="fas fa-map-marker-alt me-2"></i>
+                                            <span th:text="${anuncio.localizacao}"></span>
+                                        </p>
+
+                                        <!-- Estatísticas -->
+                                        <div class="anuncio-card-stats mt-auto">
+                                            <div class="stat-item">
+                                                <i class="fas fa-eye"></i>
+                                                <span th:text="${anuncio.visualizacoes}">0</span>
+                                                Visualizações
+                                            </div>
+                                            <div class="stat-item">
+                                                <i class="fas fa-users"></i>
+                                                <span th:text="${#lists.size(anuncio.candidaturas)}">0</span>
+                                                Candidaturas
+                                            </div>
+                                        </div>
+
+                                        <!-- Data de Publicação -->
+                                        <small class="anuncio-card-data mt-2">
+                                            <i class="fas fa-calendar-alt me-1"></i>
+                                            Publicada em:
+                                            <span th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy HH:mm')}"></span>
+                                        </small>
+                                    </div>
+
+                                    <!-- Rodapé do Card -->
+                                    <div class="anuncio-card-footer">
+                                        <a th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria btn-sm">
+                                            <i class="fas fa-tasks me-1"></i>
+                                            Gerenciar
+                                        </a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-actions dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" th:href="@{/anuncios/editar/{id}(id=${anuncio.id})}">
+                                                        <i class="fas fa-pencil-alt me-2"></i>
+                                                        Editar
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#modalPausar-' + ${anuncio.id}">
+                                                        <i class="fas fa-pause me-2"></i>
+                                                        Pausar
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#modalArquivar-' + ${anuncio.id}">
+                                                        <i class="fas fa-archive me-2"></i>
+                                                        Arquivar
+                                                    </button>
+                                                </li>
+                                                <li><hr class="dropdown-divider" /></li>
+                                                <li>
+                                                    <button class="dropdown-item text-danger" data-bs-toggle="modal" th:data-bs-target="'#modalApagar-' + ${anuncio.id}">
+                                                        <i class="fas fa-trash me-2"></i>
+                                                        Apagar
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ABA PAUSADAS -->
+                    <div class="tab-pane fade" id="pausadas-content" role="tabpanel">
+                        <!-- Estado vazio -->
+                        <div th:if="${#lists.isEmpty(vagasPausadas)}" class="empty-state" data-aos="zoom-in">
+                            <div class="empty-state-icon mb-3"><i class="fas fa-pause-circle"></i></div>
+                            <h3 class="fw-bold">Nenhuma vaga pausada</h3>
+                            <p class="text-muted">Você pode pausar vagas ativas a qualquer momento.</p>
+                        </div>
+
+                        <!-- Cards de Vagas Pausadas -->
+                        <div class="row g-4" id="pausadasCardContainer">
+                            <div th:each="anuncio : ${vagasPausadas}" class="col-lg-4 col-md-6 vaga-card-column">
+                                <!-- Card de Vaga (estrutura similar à aba Ativas) -->
+                                <div class="anuncio-card h-100" data-aos="fade-up">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="anuncio-card-header">
+                                            <h5 class="anuncio-card-title card-titulo" th:text="${anuncio.titulo}"></h5>
+                                            <span class="badge text-bg-warning" th:text="${anuncio.status}"></span>
                                         </div>
                                         <h6 class="card-subtitle mb-2 text-muted card-valor">
                                             <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
@@ -144,69 +272,9 @@
                                             Gerenciar
                                         </a>
                                         <div class="dropdown">
-                                            <button class="btn btn-actions dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li>
-                                                    <a class="dropdown-item" th:href="@{/anuncios/editar/{id}(id=${anuncio.id})}">
-                                                        <i class="fas fa-pencil-alt me-2"></i>
-                                                        Editar
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#modalPausar-' + ${anuncio.id}">
-                                                        <i class="fas fa-pause me-2"></i>
-                                                        Pausar
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#modalArquivar-' + ${anuncio.id}">
-                                                        <i class="fas fa-archive me-2"></i>
-                                                        Arquivar
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider" />
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item text-danger" data-bs-toggle="modal" th:data-bs-target="'#modalApagar-' + ${anuncio.id}">
-                                                        <i class="fas fa-trash me-2"></i>
-                                                        Apagar
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane fade" id="pausadas-content" role="tabpanel">
-                        <div th:if="${#lists.isEmpty(vagasPausadas)}" class="empty-state" data-aos="zoom-in"></div>
-
-                        <div class="row g-4" id="pausadasCardContainer">
-                            <div th:each="anuncio : ${vagasPausadas}" class="col-lg-4 col-md-6 vaga-card-column">
-                                <div class="anuncio-card h-100" data-aos="fade-up">
-                                    <div class="card-body d-flex flex-column">
-                                        <div class="anuncio-card-header">
-                                            <h5 class="anuncio-card-title card-titulo" th:text="${anuncio.titulo}"></h5>
-                                            <span class="badge text-bg-warning" th:text="${anuncio.status}"></span>
-                                        </div>
-                                        <h6 class="card-subtitle mb-2 text-muted card-valor"></h6>
-                                        <p class="card-text text-secondary small card-localizacao">
-                                            <i class="fas fa-map-marker-alt me-2"></i>
-                                            <span th:text="${anuncio.localizacao}"></span>
-                                        </p>
-                                        <div class="anuncio-card-stats mt-auto"></div>
-                                        <small class="anuncio-card-data mt-2"></small>
-                                    </div>
-                                    <div class="anuncio-card-footer">
-                                        <a th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria btn-sm">
-                                            <i class="fas fa-tasks me-1"></i>
-                                            Gerenciar
-                                        </a>
-                                        <div class="dropdown">
-                                            <button class="btn btn-actions dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                            <button class="btn btn-actions dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
                                                     <button class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#modalReativar-' + ${anuncio.id}">
@@ -214,27 +282,6 @@
                                                         Reativar
                                                     </button>
                                                 </li>
-                                                <li>
-                                                    <a class="dropdown-item" th:href="@{/anuncios/editar/{id}(id=${anuncio.id})}">
-                                                        <i class="fas fa-pencil-alt me-2"></i>
-                                                        Editar
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#modalArquivar-' + ${anuncio.id}">
-                                                        <i class="fas fa-archive me-2"></i>
-                                                        Arquivar
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider" />
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item text-danger" data-bs-toggle="modal" th:data-bs-target="'#modalApagar-' + ${anuncio.id}">
-                                                        <i class="fas fa-trash me-2"></i>
-                                                        Apagar
-                                                    </button>
-                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -243,24 +290,58 @@
                         </div>
                     </div>
 
+                    <!-- ABA ARQUIVADAS -->
                     <div class="tab-pane fade" id="arquivadas-content" role="tabpanel">
-                        <div th:if="${#lists.isEmpty(vagasArquivadas)}" class="empty-state" data-aos="zoom-in"></div>
+                        <!-- Estado vazio -->
+                        <div th:if="${#lists.isEmpty(vagasArquivadas)}" class="empty-state" data-aos="zoom-in">
+                            <div class="empty-state-icon mb-3"><i class="fas fa-archive"></i></div>
+                            <h3 class="fw-bold">Nenhuma vaga arquivada</h3>
+                            <p class="text-muted">Vagas concluídas ou antigas podem ser arquivadas.</p>
+                        </div>
 
+                        <!-- Cards de Vagas Arquivadas -->
                         <div class="row g-4" id="arquivadasCardContainer">
                             <div th:each="anuncio : ${vagasArquivadas}" class="col-lg-4 col-md-6 vaga-card-column">
+                                <!-- Card de Vaga (estrutura similar às outras abas) -->
                                 <div class="anuncio-card h-100" data-aos="fade-up">
                                     <div class="card-body d-flex flex-column">
                                         <div class="anuncio-card-header">
                                             <h5 class="anuncio-card-title card-titulo" th:text="${anuncio.titulo}"></h5>
                                             <span class="badge text-bg-secondary" th:text="${anuncio.status}"></span>
                                         </div>
-                                        <h6 class="card-subtitle mb-2 text-muted card-valor"></h6>
+                                        <h6 class="card-subtitle mb-2 text-muted card-valor">
+                                            <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
+                                                R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1,
+                                                'POINT', 0, 'COMMA')}]]
+                                            </span>
+                                            <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">
+                                                R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]
+                                            </span>
+                                            <span th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</span>
+                                            <span th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</span>
+                                            <span th:if="${anuncio.tipoPagamento == 'UNICO'}">(Valor Total)</span>
+                                        </h6>
                                         <p class="card-text text-secondary small card-localizacao">
                                             <i class="fas fa-map-marker-alt me-2"></i>
                                             <span th:text="${anuncio.localizacao}"></span>
                                         </p>
-                                        <div class="anuncio-card-stats mt-auto"></div>
-                                        <small class="anuncio-card-data mt-2"></small>
+                                        <div class="anuncio-card-stats mt-auto">
+                                            <div class="stat-item">
+                                                <i class="fas fa-eye"></i>
+                                                <span th:text="${anuncio.visualizacoes}">0</span>
+                                                Visualizações
+                                            </div>
+                                            <div class="stat-item">
+                                                <i class="fas fa-users"></i>
+                                                <span th:text="${#lists.size(anuncio.candidaturas)}">0</span>
+                                                Candidaturas
+                                            </div>
+                                        </div>
+                                        <small class="anuncio-card-data mt-2">
+                                            <i class="fas fa-calendar-alt me-1"></i>
+                                            Publicada em:
+                                            <span th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy HH:mm')}"></span>
+                                        </small>
                                     </div>
                                     <div class="anuncio-card-footer">
                                         <a th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria btn-sm">
@@ -268,21 +349,14 @@
                                             Gerenciar
                                         </a>
                                         <div class="dropdown">
-                                            <button class="btn btn-actions dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                            <button class="btn btn-actions dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
                                                     <button class="dropdown-item" data-bs-toggle="modal" th:data-bs-target="'#modalDesarquivar-' + ${anuncio.id}">
                                                         <i class="fas fa-box-open me-2"></i>
                                                         Desarquivar
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider" />
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item text-danger" data-bs-toggle="modal" th:data-bs-target="'#modalApagar-' + ${anuncio.id}">
-                                                        <i class="fas fa-trash me-2"></i>
-                                                        Apagar
                                                     </button>
                                                 </li>
                                             </ul>
@@ -293,52 +367,173 @@
                         </div>
                     </div>
                 </div>
-
-                <div th:each="anuncio : ${todasAsVagas}">
-                    <div class="modal fade" th:id="'modalApagar-' + ${anuncio.id}" tabindex="-1"></div>
-
-                    <div th:if="${anuncio.status != null and anuncio.status.name() == 'ATIVO'}">
-                        <div class="modal fade" th:id="'modalPausar-' + ${anuncio.id}" tabindex="-1"></div>
-                    </div>
-
-                    <div th:if="${anuncio.status != null and anuncio.status.name() == 'PAUSADO'}">
-                        <div class="modal fade" th:id="'modalReativar-' + ${anuncio.id}" tabindex="-1"></div>
-                    </div>
-
-                    <div th:if="${anuncio.status != null and (anuncio.status.name() == 'ATIVO' or anuncio.status.name() == 'PAUSADO')}">
-                        <div class="modal fade" th:id="'modalArquivar-' + ${anuncio.id}" tabindex="-1"></div>
-                    </div>
-
-                    <div th:if="${anuncio.status != null and anuncio.status.name() == 'ARQUIVADO'}">
-                        <div class="modal fade" th:id="'modalDesarquivar-' + ${anuncio.id}" tabindex="-1"></div>
-                    </div>
-                </div>
             </div>
         </main>
 
+        <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-main.js}"></script>
         <script th:src="@{/js/empregador-dashboard.js}"></script>
+
+        <!-- Inicialização AOS -->
         <script>
-            AOS.init({ once: true, duration: 600 });
-        </script>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                // Seleciona todos os 'div.dropdown' dentro dos cards de anúncio
-                const dropdowns = document.querySelectorAll(".anuncio-card .dropdown");
-
-                dropdowns.forEach((dropdownEl) => {
-                    const dropdownMenu = dropdownEl.querySelector(".dropdown-menu");
-
-                    if (dropdownMenu) {
-                        dropdownEl.addEventListener("show.bs.dropdown", () => {
-                            document.body.appendChild(dropdownMenu);
-                        });
-                    }
-                });
+            AOS.init({
+                once: true,
+                duration: 600
             });
         </script>
+
+        <!-- Script para correção dos dropdowns -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const tabContent = document.getElementById("vagasTabContent");
+                if (tabContent) {
+                    tabContent.addEventListener("show.bs.dropdown", (event) => {
+                        const dropdownMenu = event.target.nextElementSibling;
+                        if (dropdownMenu) {
+                            document.body.appendChild(dropdownMenu);
+                        }
+                    });
+                }
+            });
+        </script>
+
+        <!-- MODAIS -->
+        <div th:each="anuncio : ${todasAsVagas}">
+            <!-- Modal Apagar -->
+            <div class="modal fade" th:id="'modalApagar-' + ${anuncio.id}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirmar Exclusão</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Tem certeza que deseja apagar a vaga
+                                <strong th:text="${anuncio.titulo}"></strong>
+                                ? Esta ação não pode ser desfeita.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <form th:action="@{/anuncios/apagar/{id}(id=${anuncio.id})}" method="post">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-danger">Sim, Apagar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Pausar -->
+            <div th:if="${anuncio.status != null and anuncio.status.name() == 'ATIVO'}">
+                <div class="modal fade" th:id="'modalPausar-' + ${anuncio.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Pausar Vaga</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    Deseja pausar a vaga
+                                    <strong th:text="${anuncio.titulo}"></strong>
+                                    ? Ela não aparecerá mais nas buscas.
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/anuncios/status/{id}(id=${anuncio.id})}" method="post">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-warning">Sim, Pausar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Reativar -->
+            <div th:if="${anuncio.status != null and anuncio.status.name() == 'PAUSADO'}">
+                <div class="modal fade" th:id="'modalReativar-' + ${anuncio.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Reativar Vaga</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    Deseja reativar a vaga
+                                    <strong th:text="${anuncio.titulo}"></strong>
+                                    ? Ela voltará a aparecer nas buscas.
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/anuncios/status/{id}(id=${anuncio.id})}" method="post">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-success">Sim, Reativar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Arquivar -->
+            <div th:if="${anuncio.status != null and (anuncio.status.name() == 'ATIVO' or anuncio.status.name() == 'PAUSADO')}">
+                <div class="modal fade" th:id="'modalArquivar-' + ${anuncio.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Arquivar Vaga</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    Arquivar a vaga
+                                    <strong th:text="${anuncio.titulo}"></strong>
+                                    ? Ela sairá das listas Ativas/Pausadas.
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/anuncios/arquivar/{id}(id=${anuncio.id})}" method="post">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-info">Sim, Arquivar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Desarquivar -->
+            <div th:if="${anuncio.status != null and anuncio.status.name() == 'ARQUIVADO'}">
+                <div class="modal fade" th:id="'modalDesarquivar-' + ${anuncio.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Desarquivar Vaga</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    Deseja desarquivar a vaga
+                                    <strong th:text="${anuncio.titulo}"></strong>
+                                    ?
+                                </p>
+                                <p class="text-muted small">A vaga retornará ao status "PAUSADO".</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/anuncios/desarquivar/{id}(id=${anuncio.id})}" method="post">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-success">Sim, Desarquivar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
