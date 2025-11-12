@@ -1,0 +1,48 @@
+/* ========================================
+   CSS Específico para empregador-vaga-detalhes.html
+   ======================================== */
+
+/* --- 1. Estilos para o Modal de Perfil do Candidato --- */
+
+/* Estilos dos itens (Telefone, Endereço, etc.) */
+.profile-item {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+.profile-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.profile-item strong {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+.profile-item span {
+    font-size: 1.1rem;
+}
+
+/* Ícones dentro dos itens do perfil */
+.profile-item strong i {
+    width: 25px; /* Alinha os ícones */
+    color: var(--brand-primary);
+}
+
+
+/* --- 2. Estilos para Avaliação (Estrelas) --- */
+
+.rating-stars {
+    color: #ffc107; /* Amarelo (cor de estrela) */
+    font-size: 1.25rem; /* Tamanho das estrelas */
+}
+
+/* Estrela vazia (usa a fonte 'regular' do FontAwesome) */
+.rating-stars .far { 
+    color: var(--border-medium);
+}
+
+/* Nota: As classes .fa-star, .fa-star-half-alt 
+   já recebem a cor amarela do .rating-stars
+*/
