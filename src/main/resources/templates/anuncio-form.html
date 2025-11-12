@@ -60,7 +60,6 @@
                                         <label class="form-label small">Tipo de Pagamento</label>
                                         <select th:field="*{tipoPagamento}" class="form-select" required id="tipoPagamentoSelect">
                                             <option value="" disabled>Selecione...</option>
-                                            <option value="POR_HORA">Por Hora</option>
                                             <option value="POR_DIA">Por Dia</option>
                                             <option value="UNICO">Valor Único (Total)</option>
                                         </select>
@@ -69,17 +68,17 @@
                                     <div class="row" id="valorIntervaloGroup" style="display: none">
                                         <div class="col-md-6">
                                             <label for="valorMin" class="form-label small">Valor Mínimo (Ex: 40)</label>
-                                            <input type="number" th:field="*{valorMin}" id="valorMin" class="form-control" step="0.01" placeholder="40" />
+                                            <input type="number" th:field="*{valorMin}" id="valorMin" class="form-control" step="0.01" placeholder="40" min="0.01" />
                                         </div>
                                         <div class="col-md-6">
                                             <label for="valorMax" class="form-label small">Valor Máximo (Ex: 80) (Opcional)</label>
-                                            <input type="number" th:field="*{valorMax}" id="valorMax" class="form-control" step="0.01" placeholder="80" />
+                                            <input type="number" th:field="*{valorMax}" id="valorMax" class="form-control" step="0.01" placeholder="80" min="0" />
                                         </div>
                                     </div>
 
                                     <div id="valorUnicoGroup" style="display: none">
                                         <label for="valorUnico" class="form-label small">Valor Único (Ex: 500)</label>
-                                        <input type="number" th:field="*{valorMin}" id="valorUnico" class="form-control" step="0.01" placeholder="500" />
+                                        <input type="number" th:field="*{valorMin}" id="valorUnico" class="form-control" step="0.01" placeholder="500" min="0.01" />
                                     </div>
 
                                     <small class="form-text text-muted" id="valorHelpText" style="display: none">Para valor fixo (Ex: R$50/dia), preencha só o Mínimo.</small>
@@ -130,9 +129,8 @@
             AOS.init({ once: true, duration: 600 });
 
             document.addEventListener("DOMContentLoaded", () => {
-                
                 // --- 1. CAPITALIZAÇÃO AUTOMÁTICA DOS CAMPOS DE TEXTO ---
-               
+
                 try {
                     if (typeof capitalizeFirstLetter === "function") {
                         capitalizeFirstLetter(document.getElementById("tituloVaga"));
@@ -151,27 +149,49 @@
                 const valorUnicoGroup = document.getElementById("valorUnicoGroup");
                 const valorHelpText = document.getElementById("valorHelpText");
 
-                const valorMinInput = document.getElementById("valorMin");
-                const valorMaxInput = document.getElementById("valorMax");
-                const valorUnicoInput = document.getElementById("valorUnico");
+                const valorMinInput = document.getElementById("valorMin"); // Input de Mínimo (do intervalo)
+                const valorMaxInput = document.getElementById("valorMax"); // Input de Máximo (do intervalo)
+                const valorUnicoInput = document.getElementById("valorUnico"); // Input de Valor Único
 
                 function atualizarCamposValor() {
                     const tipo = tipoPagamentoSelect.value;
+
+                    // 1. Reseta todo mundo: esconde, desabilita e remove 'required'
                     valorIntervaloGroup.style.display = "none";
                     valorUnicoGroup.style.display = "none";
                     valorHelpText.style.display = "none";
 
-                    if (tipo === "POR_HORA" || tipo === "POR_DIA") {
+                    valorMinInput.disabled = true;
+                    valorMinInput.required = false;
+
+                    valorMaxInput.disabled = true; // Max é sempre opcional, não precisa de 'required'
+
+                    valorUnicoInput.disabled = true;
+                    valorUnicoInput.required = false;
+
+                    // 2. Ativa o grupo correto
+                    if (tipo === "POR_DIA") {
+                        // Não checa mais "POR_HORA"
                         valorIntervaloGroup.style.display = "flex";
                         valorHelpText.style.display = "block";
-                        valorUnicoInput.value = "";
+
+                        // Habilita e torna 'valorMin' obrigatório
+                        valorMinInput.disabled = false;
+                        valorMinInput.required = true;
+                        valorMaxInput.disabled = false; // Max é opcional
                     } else if (tipo === "UNICO") {
                         valorUnicoGroup.style.display = "block";
-                        valorMinInput.value = "";
-                        valorMaxInput.value = "";
+
+                        // Habilita e torna 'valorUnico' obrigatório
+                        valorUnicoInput.disabled = false;
+                        valorUnicoInput.required = true;
                     }
                 }
+
                 tipoPagamentoSelect.addEventListener("change", atualizarCamposValor);
+
+                // Executa a função na carga da página para garantir que o estado
+                // inicial (especialmente na edição) esteja correto.
                 atualizarCamposValor();
 
                 // --- 3. LÓGICA DOS TOGGLES (CONTATO) - REVISADA ---
@@ -180,18 +200,12 @@
 
                 function logicaToggleTelefone() {
                     if (toggleTelefone.checked) {
-                        // Exibir telefone ativo → Permitir contato fica marcado (mas ainda bloqueado)
                         toggleContato.checked = true;
                     } else {
-                        // Exibir telefone desmarcado → Permitir contato desmarcado
                         toggleContato.checked = false;
                     }
                 }
-
-                // Estado inicial (carregamento)
                 logicaToggleTelefone();
-
-                // Ouvinte apenas no primeiro toggle
                 toggleTelefone.addEventListener("change", logicaToggleTelefone);
             });
         </script>
