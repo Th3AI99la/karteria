@@ -4,183 +4,204 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Karteria - Conectando Oportunidades</title>
+        <meta name="description" content="Plataforma que conecta empregadores a colaboradores para trabalhos informais de forma rápida, segura e eficiente." />
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
         <link rel="stylesheet" th:href="@{/css/karteria-colors.css}" />
         <link rel="stylesheet" th:href="@{/css/karteria-main.css}" />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+        <link rel="stylesheet" th:href="@{/imagem}" />
+        <link rel="stylesheet" th:href="@{/css/karteria-main.css}" />
+        <link rel="stylesheet" th:href="@{/css/pages/hero-logo.css}" />
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg navbar-modern">
-            <div class="container">
-                <a class="navbar-brand-modern brand-text" th:href="@{/}">
-                    <i class="fas fa-handshake me-2"></i>
-                    Karteria
-                </a>
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto navbar-nav-modern align-items-center">
-                        <li class="nav-item">
-                            <a class="nav-link-modern" href="#features">Recursos</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link-modern" href="#about">Sobre</a></li>
-                        <li class="nav-item">
-                            <a class="nav-link-modern" href="#contact">Contato</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link-modern" th:href="@{/login}">Entrar</a>
-                        </li>
-                        <li class="nav-item ms-3">
-                            <a class="btn btn-primary-karteria" th:href="@{/register}">Criar Conta</a>
-                        </li>
-                        <li class="nav-item ms-3">
-                            <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
-                                <i class="fas fa-moon" id="themeIcon"></i>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <section class="hero-section d-flex align-items-center justify-content-center">
-            <div class="hero-content text-center" data-aos="fade-up" data-aos-duration="1000">
-                <h1 class="hero-title animate-fade-in-up">
-                    <span class="hero-welcome">Bem-vindo ao</span>
-                    <span class="brand-text">Karteria</span>
-                </h1>
-                <p class="hero-subtitle animate-fade-in-up animate-delay-200">
-                    A plataforma que conecta empregadores a colaboradores para trabalhos informais de forma rápida, segura e eficiente.
-                </p>
-                <div class="hero-buttons animate-fade-in-up animate-delay-400">
-                    <a th:href="@{/register}" class="btn btn-primary-karteria btn-lg">
-                        <i class="fas fa-rocket me-2"></i>
-                        Quero Começar
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-modern">
+                <div class="container">
+                    <a class="navbar-brand-modern brand-text" th:href="@{/}" aria-label="Karteria - Página inicial">
+                        <i class="fas fa-handshake me-2" aria-hidden="true"></i>
+                        Karteria
                     </a>
-                    <a href="#features" class="btn btn-outline-secondary btn-lg">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Saiba Mais
-                    </a>
-                </div>
-            </div>
-
-            <div class="position-absolute" style="top: 20%; left: 10%; opacity: 0.1">
-                <i class="fas fa-users fa-3x animate-float"></i>
-            </div>
-            <div class="position-absolute" style="top: 60%; right: 15%; opacity: 0.1">
-                <i class="fas fa-briefcase fa-2x animate-float animate-delay-300"></i>
-            </div>
-            <div class="position-absolute" style="bottom: 20%; left: 20%; opacity: 0.1">
-                <i class="fas fa-handshake fa-2x animate-float animate-delay-500"></i>
-            </div>
-        </section>
-
-        <section id="features" class="section-padding">
-            <div class="container">
-                <div class="text-center mb-5" data-aos="fade-up">
-                    <h2 class="section-title">Por que escolher o Karteria?</h2>
-                    <p class="section-subtitle">Ferramentas pensadas para trazer segurança e agilidade ao universo dos trabalhos informais.</p>
-                </div>
-
-                <div class="features-grid">
-                    <div class="card-modern" data-aos="fade-up" data-aos-delay="100">
-                        <div class="feature-icon"><i class="fas fa-search-location"></i></div>
-                        <h3 class="h4 mb-3 fw-bold">Busca Inteligente</h3>
-                        <p class="text-muted">Seja você um empregador ou colaborador, nossos filtros avançados permitem encontrar exatamente o que você precisa, onde precisa.</p>
-                    </div>
-
-                    <div class="card-modern" data-aos="fade-up" data-aos-delay="200">
-                        <div class="feature-icon"><i class="fas fa-user-check"></i></div>
-                        <h3 class="h4 mb-3 fw-bold">Perfis e Avaliações</h3>
-                        <p class="text-muted">Construa sua reputação e contrate com confiança. Nosso sistema de avaliação mútua garante transparência e qualidade.</p>
-                    </div>
-
-                    <div class="card-modern" data-aos="fade-up" data-aos-delay="300">
-                        <div class="feature-icon"><i class="fas fa-comments"></i></div>
-                        <h3 class="h4 mb-3 fw-bold">Comunicação Direta</h3>
-                        <p class="text-muted">Após a candidatura, o contato é liberado. Converse diretamente para alinhar os detalhes e fechar negócio sem intermediários.</p>
+                    <button
+                        class="navbar-toggler border-0"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Alternar navegação">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto navbar-nav-modern align-items-center">
+                            <li class="nav-item">
+                                <a class="nav-link-modern" href="#features">Recursos</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link-modern" href="#about">Sobre</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link-modern" href="#contact">Contato</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link-modern" th:href="@{/login}">Entrar</a>
+                            </li>
+                            <li class="nav-item ms-3">
+                                <a class="btn btn-primary-karteria" th:href="@{/register}">Criar Conta</a>
+                            </li>
+                            <li class="nav-item ms-3">
+                                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema" aria-pressed="false">
+                                    <i class="fas fa-moon" id="themeIcon" aria-hidden="true"></i>
+                                    <span class="visually-hidden">Alternar entre tema claro e escuro</span>
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-        </section>
+            </nav>
+        </header>
 
-        <section id="about" class="section-padding" style="background: var(--bg-tertiary)">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6" data-aos="fade-right">
-                        <h2 class="section-title text-start">Sobre Nós</h2>
-                        <p class="lead text-secondary mb-4">
-                            Somos uma plataforma que conecta pessoas. O Karteria nasceu para resolver um problema real: a dificuldade de encontrar profissionais para serviços
-                            rápidos e a falta de segurança para quem os executa. Nossa missão é criar um ambiente onde a confiança e a oportunidade andam de mãos dadas,
-                            transformando o mercado de trabalho informal.
-                        </p>
+        <main>
+            <section class="hero-section d-flex align-items-center justify-content-center" aria-labelledby="hero-title">
+                <div class="hero-content text-center" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="animate-fade-in-up animate-delay-100">
+                        <img th:src="@{/images/karteria-logo.jpg}" alt="Logo Karteria - Conectando Oportunidades" class="hero-logo" />
                     </div>
-                    <div class="col-lg-6" data-aos="fade-left">
-                        <div class="card-modern p-4 text-center">
-                            <h3 class="brand-text mb-3">Nossos Pilares</h3>
-                            <div class="row g-3">
-                                <div class="col-4 text-center">
-                                    <div class="feature-icon mx-auto" style="width: 50px; height: 50px">
-                                        <i class="fas fa-shield-alt"></i>
+                    <p class="hero-subtitle animate-fade-in-up animate-delay-200">
+                        Bem-vindo à plataforma que conecta empregadores a colaboradores para trabalhos informais de forma rápida, segura e eficiente.
+                    </p>
+                    <div class="hero-buttons animate-fade-in-up animate-delay-400">
+                        <a th:href="@{/register}" class="btn btn-primary-karteria btn-lg">
+                            <i class="fas fa-rocket me-2" aria-hidden="true"></i>
+                            Quero Começar
+                        </a>
+                        <a href="#features" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
+                            Saiba Mais
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Ícones decorativos com atributos de acessibilidade -->
+                <div class="position-absolute" style="top: 20%; left: 10%; opacity: 0.1" aria-hidden="true">
+                    <i class="fas fa-users fa-3x animate-float"></i>
+                </div>
+
+                <div class="position-absolute" style="top: 60%; right: 15%; opacity: 0.1" aria-hidden="true">
+                    <i class="fas fa-briefcase fa-2x animate-float animate-delay-300"></i>
+                </div>
+
+                <div class="position-absolute" style="bottom: 20%; left: 20%; opacity: 0.1" aria-hidden="true">
+                    <i class="fas fa-handshake fa-2x animate-float animate-delay-500"></i>
+                </div>
+            </section>
+
+            <section id="features" class="section-padding" aria-labelledby="features-title">
+            
+                <div class="container">
+                    <div class="text-center mb-5" data-aos="fade-up">
+                        <h2 class="section-title" id="features-title">Por que escolher o Karteria?</h2>
+                        <p class="section-subtitle">Ferramentas pensadas para trazer segurança e agilidade ao universo dos trabalhos informais.</p>
+                    </div>
+
+                    <div class="features-grid">
+                        <article class="card-modern" data-aos="fade-up" data-aos-delay="100">
+                            <div class="feature-icon"><i class="fas fa-search-location" aria-hidden="true"></i></div>
+                            <h3 class="h4 mb-3 fw-bold">Busca Inteligente</h3>
+                            <p class="text-muted">
+                                Seja você um empregador ou colaborador, nossos filtros avançados permitem encontrar exatamente o que você precisa, onde precisa.
+                            </p>
+                        </article>
+
+                        <article class="card-modern" data-aos="fade-up" data-aos-delay="200">
+                            <div class="feature-icon"><i class="fas fa-user-check" aria-hidden="true"></i></div>
+                            <h3 class="h4 mb-3 fw-bold">Perfis e Avaliações</h3>
+                            <p class="text-muted">Construa sua reputação e contrate com confiança. Nosso sistema de avaliação mútua garante transparência e qualidade.</p>
+                        </article>
+
+                        <article class="card-modern" data-aos="fade-up" data-aos-delay="300">
+                            <div class="feature-icon"><i class="fas fa-comments" aria-hidden="true"></i></div>
+                            <h3 class="h4 mb-3 fw-bold">Comunicação Direta</h3>
+                            <p class="text-muted">Após a candidatura, o contato é liberado. Converse diretamente para alinhar os detalhes e fechar negócio sem intermediários.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="section-padding" style="background: var(--bg-tertiary)" aria-labelledby="about-title">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6" data-aos="fade-right">
+                            <h2 class="section-title text-start" id="about-title">Sobre Nós</h2>
+                            <p class="lead text-secondary mb-4">
+                                Somos uma plataforma que conecta pessoas. O Karteria nasceu para resolver um problema real: a dificuldade de encontrar profissionais para serviços
+                                rápidos e a falta de segurança para quem os executa. Nossa missão é criar um ambiente onde a confiança e a oportunidade andam de mãos dadas,
+                                transformando o mercado de trabalho informal.
+                            </p>
+                        </div>
+                        <div class="col-lg-6" data-aos="fade-left">
+                            <div class="card-modern p-4 text-center">
+                                <h3 class="brand-text mb-3">Nossos Pilares</h3>
+                                <div class="row g-3">
+                                    <div class="col-4 text-center">
+                                        <div class="feature-icon mx-auto" style="width: 50px; height: 50px">
+                                            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                        </div>
+                                        <h6 class="mt-2">Confiança</h6>
                                     </div>
-                                    <h6 class="mt-2">Confiança</h6>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="feature-icon mx-auto" style="width: 50px; height: 50px">
-                                        <i class="fas fa-rocket"></i>
+                                    <div class="col-4 text-center">
+                                        <div class="feature-icon mx-auto" style="width: 50px; height: 50px">
+                                            <i class="fas fa-rocket" aria-hidden="true"></i>
+                                        </div>
+                                        <h6 class="mt-2">Agilidade</h6>
                                     </div>
-                                    <h6 class="mt-2">Agilidade</h6>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="feature-icon mx-auto" style="width: 50px; height: 50px">
-                                        <i class="fas fa-handshake-angle"></i>
+                                    <div class="col-4 text-center">
+                                        <div class="feature-icon mx-auto" style="width: 50px; height: 50px">
+                                            <i class="fas fa-handshake-angle" aria-hidden="true"></i>
+                                        </div>
+                                        <h6 class="mt-2">Oportunidade</h6>
                                     </div>
-                                    <h6 class="mt-2">Oportunidade</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </main>
 
-        <footer id="contact" class="footer-modern">
+        <footer id="contact" class="footer-modern" aria-labelledby="contact-title">
             <div class="container">
                 <div class="row g-4">
                     <div class="col-lg-4">
                         <h5 class="brand-text mb-3">
-                            <i class="fas fa-handshake me-2"></i>
+                            <i class="fas fa-handshake me-2" aria-hidden="true"></i>
                             Karteria
                         </h5>
                         <p class="text-muted">Conectando oportunidades e transformando vidas através do trabalho.</p>
                     </div>
                     <div class="col-lg-4">
-                        <h6 class="fw-bold mb-3">Contato</h6>
+                        <h6 class="fw-bold mb-3" id="contact-title">Contato</h6>
                         <ul class="list-unstyled">
                             <li class="text-muted mb-2">
-                                <i class="fas fa-map-marker-alt me-2"></i>
+                                <i class="fas fa-map-marker-alt me-2" aria-hidden="true"></i>
                                 Goiânia, GO, Brasil
                             </li>
                             <li class="text-muted mb-2">
-                                <i class="fas fa-phone me-2"></i>
-                                (62) 9999-9999
+                                <i class="fas fa-phone me-2" aria-hidden="true"></i>
+                                <a href="tel:+556299999999" class="text-muted text-decoration-none">(62) 9999-9999</a>
                             </li>
                             <li class="text-muted">
-                                <i class="fas fa-envelope me-2"></i>
-                                contato@karteria.com
+                                <i class="fas fa-envelope me-2" aria-hidden="true"></i>
+                                <a href="mailto:contato@karteria.com" class="text-muted text-decoration-none">contato@karteria.com</a>
                             </li>
                         </ul>
                     </div>
                     <div class="col-lg-4 text-lg-end">
                         <h6 class="fw-bold mb-3">Siga-nos</h6>
                         <div class="d-flex gap-3 justify-content-lg-end">
-                            <a href="#" class="text-muted fs-4"><i class="fab fa-facebook"></i></a>
-                            <a href="#" class="text-muted fs-4"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="text-muted fs-4"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="text-muted fs-4" aria-label="Facebook"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+                            <a href="#" class="text-muted fs-4" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                            <a href="#" class="text-muted fs-4" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
                         </div>
                     </div>
                 </div>
