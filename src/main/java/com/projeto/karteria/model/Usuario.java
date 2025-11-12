@@ -22,226 +22,241 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String nome;
+    private String nome;
 
-  @Column(unique = true, nullable = false)
-  private String email;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-  private String senha;
-  private String sobrenome;
-  private String telefone;
-  private String telefone2;
-  private String cpf;
-  private String endereco;
+    private String senha;
+    private String sobrenome;
+    private String telefone;
+    private String telefone2;
+    private String cpf;
+    private String endereco;
 
-  private boolean cadastroCompleto = false;
+    private boolean cadastroCompleto = false;
 
-  @Enumerated(EnumType.STRING)
-  private TipoUsuario tipo;
+    @Enumerated(EnumType.STRING)
+    private TipoUsuario tipo;
 
-  @OneToMany(mappedBy = "anunciante", cascade = CascadeType.PERSIST, orphanRemoval = true)
-  private List<Anuncio> anuncios;
+    @OneToMany(mappedBy = "anunciante", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Anuncio> anuncios;
 
-  private String resetToken;
-  private LocalDateTime resetTokenExpiry;
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
 
-  // --- Construtores ---
-  public Usuario() {}
+    @Column(nullable = true, updatable = false)
+    private LocalDateTime dataCadastro;
 
-  public Usuario(String nome, String email, String senha, TipoUsuario tipo) {
-    this.nome = nome;
-    this.email = email;
-    this.senha = senha;
-    this.tipo = tipo;
-  }
+    // --- Construtores ---
+    public Usuario() {
+    }
 
-  // --- Getters e Setters ---
-  public Long getId() {
-    return id;
-  }
+    public Usuario(String nome, String email, String senha, TipoUsuario tipo) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.tipo = tipo;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    // --- Getters e Setters ---
+    public Long getId() {
+        return id;
+    }
 
-  public String getNome() {
-    return nome;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
+    public String getNome() {
+        return nome;
+    }
 
-  public String getSobrenome() {
-    return sobrenome;
-  }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-  public void setSobrenome(String sobrenome) {
-    this.sobrenome = sobrenome;
-  }
+    public String getSobrenome() {
+        return sobrenome;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public String getSenha() {
-    return senha;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public void setSenha(String senha) {
-    this.senha = senha;
-  }
+    public String getSenha() {
+        return senha;
+    }
 
-  public String getTelefone() {
-    return telefone;
-  }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
-  public void setTelefone(String telefone) {
-    this.telefone = telefone;
-  }
+    public String getTelefone() {
+        return telefone;
+    }
 
-  public String getTelefone2() {
-    return telefone2;
-  }
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
 
-  public void setTelefone2(String telefone2) {
-    this.telefone2 = telefone2;
-  }
+    public String getTelefone2() {
+        return telefone2;
+    }
 
-  public String getCpf() {
-    return cpf;
-  }
+    public void setTelefone2(String telefone2) {
+        this.telefone2 = telefone2;
+    }
 
-  public void setCpf(String cpf) {
-    this.cpf = cpf;
-  }
+    public String getCpf() {
+        return cpf;
+    }
 
-  public String getEndereco() {
-    return endereco;
-  }
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 
-  public void setEndereco(String endereco) {
-    this.endereco = endereco;
-  }
+    public String getEndereco() {
+        return endereco;
+    }
 
-  public boolean isCadastroCompleto() {
-    return cadastroCompleto;
-  }
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
 
-  public void setCadastroCompleto(boolean cadastroCompleto) {
-    this.cadastroCompleto = cadastroCompleto;
-  }
+    public boolean isCadastroCompleto() {
+        return cadastroCompleto;
+    }
 
-  public TipoUsuario getTipo() {
-    return tipo;
-  }
+    public void setCadastroCompleto(boolean cadastroCompleto) {
+        this.cadastroCompleto = cadastroCompleto;
+    }
 
-  public void setTipo(TipoUsuario tipo) {
-    this.tipo = tipo;
-  }
+    public TipoUsuario getTipo() {
+        return tipo;
+    }
 
-  public List<Anuncio> getAnuncios() {
-    return anuncios;
-  }
+    public void setTipo(TipoUsuario tipo) {
+        this.tipo = tipo;
+    }
 
-  public void setAnuncios(List<Anuncio> anuncios) {
-    this.anuncios = anuncios;
-  }
+    public List<Anuncio> getAnuncios() {
+        return anuncios;
+    }
 
-  public String getResetToken() {
-    return resetToken;
-  }
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
 
-  public void setResetToken(String resetToken) {
-    this.resetToken = resetToken;
-  }
+    public void setDataCadastro(LocalDateTime dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
 
-  public LocalDateTime getResetTokenExpiry() {
-    return resetTokenExpiry;
-  }
+    public void setAnuncios(List<Anuncio> anuncios) {
+        this.anuncios = anuncios;
+    }
 
-  public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
-    this.resetTokenExpiry = resetTokenExpiry;
-  }
+    public String getResetToken() {
+        return resetToken;
+    }
 
-  // --- Métodos auxiliares ---
-  public boolean isResetTokenValid() {
-    return resetToken != null
-        && resetTokenExpiry != null
-        && LocalDateTime.now().isBefore(resetTokenExpiry);
-  }
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
 
-  // --- Métodos do UserDetails ---
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (this.tipo == null) return Collections.emptyList();
-    return Collections.singletonList(new SimpleGrantedAuthority(this.tipo.name()));
-  }
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
 
-  @Override
-  public String getPassword() {
-    return this.senha;
-  }
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
 
-  @Override
-  public String getUsername() {
-    return this.email;
-  }
+    // --- Métodos auxiliares ---
+    public boolean isResetTokenValid() {
+        return resetToken != null
+                && resetTokenExpiry != null
+                && LocalDateTime.now().isBefore(resetTokenExpiry);
+    }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
+    // --- Métodos do UserDetails ---
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.tipo == null)
+            return Collections.emptyList();
+        return Collections.singletonList(new SimpleGrantedAuthority(this.tipo.name()));
+    }
 
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
 
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-  // --- equals, hashCode e toString ---
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Usuario)) return false;
-    Usuario other = (Usuario) o;
-    return id != null && id.equals(other.getId());
-  }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-  @Override
-  public String toString() {
-    return "Usuario{"
-        + "id="
-        + id
-        + ", email='"
-        + email
-        + '\''
-        + ", tipo="
-        + tipo
-        + ", cadastroCompleto="
-        + cadastroCompleto
-        + '}';
-  }
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    // --- equals, hashCode e toString ---
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Usuario))
+            return false;
+        Usuario other = (Usuario) o;
+        return id != null && id.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{"
+                + "id="
+                + id
+                + ", email='"
+                + email
+                + '\''
+                + ", tipo="
+                + tipo
+                + ", cadastroCompleto="
+                + cadastroCompleto
+                + '}';
+    }
 }
