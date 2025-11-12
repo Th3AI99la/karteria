@@ -102,10 +102,10 @@
                 </div>
 
                 <!-- Conteúdo das Abas -->
+
                 <div class="tab-content" id="vagasTabContent">
                     <!-- ABA ATIVAS -->
                     <div class="tab-pane fade show active" id="ativas-content" role="tabpanel">
-                        <!-- Estado vazio -->
                         <div th:if="${#lists.isEmpty(vagasAtivas)}" class="empty-state" data-aos="zoom-in">
                             <div class="empty-state-icon mb-3"><i class="fas fa-briefcase"></i></div>
                             <h3 class="fw-bold">Nenhuma vaga ativa</h3>
@@ -171,6 +171,8 @@
 
                                     <!-- Rodapé do Card -->
                                     <div class="anuncio-card-footer">
+
+                                        <!-- Botão para Gerenciar -->
                                         <a th:href="@{/anuncios/gerenciar/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria btn-sm">
                                             <i class="fas fa-tasks me-1"></i>
                                             Gerenciar
@@ -215,7 +217,7 @@
 
                     <!-- ABA PAUSADAS -->
                     <div class="tab-pane fade" id="pausadas-content" role="tabpanel">
-                        <!-- Estado vazio -->
+
                         <div th:if="${#lists.isEmpty(vagasPausadas)}" class="empty-state" data-aos="zoom-in">
                             <div class="empty-state-icon mb-3"><i class="fas fa-pause-circle"></i></div>
                             <h3 class="fw-bold">Nenhuma vaga pausada</h3>
@@ -225,7 +227,6 @@
                         <!-- Cards de Vagas Pausadas -->
                         <div class="row g-4" id="pausadasCardContainer">
                             <div th:each="anuncio : ${vagasPausadas}" class="col-lg-4 col-md-6 vaga-card-column">
-                                <!-- Card de Vaga (estrutura similar à aba Ativas) -->
                                 <div class="anuncio-card h-100" data-aos="fade-up">
                                     <div class="card-body d-flex flex-column">
                                         <div class="anuncio-card-header">
