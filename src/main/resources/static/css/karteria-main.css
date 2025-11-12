@@ -49,11 +49,10 @@ body.dashboard-layout {
 @media (max-width: 992px) {
     .dashboard-content {
         margin-left: 70px; /* Espaço para a sidenav recolhida */
-         width: calc(100% - 70px);
+        width: calc(100% - 70px);
     }
 }
 /* ============================================= */
-
 
 /* === CUSTOMIZAÇÃO DE COMPONENTES BOOTSTRAP === */
 .btn-primary-karteria {
@@ -162,14 +161,14 @@ body.dashboard-layout {
 .hero-section {
     position: relative; /* Necessário para o ::before */
     overflow: hidden; /* Evita que gradientes vazem */
-     /* Garante que o padding-top original do body seja considerado aqui, se necessário */
-     /* Ou define uma altura mínima */
-     min-height: calc(100vh - 100px); /* Exemplo: altura da tela menos altura da navbar antiga */
-     display: flex; /* Para centralizar conteúdo */
-     align-items: center;
-     justify-content: center;
-     /* Padding superior pode ser removido se body não tiver mais */
-     /* padding-top: 100px; */
+    /* Garante que o padding-top original do body seja considerado aqui, se necessário */
+    /* Ou define uma altura mínima */
+    min-height: calc(100vh - 100px); /* Exemplo: altura da tela menos altura da navbar antiga */
+    display: flex; /* Para centralizar conteúdo */
+    align-items: center;
+    justify-content: center;
+    /* Padding superior pode ser removido se body não tiver mais */
+    /* padding-top: 100px; */
 }
 
 .hero-section::before {
@@ -197,9 +196,8 @@ body.dashboard-layout {
     padding: var(--space-xl);
 }
 [data-theme="dark"] .hero-content {
-     color: var(--text-primary); /* Garante cor clara no dark mode */
+    color: var(--text-primary); /* Garante cor clara no dark mode */
 }
-
 
 .hero-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
@@ -388,30 +386,63 @@ body.dashboard-layout {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* === RESPONSIVIDADE (PÁGINA INICIAL) === */
 @media (max-width: 768px) {
-    body { padding-top: 80px; } /* Ajuste para navbar menor? */
-    .hero-buttons { flex-direction: column; align-items: center; }
-    .btn-primary-karteria, .btn-outline-secondary { width: 100%; max-width: 300px; }
-    .navbar-nav-modern { flex-direction: column; gap: var(--space-md); }
-    .features-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
-    .hero-content { padding: var(--space-lg); }
+    body {
+        padding-top: 80px;
+    } /* Ajuste para navbar menor? */
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .btn-primary-karteria,
+    .btn-outline-secondary {
+        width: 100%;
+        max-width: 300px;
+    }
+    .navbar-nav-modern {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    .hero-content {
+        padding: var(--space-lg);
+    }
 }
 
 @media (max-width: 480px) {
-    .hero-title { font-size: 2rem; }
-    .hero-subtitle { font-size: 1rem; }
-    .card-modern { padding: var(--space-lg); }
-    .section-padding { padding: var(--space-2xl) 0; }
+    .hero-title {
+        font-size: 2rem;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    .card-modern {
+        padding: var(--space-lg);
+    }
+    .section-padding {
+        padding: var(--space-2xl) 0;
+    }
 }
 
 /* === ACESSIBILIDADE === */
 @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 .btn-primary-karteria:focus,
@@ -422,11 +453,23 @@ body.dashboard-layout {
 }
 
 /* === SCROLLBAR E SELEÇÃO === */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: var(--radius-sm); }
-::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
-::selection { background: var(--brand-primary); color: white; }
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: var(--radius-sm);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-primary);
+}
+::selection {
+    background: var(--brand-primary);
+    color: white;
+}
 
 /* === BOTÕES ESPECÍFICOS DE PERFIL (ESCOLHER-PERFIL) === */
 .btn-empregador,
@@ -439,11 +482,18 @@ body.dashboard-layout {
     border: none;
     width: 100%;
 }
-.btn-empregador { background-color: var(--karteria-blue-600); }
-.btn-colaborador { background-color: var(--karteria-green-600); }
+.btn-empregador {
+    background-color: var(--karteria-blue-600);
+}
+.btn-colaborador {
+    background-color: var(--karteria-green-600);
+}
 .btn-empregador:hover,
-.btn-colaborador:hover { color: white; transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
+.btn-colaborador:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
 
 /* === ESTILOS PARA DATA DE PUBLICAÇÃO NO CARD === */
 /* Mantido pois é usado em area-empregador.html */
@@ -493,23 +543,49 @@ body.dashboard-layout {
     }
 
     /* === DROPDOWN MENU === */
-    .dropdown-menu { background-color: var(--bg-secondary); border-color: var(--border-medium); box-shadow: var(--shadow-lg); }
-    .dropdown-item { color: var(--text-secondary); }
-    .dropdown-item:hover, .dropdown-item:focus { background-color: var(--bg-tertiary); color: var(--brand-primary); }
-    .dropdown-item.text-danger:hover, .dropdown-item.text-danger:focus { background-color: var(--danger-bg); color: var(--danger) !important; }
-    .dropdown-divider { border-top-color: var(--border-light); }
+    .dropdown-menu {
+        background-color: var(--bg-secondary);
+        border-color: var(--border-medium);
+        box-shadow: var(--shadow-lg);
+    }
+    .dropdown-item {
+        color: var(--text-secondary);
+    }
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        background-color: var(--bg-tertiary);
+        color: var(--brand-primary);
+    }
+    .dropdown-item.text-danger:hover,
+    .dropdown-item.text-danger:focus {
+        background-color: var(--danger-bg);
+        color: var(--danger) !important;
+    }
+    .dropdown-divider {
+        border-top-color: var(--border-light);
+    }
 
     /* === INPUT DE BUSCA (Dark Mode) === */
-    .search-bar .form-control { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-medium); }
-    .search-bar .form-control::placeholder { color: var(--text-muted); }
-    .search-bar .form-control:focus { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--brand-primary); box-shadow: 0 0 0 0.25rem rgba(var(--karteria-green-500-rgb), 0.15); }
+    .search-bar .form-control {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--border-medium);
+    }
+    .search-bar .form-control::placeholder {
+        color: var(--text-muted);
+    }
+    .search-bar .form-control:focus {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 0.25rem rgba(var(--karteria-green-500-rgb), 0.15);
+    }
 }
 
 /* Adiciona variável RGB para sombra do form-control no dark mode */
 :root {
     --karteria-green-500-rgb: 34, 197, 94;
 }
-
 
 /* ========================================
    FORÇAR ESTILO DO BOTÃO SECUNDÁRIO DESABILITADO
@@ -518,11 +594,11 @@ body.dashboard-layout {
 /* Aplica em ambos os temas (claro e escuro) */
 .btn-secondary.disabled,
 .btn-secondary:disabled {
-    color: var(--text-muted) !important; 
-    background-color: var(--bg-tertiary) !important; 
-    border-color: var(--border-medium) !important; 
-    opacity: 0.65 !important; 
-    cursor: not-allowed !important; 
+    color: var(--text-muted) !important;
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-medium) !important;
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
     box-shadow: none !important;
     transform: none !important;
 }
@@ -533,4 +609,48 @@ body.dashboard-layout {
     color: var(--karteria-gray-500) !important; /* Tom de cinza ligeiramente diferente para contraste */
     background-color: var(--karteria-gray-800) !important; /* Fundo escuro */
     border-color: var(--karteria-gray-700) !important; /* Borda escura */
+}
+
+/* ========================================
+   LOADER DE PÁGINA GLOBAL (CORTINA)
+   ======================================== */
+#global-loader {
+    position: fixed; /* Fica por cima de tudo */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Fundo escuro semitransparente */
+    background: rgba(var(--karteria-gray-950-rgb, 3, 7, 18), 0.6);
+    backdrop-filter: blur(5px); /* Efeito de vidro fosco */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; /* Garante que fique no topo */
+
+    /* Controla a exibição */
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+}
+
+/* Classe que será adicionada ao <body> via JS */
+body.is-loading #global-loader {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Reutiliza seu loader, mas maior */
+#global-loader .loader {
+    width: 60px;
+    height: 60px;
+}
+
+/* Variável RGB para o fallback do background */
+:root {
+    --karteria-gray-950-rgb: 3, 7, 18;
 }

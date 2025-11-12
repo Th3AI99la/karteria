@@ -183,12 +183,27 @@
             if (!submitButton) return;
 
             // A validação já terá prevenido o envio se o form for inválido.
-            // Se chegamos aqui, o form é válido e podemos mostrar o loading.
             setTimeout(() => {
-                if (!form.checkValidity()) return; // Dupla verificação
+                // Dupla verificação de validade
+                if (!form.checkValidity()) return;
 
                 submitButton.disabled = true;
-                submitButton.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processando...`;
+
+                // Salva o conteúdo original para restaurar se o usuário voltar
+                const originalContent = submitButton.innerHTML;
+                submitButton.setAttribute('data-original-content', originalContent);
+
+                // Adiciona um listener para o caso de o usuário navegar "Voltar"
+                // e encontrar o botão travado
+                window.addEventListener('pageshow', () => {
+                    submitButton.disabled = false;
+                    if (submitButton.getAttribute('data-original-content')) {
+                        submitButton.innerHTML = originalContent;
+                    }
+                });
+
+                // Substitui o conteúdo do botão pelo seu novo loader
+                submitButton.innerHTML = '<span class="loader"></span>';
             }, 0);
         });
     }

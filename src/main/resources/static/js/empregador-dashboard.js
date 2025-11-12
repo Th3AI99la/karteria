@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', () => {
         console.log('Input detectado:', searchInput.value); // DEBUG
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(filterCards, 300);
+        debounceTimer = setTimeout(filterCards, 300);   // Debounce de 300ms
     });
 
     // --- Lógica de Atualização da Contagem ao Mudar de Aba ---

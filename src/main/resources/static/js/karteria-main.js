@@ -1,60 +1,58 @@
-/* ========================================
-   KARTERIA - JAVASCRIPT PRINCIPAL (v2)
-   ======================================== */
-
 (function () {
     'use strict';
 
-    // === INICIALIZAÇÃO === //
     document.addEventListener('DOMContentLoaded', function () {
-        // Separa a lógica de aplicação do tema da configuração do botão
-        applySavedTheme(); // 1. Aplica o tema salvo (roda em todas as páginas)
-        initThemeToggle(); // 2. Configura o botão de troca (só roda se o botão existir)
-
-        // Funções existentes que continuam funcionando normalmente
+        applySavedTheme();
+        initThemeToggle();
         initNavigation();
         initScrollEffects();
         initAnimations();
         initInteractions();
         initAccessibility();
-
-        console.log('🚀 Karteria initialized successfully!');
+        initGlobalLoader();
     });
 
-    // === SISTEMA DE TEMA (REESTRUTURADO) === //
+    function initGlobalLoader() {
+        const globalLoader = document.getElementById('global-loader');
+        if (!globalLoader) return;
 
-    /**
-     * Esta função é independente e sempre executa.
-     * Ela lê o tema do localStorage ou a preferência do sistema e aplica na página.
-     */
+        document.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (!href || href.startsWith('#') || link.getAttribute('data-bs-toggle')) return;
+                if (link.getAttribute('target') === '_blank') return;
+                if (href.startsWith('javascript:')) return;
+                document.body.classList.add('is-loading');
+            });
+        });
+
+        window.addEventListener('load', () => {
+            document.body.classList.remove('is-loading');
+        });
+
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                document.body.classList.remove('is-loading');
+            }
+        });
+    }
+
     function applySavedTheme() {
-        // Se um tema já foi salvo pelo usuário, usa ele.
-        // Senão, verifica a preferência do sistema operacional.
-        // Se nada for definido, usa 'light' como padrão.
         const savedTheme =
             localStorage.getItem('karteria-theme') ||
             (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         applyTheme(savedTheme);
     }
 
-    /**
-     * Esta função agora SÓ se preocupa em configurar o botão de troca de tema.
-     */
     function initThemeToggle() {
         const themeToggle = document.getElementById('themeToggle');
+        if (!themeToggle) return;
 
-        // Ponto crucial: Se a página não tem o botão, a função para aqui.
-        if (!themeToggle) {
-            return;
-        }
-
-        // Se o botão existe, adiciona o evento de clique.
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             applyTheme(newTheme);
 
-            // Animação do ícone
             const icon = document.getElementById('themeIcon');
             if (icon) {
                 icon.style.transform = 'rotate(360deg)';
@@ -65,10 +63,6 @@
         });
     }
 
-    /**
-     * Função auxiliar que efetivamente aplica o tema e atualiza o ícone.
-     * (sem alterações, mas agora chamada pelas duas funções acima)
-     */
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('karteria-theme', theme);
@@ -81,12 +75,10 @@
         document.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
     }
 
-    // === NAVEGAÇÃO === //
     function initNavigation() {
         const navbar = document.querySelector('.navbar-modern');
         if (!navbar) return;
 
-        // Scroll effect na navbar
         let lastScrollY = window.scrollY;
 
         window.addEventListener(
@@ -100,7 +92,6 @@
                     navbar.classList.remove('scrolled');
                 }
 
-                // Auto-hide navbar on scroll down
                 if (currentScrollY > lastScrollY && currentScrollY > 200) {
                     navbar.style.transform = 'translateY(-100%)';
                 } else {
@@ -111,7 +102,6 @@
             }, 100)
         );
 
-        // Smooth scroll para links internos
         document.querySelectorAll('a[href^="#"]').forEach((link) => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -125,7 +115,6 @@
             });
         });
 
-        // Mobile menu toggle
         const navbarToggler = document.querySelector('.navbar-toggler');
         const navbarCollapse = document.querySelector('.navbar-collapse');
 
@@ -134,7 +123,6 @@
                 navbarCollapse.classList.toggle('show');
             });
 
-            // Fechar menu ao clicar em link
             navbarCollapse.querySelectorAll('a').forEach((link) => {
                 link.addEventListener('click', () => {
                     navbarCollapse.classList.remove('show');
@@ -143,9 +131,7 @@
         }
     }
 
-    // === EFEITOS DE SCROLL === //
     function initScrollEffects() {
-        // Parallax effect para elementos flutuantes
         const floatingElements = document.querySelectorAll('.animate-float');
 
         window.addEventListener(
@@ -161,7 +147,6 @@
             }, 16)
         );
 
-        // Reveal animations on scroll
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -181,9 +166,7 @@
         });
     }
 
-    // === ANIMAÇÕES === //
     function initAnimations() {
-        // Hover effects para cards
         document.querySelectorAll('.card-modern').forEach((card) => {
             card.addEventListener('mouseenter', function () {
                 this.style.transform = 'translateY(-10px) scale(1.02)';
@@ -194,12 +177,10 @@
             });
         });
 
-        // Ripple effect para botões
         document.querySelectorAll('.btn-primary-karteria, .form-button').forEach((button) => {
             button.addEventListener('click', createRipple);
         });
 
-        // Loading states
         document.querySelectorAll('form').forEach((form) => {
             form.addEventListener('submit', function () {
                 const submitButton = this.querySelector('button[type="submit"]');
@@ -238,7 +219,6 @@
         button.classList.add('loading');
         button.disabled = true;
 
-        // Simular loading (remover em produção)
         setTimeout(() => {
             button.classList.remove('loading');
             button.disabled = false;
@@ -246,18 +226,10 @@
         }, 2000);
     }
 
-    // === INTERAÇÕES === //
     function initInteractions() {
-        // Tooltip initialization
         initTooltips();
-
-        // Form enhancements
         initFormEnhancements();
-
-        // Keyboard navigation
         initKeyboardNavigation();
-
-        // Performance monitoring
         initPerformanceMonitoring();
     }
 
@@ -294,7 +266,6 @@
     }
 
     function initFormEnhancements() {
-        // Auto-resize textareas
         document.querySelectorAll('textarea').forEach((textarea) => {
             textarea.addEventListener('input', function () {
                 this.style.height = 'auto';
@@ -302,12 +273,10 @@
             });
         });
 
-        // Input masks (se necessário)
         document.querySelectorAll('input[data-mask]').forEach((input) => {
             input.addEventListener('input', applyMask);
         });
 
-        // Real-time validation
         document.querySelectorAll('.form-input').forEach((input) => {
             input.addEventListener('input', debounce(validateInput, 300));
         });
@@ -359,9 +328,7 @@
         input.value = value;
     }
 
-    // === ACESSIBILIDADE === //
     function initAccessibility() {
-        // Focus management
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Tab') {
                 document.body.classList.add('keyboard-navigation');
@@ -372,13 +339,11 @@
             document.body.classList.remove('keyboard-navigation');
         });
 
-        // Skip links
         const skipLink = document.createElement('a');
         skipLink.href = '#main-content';
         skipLink.className = 'skip-link';
         document.body.insertBefore(skipLink, document.body.firstChild);
 
-        // ARIA live regions
         const liveRegion = document.createElement('div');
         liveRegion.setAttribute('aria-live', 'polite');
         liveRegion.setAttribute('aria-atomic', 'true');
@@ -389,14 +354,12 @@
 
     function initKeyboardNavigation() {
         document.addEventListener('keydown', function (e) {
-            // ESC para fechar modais/menus
             if (e.key === 'Escape') {
                 document.querySelectorAll('.navbar-collapse.show').forEach((menu) => {
                     menu.classList.remove('show');
                 });
             }
 
-            // Enter/Space para elementos clicáveis
             if ((e.key === 'Enter' || e.key === ' ') && e.target.hasAttribute('data-clickable')) {
                 e.preventDefault();
                 e.target.click();
@@ -404,9 +367,7 @@
         });
     }
 
-    // === MONITORAMENTO DE PERFORMANCE === //
     function initPerformanceMonitoring() {
-        // Web Vitals (simplificado)
         if ('PerformanceObserver' in window) {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach((entry) => {
@@ -419,7 +380,6 @@
             observer.observe({ entryTypes: ['largest-contentful-paint'] });
         }
 
-        // Error tracking
         window.addEventListener('error', function (e) {
             console.error('JavaScript Error:', e.error);
         });
@@ -429,7 +389,6 @@
         });
     }
 
-    // === UTILITÁRIOS === //
     function throttle(func, limit) {
         let inThrottle;
         return function () {
@@ -465,11 +424,10 @@
         }
     }
 
-    // === API PÚBLICA === //
     window.Karteria = {
         theme: {
             set: applyTheme,
-            get: () => document.documentElement.getAttribute('data-theme') || 'light' // Pega o tema atual do HTML
+            get: () => document.documentElement.getAttribute('data-theme') || 'light'
         },
         utils: {
             throttle,
@@ -480,7 +438,6 @@
     };
 })();
 
-// === CSS DINÂMICO === //
 const dynamicStyles = `
     .ripple {
         position: absolute;
@@ -566,7 +523,6 @@ const dynamicStyles = `
     }
 `;
 
-// Injetar estilos dinâmicos
 const styleSheet = document.createElement('style');
 styleSheet.textContent = dynamicStyles;
 document.head.appendChild(styleSheet);

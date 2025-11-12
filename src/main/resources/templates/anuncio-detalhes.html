@@ -23,6 +23,7 @@
 
     <body class="dashboard-layout">
         <div th:replace="~{_navbar_dashboard :: dashboard_nav}"></div>
+        <div th:replace="~{_navbar_dashboard :: global_loader}"></div>
 
         <main class="dashboard-content">
             <div class="container">
@@ -148,6 +149,9 @@
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-main.js}"></script>
         <script th:src="@{/js/anuncio-detalhes.js}"></script>
+        <script th:src="@{/js/karteria-main.js}"></script>
+        <script th:src="@{/js/form-masks-validations.js}"></script>
+        <script th:src="@{/js/karteria-forms.js}"></script>
         <script>
             AOS.init({ once: true, duration: 600 });
         </script>
