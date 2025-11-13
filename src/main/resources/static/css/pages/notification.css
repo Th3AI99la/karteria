@@ -1,0 +1,87 @@
+/* ========================================
+   CSS para Notificações (Dropdown e Página)
+   ======================================== */
+
+/* --- 1. Botão "Limpar Tudo" --- */
+.btn-limpar-tudo {
+    font-size: 0.8rem; /* Menor que o texto normal */
+    font-weight: 600;
+    color: var(--brand-primary);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    padding: 0.25rem 0.5rem;
+    transition: all var(--transition-fast);
+}
+.btn-limpar-tudo:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-light);
+}
+.btn-limpar-tudo i {
+    margin-right: 4px;
+}
+
+/* --- 2. Botão "Excluir" (na página de notificações) --- */
+.btn-excluir-notificacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: var(--danger);
+    background-color: transparent;
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-fast);
+}
+.btn-excluir-notificacao:hover {
+    background-color: var(--danger-bg);
+    border-color: var(--danger-border);
+}
+
+/* --- 3. Ajustes de Tema para o Dropdown --- */
+
+/* Fundo do cabeçalho e rodapé */
+.notification-dropdown .notification-header,
+.notification-dropdown .notification-footer {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-light);
+}
+
+/* Fundo da lista e cor do texto "vazio" */
+.notification-dropdown .notification-list-container,
+.notification-dropdown .notification-empty-state {
+    background-color: var(--bg-secondary);
+    color: var(--text-muted);
+}
+
+/* Cor do texto do item */
+.notification-item-content p {
+    color: var(--text-primary);
+}
+.notification-item-content small {
+    color: var(--text-secondary);
+}
+
+/* Hover do item */
+.notification-dropdown a.notification-item:hover,
+.notification-dropdown li.notification-item-wrapper:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Cor do nome de usuário */
+.notification-user-name {
+    color: var(--brand-primary);
+    font-weight: 700;
+}
+
+/* Cor do botão "X" de fechar (Marcar como Lida) */
+.notification-item-wrapper .btn-close {
+    /* Usa filtro do Bootstrap para cor (Branco no Dark, Preto no Light) */
+    filter: var(--bs-btn-close-filter);
+    transition: all var(--transition-fast);
+}
+.notification-item-wrapper .btn-close:hover {
+    transform: scale(1.1);
+    background-color: var(--border-medium);
+}

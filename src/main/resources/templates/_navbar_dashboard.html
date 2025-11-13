@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
     <body>
+
+        <head>
+            <meta name="_csrf" th:content="${_csrf?.token}" />
+            <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+        </head>
+
         <nav th:fragment="dashboard_nav" class="sidenav">
             <!-- Cabeçalho da sidenav -->
             <div class="sidenav-header">
@@ -14,7 +20,8 @@
             <ul class="sidenav-nav" style="margin-top: var(--space-lg)">
                 <!-- Meu Perfil -->
                 <li class="sidenav-nav-item">
-                    <a class="sidenav-nav-link" th:href="@{/perfil}" aria-label="Meu Perfil">
+                    <a class="sidenav-nav-link" th:href="@{/perfil}"
+                        aria-label="Meu Perfil">
                         <i class="fas fa-user-cog"></i>
                         <span>Meu Perfil</span>
                     </a>
@@ -22,7 +29,8 @@
 
                 <!-- Voltar menu seleção -->
                 <li class="sidenav-nav-item">
-                    <a class="sidenav-nav-link" th:href="@{/escolher-perfil}" aria-label="Voltar menu seleção">
+                    <a class="sidenav-nav-link" th:href="@{/escolher-perfil}"
+                        aria-label="Voltar menu seleção">
                         <i class="fas fa-exchange-alt"></i>
                         <span>Voltar menu seleção</span>
                     </a>
@@ -52,7 +60,10 @@
                 <!-- Logout -->
                 <li class="sidenav-nav-item">
                     <form th:action="@{/logout}" method="post" class="m-0">
-                        <button type="submit" class="sidenav-nav-link text-danger" style="width: 100%; border: none; background: transparent; text-align: left" aria-label="Sair">
+                        <button type="submit"
+                            class="sidenav-nav-link text-danger"
+                            style="width: 100%; border: none; background: transparent; text-align: left"
+                            aria-label="Sair">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Sair</span>
                         </button>
