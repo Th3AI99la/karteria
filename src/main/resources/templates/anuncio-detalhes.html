@@ -10,16 +10,10 @@
         <link rel="stylesheet" th:href="@{/css/karteria-colors.css}" />
         <link rel="stylesheet" th:href="@{/css/karteria-main.css}" />
         <link rel="stylesheet" th:href="@{/css/fragments/_navbar_dashboard.css}" />
-        <link rel="stylesheet" th:href="@{/css/pages/colaborador.css}" />
-        <link rel="stylesheet" th:href="@{/css/pages/notification.css}" />
-        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+        <link rel="stylesheet" th:href="@{/css/fragments/_notification_dropdown.css}" />
+        <link rel="stylesheet" th:href="@{/css/pages/anuncio-detalhes.css}" />
 
-        <style>
-            .detail-item i {
-                width: 25px;
-                color: var(--brand-primary);
-            }
-        </style>
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     </head>
 
     <body class="dashboard-layout">
@@ -27,118 +21,146 @@
         <div th:replace="~{_navbar_dashboard :: global_loader}"></div>
 
         <main class="dashboard-content">
-            <div class="container">
-                <div class="dashboard-header mb-4">
-                    <h1 class="h2" th:text="${anuncio.titulo}">Título do Anúncio</h1>
+            <div class="container py-4" style="max-width: 900px">
+                <div th:if="${sucesso}" class="alert alert-success mb-4 animate-fade-in-down" th:text="${sucesso}"></div>
+
+                <div class="mb-4">
+                    <a th:href="@{/home}" class="btn btn-outline-secondary btn-sm border-0 ps-0">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Voltar para o início
+                    </a>
+                </div>
+                <div th:if="${erro}" class="alert alert-danger mb-4 animate-fade-in-down" th:text="${erro}"></div>
+
+                <div class="vaga-header" data-aos="fade-down">
+                    <h1 class="vaga-titulo" th:text="${anuncio.titulo}">Título do Anúncio</h1>
+
+                    <div class="vaga-preco">
+                        <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
+                            R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1, 'POINT', 0, 'COMMA')}]]
+                        </span>
+                        <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]</span>
+
+                        <small th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</small>
+                        <small th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</small>
+                        <small th:if="${anuncio.tipoPagamento == 'UNICO'}">(Total)</small>
+                    </div>
                 </div>
 
-                <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+                <div class="mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div th:if="${anuncio.exibirTelefone and !jaCandidatado and !isAnunciante}" class="alert alert-secondary border-0 shadow-sm" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 info-icon" style="background: rgba(0, 0, 0, 0.05); color: var(--text-secondary)">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div>
+                                <h6 class="alert-heading mb-1 fw-bold">Contato Protegido</h6>
+                                <p class="mb-0 small text-muted">
+                                    O empregador disponibilizou um telefone.
+                                    <span class="text-primary fw-bold">Candidate-se</span>
+                                    abaixo para liberar o acesso.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="card-modern" data-aos="fade-up">
-                    <div class="card-body p-4">
-                        <h2 class="brand-text mb-3">
-                            <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
-                                R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1, 'POINT', 0, 'COMMA')}]]
-                            </span>
-                            <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]</span>
-                            <small class="text-muted" th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</small>
-                            <small class="text-muted" th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</small>
-                            <small class="text-muted" th:if="${anuncio.tipoPagamento == 'UNICO'}">(Valor Total)</small>
-                        </h2>
-
-                        <hr style="border-color: var(--border-light)" />
-
-                        <div th:if="${anuncio.exibirTelefone and !jaCandidatado and !isAnunciante}" class="alert alert-secondary" role="alert">
+                    <div
+                        th:if="${anuncio.exibirTelefone and (jaCandidatado or isAnunciante)}"
+                        class="alert alert-success border-0 shadow-sm"
+                        role="alert"
+                        style="background-color: var(--karteria-green-50); color: var(--karteria-green-900)">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                             <div class="d-flex align-items-center">
-                                <div class="me-3">
-                                    <i class="fas fa-lock fa-2x text-muted"></i>
+                                <div class="me-3 info-icon" style="background: white; color: var(--success)">
+                                    <i class="fas fa-phone-alt"></i>
                                 </div>
                                 <div>
-                                    <h6 class="alert-heading mb-1 fw-bold">Contato Protegido</h6>
-                                    <p class="mb-0 small text-muted">
-                                        O empregador disponibilizou um telefone.
-                                        <span class="text-primary fw-bold">Candidate-se</span>
-                                        para visualizar o número e entrar em contato.
-                                    </p>
+                                    <p class="mb-0 small">Fale diretamente com o empregador.</p>
                                 </div>
                             </div>
-                        </div>
-
-                        <div th:if="${anuncio.exibirTelefone and (jaCandidatado or isAnunciante)}" class="alert alert-info" role="alert">
-                            <h5 class="alert-heading">
-                                <i class="fas fa-phone-alt me-2"></i>
-                                Contato do Empregador
-                            </h5>
-                            <p class="mb-2">Você tem acesso ao contato deste empregador:</p>
-                            <div class="p-2 bg-white rounded border text-center">
-                                <span class="fs-4 fw-bold text-dark" th:text="${anuncio.anunciante?.telefone}"></span>
+                            <div class="bg-white px-4 py-2 rounded-pill border fw-bold fs-5 shadow-sm text-dark">
+                                <span th:text="${anuncio.anunciante?.telefone}"></span>
                             </div>
-                            <p class="mt-2 mb-0 small text-muted">
-                                <i class="fas fa-check-circle me-1 text-success"></i>
-                                Acesso liberado porque você se candidatou.
-                            </p>
                         </div>
+                    </div>
 
-                        <div th:if="${!anuncio.permitirContato}" class="alert alert-warning" role="alert">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Atenção:</strong>
-                            O empregador não permite contato direto. Você deve se candidatar e aguardar o contato dele.
+                    <div th:if="${!anuncio.permitirContato}" class="alert alert-warning border-0 shadow-sm" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 info-icon" style="background: rgba(255, 255, 255, 0.5); color: var(--warning)">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <strong>Atenção:</strong>
+                                O empregador prefere ser contatado apenas pela plataforma.
+                            </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="mt-4">
-                            <p class="detail-item mb-3">
-                                <i class="fas fa-info-circle fa-fw me-2"></i>
-                                <strong>Descrição:</strong>
-                                <span th:text="${anuncio.descricao}">...</span>
-                            </p>
-                            <p class="detail-item mb-3">
-                                <i class="fas fa-map-marker-alt fa-fw me-2"></i>
-                                <strong>Localização:</strong>
-                                <span th:text="${anuncio.localizacao}">...</span>
-                            </p>
-                            <p class="detail-item mb-3">
-                                <i class="fas fa-user-tie fa-fw me-2"></i>
-                                <strong>Publicado por:</strong>
-                                <span th:text="${anuncio.anunciante?.nome}">...</span>
-                            </p>
-                            <p class="detail-item mb-3">
-                                <i class="fas fa-calendar-alt fa-fw me-2"></i>
-                                <strong>Publicado em:</strong>
-                                <span th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy HH:mm')}">...</span>
-                            </p>
+                <div class="vaga-info-grid" data-aos="fade-up" data-aos-delay="200">
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-content">
+                            <h6>Localização</h6>
+                            <p th:text="${anuncio.localizacao}">Carregando...</p>
                         </div>
+                    </div>
 
-                        <div class="d-grid gap-2 mt-5">
-                            <th:block th:if="${!isAnunciante}">
-                                <button
-                                    th:if="${!jaCandidatado}"
-                                    type="button"
-                                    class="btn btn-primary-karteria btn-lg w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#confirmarCandidaturaModal">
-                                    <i class="fas fa-check-circle me-2"></i>
-                                    Quero me candidatar
-                                </button>
-                                <button th:if="${jaCandidatado}" type="button" class="btn btn-secondary btn-lg w-100 disabled btn-ja-candidatado" disabled>
-                                    <i class="fas fa-check-circle me-2"></i>
-                                    Você já se candidatou
-                                </button>
-                            </th:block>
-                            <th:block th:if="${isAnunciante}">
-                                <div class="alert alert-info text-center" role="alert">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    Vaga criada por você
-                                    <em th:if="${nomeUsuarioLogado != null}" th:text="' (' + ${nomeUsuarioLogado} + ')'"></em>
-                                    .
-                                </div>
-                            </th:block>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-user"></i></div>
+                        <div class="info-content">
+                            <h6>Publicado por</h6>
+                            <p th:text="${anuncio.anunciante?.nome}">Nome</p>
                         </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-calendar-check"></i></div>
+                        <div class="info-content">
+                            <h6>Publicado em</h6>
+                            <p th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy')}">Data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vaga-descricao" data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="brand-text">
+                        <i class="fas fa-file-alt"></i>
+                        Sobre a Vaga
+                    </h3>
+                    <p th:text="${anuncio.descricao}"></p>
+                </div>
+
+                <div class="vaga-action-area" data-aos="fade-up" data-aos-delay="400">
+                    <div class="d-grid">
+                        <th:block th:if="${!isAnunciante}">
+                            <button
+                                th:if="${!jaCandidatado}"
+                                type="button"
+                                class="btn btn-primary-karteria btn-lg w-100 shadow-lg"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirmarCandidaturaModal">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Quero me candidatar agora
+                            </button>
+
+                            <button th:if="${jaCandidatado}" type="button" class="btn btn-secondary btn-lg w-100 disabled border-0" disabled style="opacity: 0.8">
+                                <i class="fas fa-check-double me-2"></i>
+                                Você já se candidatou
+                            </button>
+                        </th:block>
+
+                        <th:block th:if="${isAnunciante}">
+                            <div class="text-center text-muted fw-bold py-2">
+                                <i class="fas fa-user-edit me-2"></i>
+                                Você é o dono desta vaga.
+                            </div>
+                        </th:block>
                     </div>
                 </div>
             </div>
         </main>
 
-        <!-- Modal de Confirmação -->
         <div class="modal fade" id="confirmarCandidaturaModal" tabindex="-1" aria-labelledby="confirmarCandidaturaModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -168,8 +190,6 @@
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-main.js}"></script>
         <script th:src="@{/js/anuncio-detalhes.js}"></script>
-        <script th:src="@{/js/karteria-main.js}"></script>
-        <script th:src="@{/js/form-masks-validations.js}"></script>
         <script th:src="@{/js/karteria-forms.js}"></script>
         <script th:src="@{/js/notification-dropdown.js}"></script>
         <script>
