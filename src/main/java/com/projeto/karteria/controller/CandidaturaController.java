@@ -71,8 +71,10 @@ public class CandidaturaController {
       // Log do erro (pode ser substituído por um logger adequado)
       System.err.println("Erro ao criar notificação: " + e.getMessage());
     }
-
+    
     redirectAttributes.addFlashAttribute("sucesso", "Candidatura realizada com sucesso!");
-    return "redirect:/home";
+    
+    // Redireciona para a página de detalhes do anúncio
+    return "redirect:/anuncios/detalhes/" + anuncioId;
   }
 }

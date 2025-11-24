@@ -48,19 +48,37 @@
 
                         <hr style="border-color: var(--border-light)" />
 
-                        <!-- Se o empregador marcou "Exibir Telefone" -->
-                        <div th:if="${anuncio.exibirTelefone}" class="alert alert-info" role="alert">
-                            <h5 class="alert-heading">
-                                <i class="fas fa-phone me-2"></i>
-                                Contato do Empregador
-                            </h5>
-                            <p>O empregador optou por exibir seu telefone:</p>
-                            <hr />
-                            <!-- Busca o telefone do objeto 'anunciante' dentro do 'anuncio' -->
-                            <p class="mb-0 fw-bold" th:text="${anuncio.anunciante?.telefone}"></p>
+                        <div th:if="${anuncio.exibirTelefone and !jaCandidatado and !isAnunciante}" class="alert alert-secondary" role="alert">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-lock fa-2x text-muted"></i>
+                                </div>
+                                <div>
+                                    <h6 class="alert-heading mb-1 fw-bold">Contato Protegido</h6>
+                                    <p class="mb-0 small text-muted">
+                                        O empregador disponibilizou um telefone.
+                                        <span class="text-primary fw-bold">Candidate-se</span>
+                                        para visualizar o número e entrar em contato.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Se o empregador desmarcou "Permitir Contato" -->
+                        <div th:if="${anuncio.exibirTelefone and (jaCandidatado or isAnunciante)}" class="alert alert-info" role="alert">
+                            <h5 class="alert-heading">
+                                <i class="fas fa-phone-alt me-2"></i>
+                                Contato do Empregador
+                            </h5>
+                            <p class="mb-2">Você tem acesso ao contato deste empregador:</p>
+                            <div class="p-2 bg-white rounded border text-center">
+                                <span class="fs-4 fw-bold text-dark" th:text="${anuncio.anunciante?.telefone}"></span>
+                            </div>
+                            <p class="mt-2 mb-0 small text-muted">
+                                <i class="fas fa-check-circle me-1 text-success"></i>
+                                Acesso liberado porque você se candidatou.
+                            </p>
+                        </div>
+
                         <div th:if="${!anuncio.permitirContato}" class="alert alert-warning" role="alert">
                             <i class="fas fa-info-circle me-2"></i>
                             <strong>Atenção:</strong>
