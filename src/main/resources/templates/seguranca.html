@@ -22,10 +22,7 @@
         <main class="dashboard-content">
             <div class="container settings-container py-4">
                 <div class="dashboard-header mb-4">
-                    <h1>
-                        Configurações e
-                        <span class="brand-text">Privacidade</span>
-                    </h1>
+                    <h1><span th:text="#{settings.title}">Configurações</span></h1>
                 </div>
 
                 <div th:if="${sucesso}" class="alert alert-success animate-fade-in-down" th:text="${sucesso}"></div>
@@ -33,30 +30,30 @@
                 <div th:if="${erroDados}" class="alert alert-danger animate-fade-in-down" th:text="${erroDados}"></div>
                 <div th:if="${erroSenha}" class="alert alert-danger animate-fade-in-down" th:text="${erroSenha}"></div>
 
-                <h2 class="settings-section-title">Preferências gerais</h2>
+                <h2 class="settings-section-title" th:text="#{settings.general}">Preferências gerais</h2>
                 <div class="settings-card" data-aos="fade-up">
                     <div class="settings-item" data-bs-toggle="modal" data-bs-target="#modalIdioma">
                         <div class="item-content">
-                            <h3>Idioma</h3>
-                            <p>Selecione o idioma de exibição da plataforma.</p>
+                            <h3 th:text="#{settings.lang}">Idioma</h3>
+                            <p th:text="#{settings.lang.desc}">Selecione o idioma...</p>
                         </div>
                         <i class="fas fa-chevron-right item-arrow"></i>
                     </div>
 
                     <div class="settings-item" data-bs-toggle="modal" data-bs-target="#modalExibicao">
                         <div class="item-content">
-                            <h3>Exibição</h3>
-                            <p>Modo escuro, claro ou configuração do dispositivo.</p>
+                            <h3 th:text="#{settings.theme}">Exibição</h3>
+                            <p th:text="#{settings.theme.desc}">Modo escuro...</p>
                         </div>
                         <i class="fas fa-chevron-right item-arrow"></i>
                     </div>
                 </div>
 
-                <h2 class="settings-section-title">Acesso e segurança</h2>
+                <h2 class="settings-section-title" th:text="#{settings.access}">Acesso e segurança</h2>
                 <div class="settings-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="settings-item" data-bs-toggle="modal" data-bs-target="#modalEmail">
                         <div class="item-content">
-                            <h3>Endereços de e-mail</h3>
+                            <h3 th:text="#{settings.email}">Endereços de e-mail</h3>
                             <p th:text="${usuario.email}">usuario@email.com</p>
                         </div>
                         <i class="fas fa-chevron-right item-arrow"></i>
@@ -64,33 +61,63 @@
 
                     <div class="settings-item" data-bs-toggle="modal" data-bs-target="#modalSenha">
                         <div class="item-content">
-                            <h3>Alterar senha</h3>
-                            <p>Crie uma senha forte para proteger sua conta.</p>
+                            <h3 th:text="#{settings.pass}">Alterar senha</h3>
+                            <p th:text="#{settings.pass.desc}">Crie uma senha forte...</p>
                         </div>
                         <i class="fas fa-chevron-right item-arrow"></i>
                     </div>
                 </div>
 
-                <h2 class="settings-section-title">Gerenciamento da conta</h2>
+                <h2 class="settings-section-title" th:text="#{settings.manage}">Gerenciamento da conta</h2>
                 <div class="settings-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="settings-item" data-bs-toggle="modal" data-bs-target="#modalHibernar">
                         <div class="item-content">
-                            <h3>Colocar conta em hibernação</h3>
-                            <p>Desative temporariamente sua conta e oculte seu perfil.</p>
+                            <h3 th:text="#{settings.hibernate}">Colocar conta em hibernação</h3>
+                            <p th:text="#{settings.hibernate.desc}">Desative temporariamente...</p>
                         </div>
                         <i class="fas fa-chevron-right item-arrow"></i>
                     </div>
 
                     <div class="settings-item" data-bs-toggle="modal" data-bs-target="#modalEncerrar">
                         <div class="item-content">
-                            <h3 class="text-danger">Encerrar e excluir conta</h3>
-                            <p>Exclua permanentemente sua conta e seus dados.</p>
+                            <h3 class="text-danger" th:text="#{settings.close}">Encerrar e excluir conta</h3>
+                            <p th:text="#{settings.close.desc}">Exclua permanentemente...</p>
                         </div>
                         <i class="fas fa-chevron-right item-arrow"></i>
                     </div>
                 </div>
             </div>
         </main>
+
+        <div class="modal fade" id="modalIdioma" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" th:text="#{settings.lang}">Idioma</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="option-list">
+                            <div class="option-item">
+                                <input type="radio" name="langOptions" id="langPT" value="pt" />
+                                <label for="langPT" class="option-label">Português (Brasil)</label>
+                            </div>
+                            <div class="option-item">
+                                <input type="radio" name="langOptions" id="langEN" value="en" />
+                                <label for="langEN" class="option-label">English</label>
+                            </div>
+                            <div class="option-item">
+                                <input type="radio" name="langOptions" id="langES" value="es" />
+                                <label for="langES" class="option-label">Español</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-primary-karteria" id="btnSalvarIdioma" data-bs-dismiss="modal">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="modal fade" id="modalExibicao" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -101,7 +128,6 @@
                     </div>
                     <div class="modal-body">
                         <p class="text-muted mb-4">Selecione como o Karteria será exibido neste dispositivo.</p>
-
                         <div class="option-list">
                             <div class="option-item">
                                 <input type="radio" name="themeOptions" id="themeDevice" value="auto" />
@@ -117,39 +143,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer border-0">
-                        <button type="button" class="btn btn-primary-karteria" id="btnSalvarTema" data-bs-dismiss="modal">Aplicar</button>
-                    </div>
+                    <div class="modal-footer border-0"><button type="button" class="btn btn-primary-karteria" id="btnSalvarTema" data-bs-dismiss="modal">Aplicar</button></div>
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="modalIdioma" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold">Idioma</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="option-list">
-                            <div class="option-item">
-                                <input type="radio" name="langOptions" id="langPT" value="pt" checked />
-                                <label for="langPT" class="option-label">Português (Brasil)</label>
-                            </div>
-                            <div class="option-item">
-                                <input type="radio" name="langOptions" id="langEN" value="en" />
-                                <label for="langEN" class="option-label">English</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0">
-                        <button type="button" class="btn btn-primary-karteria" data-bs-dismiss="modal">Salvar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="modal fade" id="modalEmail" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -174,7 +171,6 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="modalSenha" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -205,7 +201,6 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="modalHibernar" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -227,7 +222,6 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="modalEncerrar" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -265,34 +259,51 @@
         <script>
             AOS.init({ once: true, duration: 600 });
 
-            // --- Lógica do Tema (Exibição) ---
             document.addEventListener("DOMContentLoaded", () => {
-                // 1. Verifica tema atual
+                // --- Lógica do Tema (Mantida) ---
                 const currentTheme = localStorage.getItem("karteria-theme") || "auto";
-
-                // 2. Marca o radio correto
                 if (currentTheme === "dark") document.getElementById("themeDark").checked = true;
                 else if (currentTheme === "light") document.getElementById("themeLight").checked = true;
                 else document.getElementById("themeDevice").checked = true;
 
-                // 3. Salvar e Aplicar
                 document.getElementById("btnSalvarTema").addEventListener("click", () => {
                     let selectedTheme = "light";
                     if (document.getElementById("themeDark").checked) selectedTheme = "dark";
                     else if (document.getElementById("themeDevice").checked) {
-                        // Se for device, verifica a preferência do sistema
                         selectedTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-                        // Salva como 'auto' no storage para lógica futura, mas aplica o visual agora
                         localStorage.setItem("karteria-theme-preference", "auto");
                     }
 
                     if (document.getElementById("themeDevice").checked) {
-                        localStorage.removeItem("karteria-theme"); 
-                        window.location.reload(); 
+                        localStorage.removeItem("karteria-theme");
+                        window.location.reload();
                     } else {
                         window.Karteria.theme.set(selectedTheme);
                     }
                 });
+
+                // --- LÓGICA: IDIOMA ---
+
+                // 1. Verifica idioma atual na URL ou no HTML (atributo lang) para marcar o radio certo
+                const currentLang = new URLSearchParams(window.location.search).get("lang") || document.documentElement.lang || "pt";
+
+                if (currentLang.includes("pt")) document.getElementById("langPT").checked = true;
+                else if (currentLang.includes("en")) document.getElementById("langEN").checked = true;
+                else if (currentLang.includes("es")) document.getElementById("langES").checked = true;
+
+                // 2. Ação do Botão Salvar Idioma
+                const btnSalvarIdioma = document.getElementById("btnSalvarIdioma");
+                if (btnSalvarIdioma) {
+                    btnSalvarIdioma.addEventListener("click", () => {
+                        // Pega qual radio está marcado
+                        const selectedLang = document.querySelector('input[name="langOptions"]:checked').value;
+
+                        // Redireciona para a mesma página com o parâmetro lang atualizado
+                        const url = new URL(window.location.href);
+                        url.searchParams.set("lang", selectedLang);
+                        window.location.href = url.toString();
+                    });
+                }
             });
         </script>
     </body>

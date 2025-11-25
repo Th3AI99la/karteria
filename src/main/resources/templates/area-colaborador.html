@@ -24,10 +24,9 @@
                 <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h1>
-                            Dashboard do
-                            <span class="brand-text">Colaborador</span>
+                            <span th:text="#{colab.dashboard.title}">Dashboard do Colaborador</span>
                         </h1>
-                        <p class="lead text-secondary mb-0">Encontre a oportunidade perfeita para você.</p>
+                        <p class="lead text-secondary mb-0" th:text="#{colab.dashboard.subtitle}">Encontre a oportunidade perfeita para você.</p>
                     </div>
 
                     <div class="dropdown">
@@ -69,8 +68,8 @@
                 <div class="mt-4">
                     <div th:if="${#lists.isEmpty(anuncios)}" class="empty-state" data-aos="zoom-in">
                         <div class="empty-state-icon mb-3"><i class="fas fa-wind"></i></div>
-                        <h3 class="fw-bold">Nenhuma oportunidade no momento</h3>
-                        <p class="text-muted">Parece que não há vagas disponíveis agora. Volte mais tarde!</p>
+                        <h3 class="fw-bold" th:text="#{colab.empty}">Nenhuma oportunidade no momento</h3>
+                        <p class="text-muted" th:text="#{colab.empty.desc}">Parece que não há vagas disponíveis agora. Volte mais tarde!</p>
                     </div>
 
                     <div th:unless="${#lists.isEmpty(anuncios)}" class="row g-4" id="colabCardContainer">
@@ -100,12 +99,15 @@
                                         </p>
                                         <a th:href="@{/anuncios/detalhes/{id}(id=${anuncio.id})}" class="btn btn-primary-karteria w-100">
                                             <i class="fas fa-arrow-right me-2"></i>
-                                            Ver Detalhes
+                                            <span th:text="#{colab.btn.details}">Ver Detalhes</span>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <small class="text-muted" th:text="'Publicado por: ' + ${anuncio.anunciante.nome}"></small>
+                                    <small class="text-muted">
+                                        <span th:text="#{colab.published_by}">Publicado por:</span>
+                                        <span th:text="${anuncio.anunciante.nome}">Nome</span>
+                                    </small>
                                 </div>
                             </div>
                         </div>

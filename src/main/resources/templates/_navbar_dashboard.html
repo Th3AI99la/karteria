@@ -18,21 +18,21 @@
                 <li class="sidenav-nav-item">
                     <a class="sidenav-nav-link" th:href="@{/perfil}" aria-label="Meu Perfil">
                         <i class="fas fa-user-cog"></i>
-                        <span>Meu Perfil</span>
+                        <span th:text="#{nav.profile}">Meu Perfil</span>
                     </a>
                 </li>
 
                 <li class="sidenav-nav-item">
-                    <a class="sidenav-nav-link" th:href="@{/escolher-perfil}" aria-label="Voltar menu seleção">
+                    <a class="sidenav-nav-link" th:href="@{/escolher-perfil}">
                         <i class="fas fa-exchange-alt"></i>
-                        <span>Trocar Perfil</span>
+                        <span th:text="#{nav.switch_profile}">Trocar Perfil</span>
                     </a>
                 </li>
 
                 <li class="sidenav-nav-item">
-                    <a class="sidenav-nav-link" th:href="@{/seguranca}" aria-label="Segurança">
+                    <a class="sidenav-nav-link" th:href="@{/seguranca}">
                         <i class="fas fa-shield-alt"></i>
-                        <span>Segurança</span>
+                        <span th:text="#{nav.security}">Segurança</span>
                     </a>
                 </li>
 
@@ -40,7 +40,7 @@
                     <form th:action="@{/logout}" method="post" class="m-0">
                         <button type="submit" class="sidenav-nav-link text-danger" style="width: 100%; border: none; background: transparent; text-align: left" aria-label="Sair">
                             <i class="fas fa-sign-out-alt"></i>
-                            <span>Sair</span>
+                            <span th:text="#{nav.logout}">Sair</span>
                         </button>
                     </form>
                 </li>

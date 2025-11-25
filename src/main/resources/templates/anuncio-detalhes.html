@@ -25,9 +25,10 @@
                 <div th:if="${sucesso}" class="alert alert-success mb-4 animate-fade-in-down" th:text="${sucesso}"></div>
 
                 <div class="mb-4">
+                    <!-- Alteração: Botão Voltar -->
                     <a th:href="@{/home}" class="btn btn-outline-secondary btn-sm border-0 ps-0">
                         <i class="fas fa-arrow-left me-2"></i>
-                        Voltar para o início
+                        <span th:text="#{job.back}">Voltar para o início</span>
                     </a>
                 </div>
                 <div th:if="${erro}" class="alert alert-danger mb-4 animate-fade-in-down" th:text="${erro}"></div>
@@ -41,29 +42,32 @@
                         </span>
                         <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]</span>
 
-                        <small th:if="${anuncio.tipoPagamento == 'POR_DIA'}">/ Dia</small>
-                        <small th:if="${anuncio.tipoPagamento == 'POR_HORA'}">/ Hora</small>
-                        <small th:if="${anuncio.tipoPagamento == 'UNICO'}">(Total)</small>
+                        <!-- Alteração: Tipos de Pagamento -->
+                        <small th:if="${anuncio.tipoPagamento == 'POR_DIA'}" th:text="#{job.salary.day}">/ Dia</small>
+                        <small th:if="${anuncio.tipoPagamento == 'POR_HORA'}" th:text="#{job.salary.hour}">/ Hora</small>
+                        <small th:if="${anuncio.tipoPagamento == 'UNICO'}" th:text="#{job.salary.total}">(Total)</small>
                     </div>
                 </div>
 
                 <div class="mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <!-- Contato Protegido -->
                     <div th:if="${anuncio.exibirTelefone and !jaCandidatado and !isAnunciante}" class="alert alert-secondary border-0 shadow-sm" role="alert">
                         <div class="d-flex align-items-center">
                             <div class="me-3 info-icon" style="background: rgba(0, 0, 0, 0.05); color: var(--text-secondary)">
                                 <i class="fas fa-lock"></i>
                             </div>
                             <div>
-                                <h6 class="alert-heading mb-1 fw-bold">Contato Protegido</h6>
-                                <p class="mb-0 small text-muted">
-                                    O empregador disponibilizou um telefone.
-                                    <span class="text-primary fw-bold">Candidate-se</span>
-                                    abaixo para liberar o acesso.
+                                <!-- Alteração: Título Contato Protegido -->
+                                <h6 class="alert-heading mb-1 fw-bold" th:text="#{job.protected.title}">Contato Protegido</h6>
+                                <!-- Alteração: Descrição Contato Protegido -->
+                                <p class="mb-0 small text-muted" th:text="#{job.protected.desc}">
+                                    O empregador disponibilizou um telefone. Candidate-se abaixo para liberar o acesso.
                                 </p>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Contato Liberado -->
                     <div
                         th:if="${anuncio.exibirTelefone and (jaCandidatado or isAnunciante)}"
                         class="alert alert-success border-0 shadow-sm"
@@ -75,7 +79,8 @@
                                     <i class="fas fa-phone-alt"></i>
                                 </div>
                                 <div>
-                                    <p class="mb-0 small">Fale diretamente com o empregador.</p>
+                                    <!-- Alteração: Descrição Contato Liberado -->
+                                    <p class="mb-0 small" th:text="#{job.unlocked.desc}">Fale diretamente com o empregador.</p>
                                 </div>
                             </div>
                             <div class="bg-white px-4 py-2 rounded-pill border fw-bold fs-5 shadow-sm text-dark">
@@ -84,14 +89,15 @@
                         </div>
                     </div>
 
+                    <!-- Sem Contato (Atenção) -->
                     <div th:if="${!anuncio.permitirContato}" class="alert alert-warning border-0 shadow-sm" role="alert">
                         <div class="d-flex align-items-center">
                             <div class="me-3 info-icon" style="background: rgba(255, 255, 255, 0.5); color: var(--warning)">
                                 <i class="fas fa-info-circle"></i>
                             </div>
                             <div>
-                                <strong>Atenção:</strong>
-                                O empregador prefere ser contatado apenas pela plataforma.
+                                <!-- Alteração: Texto de Atenção -->
+                                <strong th:text="#{job.no_contact}">Atenção: O empregador prefere ser contatado apenas pela plataforma.</strong>
                             </div>
                         </div>
                     </div>
@@ -101,7 +107,8 @@
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
                         <div class="info-content">
-                            <h6>Localização</h6>
+                            <!-- Alteração: Label Localização -->
+                            <h6><span th:text="#{job.location}">Localização</span></h6>
                             <p th:text="${anuncio.localizacao}">Carregando...</p>
                         </div>
                     </div>
@@ -109,7 +116,8 @@
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-user"></i></div>
                         <div class="info-content">
-                            <h6>Publicado por</h6>
+                            <!-- Alteração: Label Publicado por -->
+                            <h6><span th:text="#{job.published_by}">Publicado por</span></h6>
                             <p th:text="${anuncio.anunciante?.nome}">Nome</p>
                         </div>
                     </div>
@@ -117,16 +125,18 @@
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-calendar-check"></i></div>
                         <div class="info-content">
-                            <h6>Publicado em</h6>
+                            <!-- Alteração: Label Publicado em -->
+                            <h6><span th:text="#{job.published_in}">Publicado em</span></h6>
                             <p th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy')}">Data</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="vaga-descricao" data-aos="fade-up" data-aos-delay="300">
+                    <!-- Alteração: Título Descrição -->
                     <h3 class="brand-text">
                         <i class="fas fa-file-alt"></i>
-                        Sobre a Vaga
+                        <span th:text="#{job.about}">Sobre a Vaga</span>
                     </h3>
                     <p th:text="${anuncio.descricao}"></p>
                 </div>
@@ -141,19 +151,22 @@
                                 data-bs-toggle="modal"
                                 data-bs-target="#confirmarCandidaturaModal">
                                 <i class="fas fa-check-circle me-2"></i>
-                                Quero me candidatar agora
+                                <!-- Alteração: Botão Candidatar -->
+                                <span th:text="#{job.btn.apply}">Quero me candidatar agora</span>
                             </button>
 
                             <button th:if="${jaCandidatado}" type="button" class="btn btn-secondary btn-lg w-100 disabled border-0" disabled style="opacity: 0.8">
                                 <i class="fas fa-check-double me-2"></i>
-                                Você já se candidatou
+                                <!-- Alteração: Botão Já Candidatado -->
+                                <span th:text="#{job.btn.applied}">Você já se candidatou</span>
                             </button>
                         </th:block>
 
                         <th:block th:if="${isAnunciante}">
                             <div class="text-center text-muted fw-bold py-2">
                                 <i class="fas fa-user-edit me-2"></i>
-                                Você é o dono desta vaga.
+                                <!-- Alteração: Mensagem Dono -->
+                                <span th:text="#{job.owner}">Você é o dono desta vaga.</span>
                             </div>
                         </th:block>
                     </div>
