@@ -1,6 +1,7 @@
 package com.projeto.karteria.model;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column; 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,7 +27,10 @@ public class Anuncio {
 
   // --- Campos de Dados ---
   private String titulo;
+
+  @Column(length = 2000) 
   private String descricao;
+
   private String localizacao;
   private LocalDateTime dataPostagem;
 
@@ -48,7 +52,7 @@ public class Anuncio {
   @OneToMany(mappedBy = "anuncio", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Candidatura> candidaturas;
 
-  private int visualizacoes = 0; // Inicializa com 0
+  private int visualizacoes = 0; 
 
   // --- Getters e Setters ---
   public Long getId() {

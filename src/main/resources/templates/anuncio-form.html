@@ -16,7 +16,6 @@
 
     <body data-bs-theme="dark">
         <div th:replace="~{_navbar_dashboard :: global_loader}"></div>
-        <div th:replace="~{_navbar_dashboard :: global_loader}"></div>
 
         <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
             <div class="container-fluid">
@@ -49,12 +48,16 @@
 
                                 <div class="mb-3">
                                     <label for="tituloVaga" class="form-label">Título da Vaga *</label>
-                                    <input type="text" th:field="*{titulo}" id="tituloVaga" class="form-control form-control-lg" required />
+                                    <input type="text" th:field="*{titulo}" id="tituloVaga" class="form-control form-control-lg" required maxlength="100" />
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="descricaoVaga" class="form-label">Descrição Detalhada *</label>
-                                    <textarea th:field="*{descricao}" id="descricaoVaga" class="form-control" rows="5" required></textarea>
+                                    <div class="d-flex justify-content-between">
+                                        <label for="descricaoVaga" class="form-label">Descrição Detalhada *</label>
+                                        <small class="text-muted" id="charCount">0/2000</small>
+                                    </div>
+
+                                    <textarea th:field="*{descricao}" id="descricaoVaga" class="form-control" rows="5" required maxlength="2000"></textarea>
                                 </div>
 
                                 <div class="mb-3 p-3" style="background: var(--bg-tertiary); border-radius: var(--radius-md)">
@@ -135,72 +138,80 @@
             AOS.init({ once: true, duration: 600 });
 
             document.addEventListener("DOMContentLoaded", () => {
-                // --- 1. CAPITALIZAÇÃO AUTOMÁTICA DOS CAMPOS DE TEXTO ---
-
+                // --- 1. CAPITALIZAÇÃO ---
                 try {
                     if (typeof capitalizeFirstLetter === "function") {
                         capitalizeFirstLetter(document.getElementById("tituloVaga"));
                         capitalizeFirstLetter(document.getElementById("descricaoVaga"));
-                    } else {
-                        console.warn("Função capitalizeFirstLetter() não encontrada.");
                     }
                 } catch (e) {
-                    console.error("Erro na capitalização:", e);
+                    console.error(e);
                 }
 
-                // --- 2. LÓGICA DO TIPO DE PAGAMENTO (VALOR) ---
+                // --- 2. CONTADOR DE CARACTERES (NOVO) ---
+                const descricaoInput = document.getElementById("descricaoVaga");
+                const charCountDisplay = document.getElementById("charCount");
+                const MAX_CHARS = 2000;
 
+                function updateCounter() {
+                    const currentLength = descricaoInput.value.length;
+                    charCountDisplay.textContent = `${currentLength}/${MAX_CHARS}`;
+
+                    // Muda a cor se estiver perto do limite
+                    if (currentLength >= MAX_CHARS) {
+                        charCountDisplay.classList.add("text-danger");
+                        charCountDisplay.classList.remove("text-muted");
+                    } else {
+                        charCountDisplay.classList.remove("text-danger");
+                        charCountDisplay.classList.add("text-muted");
+                    }
+                }
+
+                if (descricaoInput && charCountDisplay) {
+                    descricaoInput.addEventListener("input", updateCounter);
+                    updateCounter(); // Chama na carga (para edições)
+                }
+
+                // --- 3. LÓGICA DE PAGAMENTO ---
                 const tipoPagamentoSelect = document.getElementById("tipoPagamentoSelect");
                 const valorIntervaloGroup = document.getElementById("valorIntervaloGroup");
                 const valorUnicoGroup = document.getElementById("valorUnicoGroup");
                 const valorHelpText = document.getElementById("valorHelpText");
-
-                const valorMinInput = document.getElementById("valorMin"); // Input de Mínimo (do intervalo)
-                const valorMaxInput = document.getElementById("valorMax"); // Input de Máximo (do intervalo)
-                const valorUnicoInput = document.getElementById("valorUnico"); // Input de Valor Único
+                const valorMinInput = document.getElementById("valorMin");
+                const valorMaxInput = document.getElementById("valorMax");
+                const valorUnicoInput = document.getElementById("valorUnico");
 
                 function atualizarCamposValor() {
                     const tipo = tipoPagamentoSelect.value;
 
-                    // 1. Reseta todo mundo: esconde, desabilita e remove 'required'
+                    // Reset
                     valorIntervaloGroup.style.display = "none";
                     valorUnicoGroup.style.display = "none";
                     valorHelpText.style.display = "none";
 
                     valorMinInput.disabled = true;
                     valorMinInput.required = false;
-
-                    valorMaxInput.disabled = true; // Max é sempre opcional, não precisa de 'required'
-
+                    valorMaxInput.disabled = true;
                     valorUnicoInput.disabled = true;
                     valorUnicoInput.required = false;
 
-                    // 2. Ativa o grupo correto
                     if (tipo === "POR_DIA") {
-                        // Não checa mais "POR_HORA"
                         valorIntervaloGroup.style.display = "flex";
                         valorHelpText.style.display = "block";
-
-                        // Habilita e torna 'valorMin' obrigatório
                         valorMinInput.disabled = false;
                         valorMinInput.required = true;
-                        valorMaxInput.disabled = false; // Max é opcional
+                        valorMaxInput.disabled = false;
                     } else if (tipo === "UNICO") {
                         valorUnicoGroup.style.display = "block";
-
-                        // Habilita e torna 'valorUnico' obrigatório
                         valorUnicoInput.disabled = false;
                         valorUnicoInput.required = true;
                     }
                 }
 
                 tipoPagamentoSelect.addEventListener("change", atualizarCamposValor);
-
-                // Executa a função na carga da página para garantir que o estado
-                // inicial (especialmente na edição) esteja correto.
                 atualizarCamposValor();
 
-                // --- 3. LÓGICA DOS TOGGLES (CONTATO) - REVISADA ---
+                // --- 4. LÓGICA DE TOGGLES ---
                 const toggleTelefone = document.getElementById("exibirTelefone");
                 const toggleContato = document.getElementById("permitirContato");
 
