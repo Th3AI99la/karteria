@@ -1,5 +1,5 @@
 /* ========================================
-   CSS Específico para Dashboard Colaborador
+   CSS Específico para Dashboard Colaborador (Refinado)
    ======================================== */
 
 .dashboard-header {
@@ -31,35 +31,48 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
+    padding: 15px;
 }
 
-/* Título da Vaga */
+/* --- Título da Vaga --- */
 .colab-card-title {
     color: var(--text-primary);
-    font-weight: 700;
-    font-size: 1.15rem;
-    margin-bottom: 0;
-    line-height: 1.4;
+    font-weight: 800; /* Mais peso */
+    font-size: 1.25rem; /* Um pouco maior */
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    /* Garante que títulos longos não quebrem o layout */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Badge de Data */
-.colab-badge-date {
-    background-color: var(--bg-tertiary);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-light);
-    font-weight: 500;
+/* --- Badge de Tempo Relativo --- */
+.colab-time-badge {
     font-size: 0.75rem;
-    padding: 0.35em 0.65em;
-    border-radius: var(--radius-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--bg-primary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border-light);
+    
+}
+
+.colab-time-badge i {
+    color: var(--brand-primary); /* Reloginho verde */
 }
 
 /* Valor */
 .colab-card-price {
     color: var(--brand-primary);
     font-weight: 700;
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    margin: 1rem 0 0.5rem 0;
 }
 .colab-card-price small {
     color: var(--text-secondary);
@@ -71,35 +84,58 @@
 .card-localizacao {
     color: var(--text-secondary);
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .card-descricao {
     color: var(--text-muted);
     font-size: 0.95rem;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 /* Rodapé do Card */
 .anuncio-card-colab .card-footer {
     background-color: var(--bg-tertiary);
     border-top: 1px solid var(--border-light);
-    padding: 0.75rem 1.5rem;
+    padding: 1rem 1.5rem;
     font-size: 0.85rem;
     color: var(--text-muted);
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
-/* Botão Ver Detalhes */
+/* --- Botão Ver Detalhes (Verde e Moderno) --- */
 .btn-details-colab {
-    border: 2px solid var(--border-medium);
-    color: var(--text-secondary);
-    font-weight: 600;
-    transition: all var(--transition-fast);
+    background: var(--brand-primary); /* Verde da marca */
+    color: #ffffff; /* Texto branco */
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 0.6rem 1rem;
+    transition: all var(--transition-normal);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
 }
+
 .btn-details-colab:hover {
-    border-color: var(--brand-primary);
-    background-color: var(--bg-tertiary);
-    color: var(--brand-primary);
+    background: var(--karteria-green-700); /* Verde mais escuro no hover */
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Ajuste para Dark Mode */
+[data-theme="dark"] .btn-details-colab {
+    color: var(--karteria-gray-950); /* Texto escuro no botão verde para contraste */
+}
+[data-theme="dark"] .btn-details-colab:hover {
+    color: #ffffff; /* Texto branco no hover */
 }
 
 /* Estado Vazio */
@@ -110,7 +146,6 @@
     border-radius: var(--radius-2xl);
     border: 2px dashed var(--border-medium);
 }
-
 .empty-state-icon {
     font-size: 4rem;
     color: var(--brand-primary);
