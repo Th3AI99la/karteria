@@ -260,7 +260,7 @@
             AOS.init({ once: true, duration: 600 });
 
             document.addEventListener("DOMContentLoaded", () => {
-                // --- Lógica do Tema (Mantida) ---
+                // --- Lógica do Tema (MANTIDA IGUAL) ---
                 const currentTheme = localStorage.getItem("karteria-theme") || "auto";
                 if (currentTheme === "dark") document.getElementById("themeDark").checked = true;
                 else if (currentTheme === "light") document.getElementById("themeLight").checked = true;
@@ -282,55 +282,54 @@
                     }
                 });
 
-                // --- LÓGICA IDIOMA (VIA GOOGLE TRANSLATE) ---
+                // =====================================================
+                // --- LÓGICA DA API DE IDIOMA (SIMPLES E FUNCIONAL) ---
+                // =====================================================
 
-                // 1. Função para ler cookies
+                // 1. Função simples para ler o Cookie do Google
                 function getCookie(name) {
                     const v = document.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
                     return v ? v[2] : null;
                 }
 
-                // 2. Função para setar cookies
-                function setCookie(name, value, days) {
-                    const d = new Date();
-                    d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
-                    document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+                // 2. Função simples para Gravar o Cookie do Google
+                function setGoogleCookie(langCode) {
+                    // O Google exige o cookie "googtrans" no formato "/auto/codigo-destino"
+                    // Ex: "/auto/en" para Inglês
+                    document.cookie = "googtrans=/auto/" + langCode + "; domain=" + window.location.hostname + "; path=/";
+                    document.cookie = "googtrans=/auto/" + langCode + "; path=/"; // Fallback
                 }
 
-                // 3. Verifica idioma atual no Cookie do Google
-                // O formato do cookie googtrans é "/pt/en" (de portugues para ingles)
-                const googleCookie = getCookie("googtrans");
-                let currentLang = "pt"; // Padrão
-
-                if (googleCookie) {
-                    // Pega os últimos 2 caracteres do cookie (ex: /pt/es -> es)
-                    currentLang = googleCookie.split("/").pop();
+                function clearGoogleCookie() {
+                    // Para voltar ao original, apagamos o cookie
+                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + window.location.hostname + "; path=/";
+                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
                 }
 
-                // Marca o radio button correto
-                if (currentLang === "pt") document.getElementById("langPT").checked = true;
-                else if (currentLang === "en") document.getElementById("langEN").checked = true;
-                else if (currentLang === "es") document.getElementById("langES").checked = true;
+                // 3. Verifica qual idioma está ativo agora para marcar o botão
+                const currentCookie = getCookie("googtrans");
 
-                // 4. Ação do Botão Salvar Idioma
+                if (currentCookie && currentCookie.includes("/en")) {
+                    document.getElementById("langEN").checked = true;
+                } else if (currentCookie && currentCookie.includes("/es")) {
+                    document.getElementById("langES").checked = true;
+                } else {
+                    document.getElementById("langPT").checked = true; // Padrão (sem cookie)
+                }
+
+                // 4. Ação do Botão Salvar
                 const btnSalvarIdioma = document.getElementById("btnSalvarIdioma");
                 if (btnSalvarIdioma) {
                     btnSalvarIdioma.addEventListener("click", () => {
-                        // Pega qual radio está marcado
                         const selectedLang = document.querySelector('input[name="langOptions"]:checked').value;
 
-                        // O Google Translate funciona lendo o cookie "googtrans"
-                        // Formato: /lingua-original/lingua-destino
-
                         if (selectedLang === "pt") {
-                            // Para voltar ao original, limpamos o cookie ou definimos pt/pt
-                            setCookie("googtrans", "/pt/pt", 30);
-                            setCookie("googtrans", "", -1); // Tenta limpar também
+                            clearGoogleCookie(); // Se escolheu PT, limpa a tradução
                         } else {
-                            setCookie("googtrans", "/pt/" + selectedLang, 30);
+                            setGoogleCookie(selectedLang); // Se escolheu EN ou ES, seta o cookie
                         }
 
-                        // Recarrega a página para o Google traduzir
+                        // Recarrega a página para aplicar
                         window.location.reload();
                     });
                 }
