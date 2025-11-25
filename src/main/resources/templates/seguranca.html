@@ -282,26 +282,56 @@
                     }
                 });
 
-                // --- LÓGICA: IDIOMA ---
+                // --- LÓGICA IDIOMA (VIA GOOGLE TRANSLATE) ---
 
-                // 1. Verifica idioma atual na URL ou no HTML (atributo lang) para marcar o radio certo
-                const currentLang = new URLSearchParams(window.location.search).get("lang") || document.documentElement.lang || "pt";
+                // 1. Função para ler cookies
+                function getCookie(name) {
+                    const v = document.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
+                    return v ? v[2] : null;
+                }
 
-                if (currentLang.includes("pt")) document.getElementById("langPT").checked = true;
-                else if (currentLang.includes("en")) document.getElementById("langEN").checked = true;
-                else if (currentLang.includes("es")) document.getElementById("langES").checked = true;
+                // 2. Função para setar cookies
+                function setCookie(name, value, days) {
+                    const d = new Date();
+                    d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
+                    document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+                }
 
-                // 2. Ação do Botão Salvar Idioma
+                // 3. Verifica idioma atual no Cookie do Google
+                // O formato do cookie googtrans é "/pt/en" (de portugues para ingles)
+                const googleCookie = getCookie("googtrans");
+                let currentLang = "pt"; // Padrão
+
+                if (googleCookie) {
+                    // Pega os últimos 2 caracteres do cookie (ex: /pt/es -> es)
+                    currentLang = googleCookie.split("/").pop();
+                }
+
+                // Marca o radio button correto
+                if (currentLang === "pt") document.getElementById("langPT").checked = true;
+                else if (currentLang === "en") document.getElementById("langEN").checked = true;
+                else if (currentLang === "es") document.getElementById("langES").checked = true;
+
+                // 4. Ação do Botão Salvar Idioma
                 const btnSalvarIdioma = document.getElementById("btnSalvarIdioma");
                 if (btnSalvarIdioma) {
                     btnSalvarIdioma.addEventListener("click", () => {
                         // Pega qual radio está marcado
                         const selectedLang = document.querySelector('input[name="langOptions"]:checked').value;
 
-                        // Redireciona para a mesma página com o parâmetro lang atualizado
-                        const url = new URL(window.location.href);
-                        url.searchParams.set("lang", selectedLang);
-                        window.location.href = url.toString();
+                        // O Google Translate funciona lendo o cookie "googtrans"
+                        // Formato: /lingua-original/lingua-destino
+
+                        if (selectedLang === "pt") {
+                            // Para voltar ao original, limpamos o cookie ou definimos pt/pt
+                            setCookie("googtrans", "/pt/pt", 30);
+                            setCookie("googtrans", "", -1); // Tenta limpar também
+                        } else {
+                            setCookie("googtrans", "/pt/" + selectedLang, 30);
+                        }
+
+                        // Recarrega a página para o Google traduzir
+                        window.location.reload();
                     });
                 }
             });
