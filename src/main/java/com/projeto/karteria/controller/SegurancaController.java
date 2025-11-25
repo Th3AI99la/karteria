@@ -1,8 +1,5 @@
 package com.projeto.karteria.controller;
 
-import com.projeto.karteria.model.Usuario;
-import com.projeto.karteria.repository.UsuarioRepository;
-import com.projeto.karteria.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projeto.karteria.model.Usuario;
+import com.projeto.karteria.repository.UsuarioRepository;
+
+@SuppressWarnings("unused")
 @Controller
 public class SegurancaController {
 
