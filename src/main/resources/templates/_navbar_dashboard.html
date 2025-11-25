@@ -208,5 +208,48 @@
         <script>
             AOS.init({ once: true, duration: 600 });
         </script>
+
+        <div id="google_translate_element" style="display: none"></div>
+
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                    {
+                        pageLanguage: "pt", // O idioma original do seu site
+                        includedLanguages: "pt,en,es", // Idiomas permitidos
+                        autoDisplay: false
+                    },
+                    "google_translate_element"
+                );
+            }
+        </script>
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+        <style>
+            /* Esconde a barra azul do Google */
+            .goog-te-banner-frame.skiptranslate {
+                display: none !important;
+            }
+            body {
+                top: 0px !important;
+            }
+
+            /* Esconde tooltips */
+            .goog-tooltip {
+                display: none !important;
+            }
+            .goog-tooltip-hover {
+                display: none !important;
+            }
+            .goog-text-highlight {
+                background-color: transparent !important;
+                box-shadow: none !important;
+            }
+
+            /* Esconde o widget padrão */
+            #google_translate_element {
+                display: none !important;
+            }
+        </style>
     </body>
 </html>

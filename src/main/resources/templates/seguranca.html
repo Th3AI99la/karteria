@@ -283,30 +283,31 @@
                 });
 
                 // =====================================================
-                // --- LÓGICA DA API DE IDIOMA (SIMPLES E FUNCIONAL) ---
+                // --- LÓGICA GOOGLE TRANSLATE (COOKIES) ---
                 // =====================================================
 
-                // 1. Função simples para ler o Cookie do Google
+                // 1. Ler Cookie
                 function getCookie(name) {
                     const v = document.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
                     return v ? v[2] : null;
                 }
 
-                // 2. Função simples para Gravar o Cookie do Google
+                // 2. Gravar Cookie (Formato do Google: /pt/en)
                 function setGoogleCookie(langCode) {
-                    // O Google exige o cookie "googtrans" no formato "/auto/codigo-destino"
-                    // Ex: "/auto/en" para Inglês
-                    document.cookie = "googtrans=/auto/" + langCode + "; domain=" + window.location.hostname + "; path=/";
-                    document.cookie = "googtrans=/auto/" + langCode + "; path=/"; // Fallback
+                    // Define para o domínio todo e caminho raiz
+                    const domain = window.location.hostname;
+                    document.cookie = "googtrans=/pt/" + langCode + "; domain=" + domain + "; path=/";
+                    document.cookie = "googtrans=/pt/" + langCode + "; path=/";
                 }
 
+                // 3. Limpar Cookie (Voltar ao original)
                 function clearGoogleCookie() {
-                    // Para voltar ao original, apagamos o cookie
-                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + window.location.hostname + "; path=/";
+                    const domain = window.location.hostname;
+                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + domain + "; path=/";
                     document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
                 }
 
-                // 3. Verifica qual idioma está ativo agora para marcar o botão
+                // 4. Verificar estado atual
                 const currentCookie = getCookie("googtrans");
 
                 if (currentCookie && currentCookie.includes("/en")) {
@@ -314,22 +315,22 @@
                 } else if (currentCookie && currentCookie.includes("/es")) {
                     document.getElementById("langES").checked = true;
                 } else {
-                    document.getElementById("langPT").checked = true; // Padrão (sem cookie)
+                    document.getElementById("langPT").checked = true;
                 }
 
-                // 4. Ação do Botão Salvar
+                // 5. Ação do Botão Salvar
                 const btnSalvarIdioma = document.getElementById("btnSalvarIdioma");
                 if (btnSalvarIdioma) {
                     btnSalvarIdioma.addEventListener("click", () => {
                         const selectedLang = document.querySelector('input[name="langOptions"]:checked').value;
 
                         if (selectedLang === "pt") {
-                            clearGoogleCookie(); // Se escolheu PT, limpa a tradução
+                            clearGoogleCookie(); // Remove tradução
                         } else {
-                            setGoogleCookie(selectedLang); // Se escolheu EN ou ES, seta o cookie
+                            setGoogleCookie(selectedLang); // Ativa tradução
                         }
 
-                        // Recarrega a página para aplicar
+                        // Recarrega para o Google aplicar a mudança
                         window.location.reload();
                     });
                 }
