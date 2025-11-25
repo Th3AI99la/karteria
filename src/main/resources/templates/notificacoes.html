@@ -3,17 +3,22 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title th:text="'Detalhes: ' + ${anuncio.titulo}">Detalhes do Anúncio</title>
+        <title>Minhas Notificações - Karteria</title>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
         <link rel="stylesheet" th:href="@{/css/karteria-colors.css}" />
         <link rel="stylesheet" th:href="@{/css/karteria-main.css}" />
-        <link rel="stylesheet" th:href="@{/css/fragments/_navbar_dashboard.css}" />
-        <link rel="stylesheet" th:href="@{/css/fragments/_notification_dropdown.css}" />
-        <link rel="stylesheet" th:href="@{/css/pages/anuncio-detalhes.css}" />
-
-        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+        <link rel="stylesheet"
+            th:href="@{/css/fragments/_navbar_dashboard.css}" />
+        <link rel="stylesheet"
+            th:href="@{/css/fragments/_notification_dropdown.css}" />
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+            rel="stylesheet" />
+            <link rel="stylesheet" th:href="@{/css/pages/notification.css}" />
     </head>
 
     <body class="dashboard-layout">
@@ -21,190 +26,136 @@
         <div th:replace="~{_navbar_dashboard :: global_loader}"></div>
 
         <main class="dashboard-content">
-            <div class="container py-4" style="max-width: 900px">
-                <div th:if="${sucesso}" class="alert alert-success mb-4 animate-fade-in-down" th:text="${sucesso}"></div>
-
-                <div class="mb-4">
-                    <!-- Alteração: Botão Voltar -->
-                    <a th:href="@{/home}" class="btn btn-outline-secondary btn-sm border-0 ps-0">
-                        <i class="fas fa-arrow-left me-2"></i>
-                        <span th:text="#{job.back}">Voltar para o início</span>
-                    </a>
-                </div>
-                <div th:if="${erro}" class="alert alert-danger mb-4 animate-fade-in-down" th:text="${erro}"></div>
-
-                <div class="vaga-header" data-aos="fade-down">
-                    <h1 class="vaga-titulo" th:text="${anuncio.titulo}">Título do Anúncio</h1>
-
-                    <div class="vaga-preco">
-                        <span th:if="${anuncio.valorMax != null and anuncio.valorMax > 0}">
-                            R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 0, 'COMMA')}]] - [[${#numbers.formatDecimal(anuncio.valorMax, 1, 'POINT', 0, 'COMMA')}]]
-                        </span>
-                        <span th:if="${anuncio.valorMax == null or anuncio.valorMax == 0}">R$ [[${#numbers.formatDecimal(anuncio.valorMin, 1, 'POINT', 2, 'COMMA')}]]</span>
-
-                        <!-- Alteração: Tipos de Pagamento -->
-                        <small th:if="${anuncio.tipoPagamento == 'POR_DIA'}" th:text="#{job.salary.day}">/ Dia</small>
-                        <small th:if="${anuncio.tipoPagamento == 'POR_HORA'}" th:text="#{job.salary.hour}">/ Hora</small>
-                        <small th:if="${anuncio.tipoPagamento == 'UNICO'}" th:text="#{job.salary.total}">(Total)</small>
+            <div class="container">
+                <div
+                    class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1>Minhas <span
+                                class="brand-text">Notificações</span></h1>
                     </div>
                 </div>
 
-                <div class="mb-4" data-aos="fade-up" data-aos-delay="100">
-                    <!-- Contato Protegido -->
-                    <div th:if="${anuncio.exibirTelefone and !jaCandidatado and !isAnunciante}" class="alert alert-secondary border-0 shadow-sm" role="alert">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3 info-icon" style="background: rgba(0, 0, 0, 0.05); color: var(--text-secondary)">
-                                <i class="fas fa-lock"></i>
-                            </div>
-                            <div>
-                                <!-- Alteração: Título Contato Protegido -->
-                                <h6 class="alert-heading mb-1 fw-bold" th:text="#{job.protected.title}">Contato Protegido</h6>
-                                <!-- Alteração: Descrição Contato Protegido -->
-                                <p class="mb-0 small text-muted" th:text="#{job.protected.desc}">
-                                    O empregador disponibilizou um telefone. Candidate-se abaixo para liberar o acesso.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-modern" data-aos="fade-up">
+                    <div class="card-body p-0">
+                        <ul class="nav nav-tabs nav-tabs-karteria px-4 pt-3"
+                            id="notificacoesTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="novas-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#novas-content"
+                                    type="button" role="tab">
+                                    Novas
+                                    <span class="badge bg-success ms-1"
+                                        th:text="${#lists.size(notificacoesNaoLidas)}"></span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="lidas-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#lidas-content"
+                                    type="button" role="tab">
+                                    Lidas
+                                </button>
+                            </li>
+                        </ul>
 
-                    <!-- Contato Liberado -->
-                    <div
-                        th:if="${anuncio.exibirTelefone and (jaCandidatado or isAnunciante)}"
-                        class="alert alert-success border-0 shadow-sm"
-                        role="alert"
-                        style="background-color: var(--karteria-green-50); color: var(--karteria-green-900)">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                            <div class="d-flex align-items-center">
-                                <div class="me-3 info-icon" style="background: white; color: var(--success)">
-                                    <i class="fas fa-phone-alt"></i>
+<div class="tab-content" id="notificacoesTabContent">
+                            
+                            <div class="tab-pane fade show active" id="novas-content" role="tabpanel">
+                                <div th:if="${#lists.isEmpty(notificacoesNaoLidas)}" class="notification-empty-state py-5">
+                                    <div><i class="fas fa-bell-slash fa-2x mb-3"></i><p>Nenhuma notificação nova</p></div>
                                 </div>
-                                <div>
-                                    <!-- Alteração: Descrição Contato Liberado -->
-                                    <p class="mb-0 small" th:text="#{job.unlocked.desc}">Fale diretamente com o empregador.</p>
+                                <div class="notification-list-container" style="max-height: none;">
+                                    <ul>
+                                        <li th:each="notificacao : ${notificacoesNaoLidas}"
+                                            class="notification-item-wrapper d-flex align-items-center">
+                                            
+                                            <a class="notification-item flex-grow-1"
+                                               th:href="@{${notificacao.link != null ? notificacao.link : '#'}}">
+                                                <div class="notification-item-content">
+                                                    <p th:utext="${#strings.replace(notificacao.mensagem, #strings.substringBefore(notificacao.mensagem, ' se candidatou'), '<strong class=&quot;notification-user-name&quot;>' + #strings.substringBefore(notificacao.mensagem, ' se candidatou') + '</strong>')}"></p>
+                                                    <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
+                                                </div>
+                                            </a>
+                                            
+                                            <button type="button" class="btn-excluir-notificacao ms-2 me-3"
+                                                    data-bs-toggle="modal" 
+                                                    th:data-bs-target="'#modalExcluir-' + ${notificacao.id}"
+                                                    aria-label="Excluir notificação">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                            <div class="bg-white px-4 py-2 rounded-pill border fw-bold fs-5 shadow-sm text-dark">
-                                <span th:text="${anuncio.anunciante?.telefone}"></span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Sem Contato (Atenção) -->
-                    <div th:if="${!anuncio.permitirContato}" class="alert alert-warning border-0 shadow-sm" role="alert">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3 info-icon" style="background: rgba(255, 255, 255, 0.5); color: var(--warning)">
-                                <i class="fas fa-info-circle"></i>
-                            </div>
-                            <div>
-                                <!-- Alteração: Texto de Atenção -->
-                                <strong th:text="#{job.no_contact}">Atenção: O empregador prefere ser contatado apenas pela plataforma.</strong>
+                            <div class="tab-pane fade" id="lidas-content" role="tabpanel">
+                                <div th:if="${#lists.isEmpty(notificacoesLidas)}" class="notification-empty-state py-5">
+                                    <div><i class="fas fa-check-circle fa-2x mb-3"></i><p>Nenhuma notificação lida</p></div>
+                                </div>
+                                <div class="notification-list-container" style="max-height: none; opacity: 0.6;">
+                                    <ul>
+                                        <li th:each="notificacao : ${notificacoesLidas}"
+                                            class="notification-item-wrapper d-flex align-items-center">
+                                            
+                                            <a class="notification-item flex-grow-1"
+                                               th:href="@{${notificacao.link != null ? notificacao.link : '#'}}">
+                                                <div class="notification-item-content">
+                                                    <p th:utext="${#strings.replace(notificacao.mensagem, #strings.substringBefore(notificacao.mensagem, ' se candidatou'), '<strong class=&quot;notification-user-name&quot;>' + #strings.substringBefore(notificacao.mensagem, ' se candidatou') + '</strong>')}"></p>
+                                                    <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
+                                                </div>
+                                            </a>
+                                            
+                                            <button type="button" class="btn-excluir-notificacao ms-2 me-3"
+                                                    data-bs-toggle="modal" 
+                                                    th:data-bs-target="'#modalExcluir-' + ${notificacao.id}"
+                                                    aria-label="Excluir notificação">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="vaga-info-grid" data-aos="fade-up" data-aos-delay="200">
-                    <div class="info-card">
-                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div class="info-content">
-                            <!-- Alteração: Label Localização -->
-                            <h6><span th:text="#{job.location}">Localização</span></h6>
-                            <p th:text="${anuncio.localizacao}">Carregando...</p>
-                        </div>
-                    </div>
 
-                    <div class="info-card">
-                        <div class="info-icon"><i class="fas fa-user"></i></div>
-                        <div class="info-content">
-                            <!-- Alteração: Label Publicado por -->
-                            <h6><span th:text="#{job.published_by}">Publicado por</span></h6>
-                            <p th:text="${anuncio.anunciante?.nome}">Nome</p>
-                        </div>
-                    </div>
-
-                    <div class="info-card">
-                        <div class="info-icon"><i class="fas fa-calendar-check"></i></div>
-                        <div class="info-content">
-                            <!-- Alteração: Label Publicado em -->
-                            <h6><span th:text="#{job.published_in}">Publicado em</span></h6>
-                            <p th:text="${#temporals.format(anuncio.dataPostagem, 'dd/MM/yyyy')}">Data</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="vaga-descricao" data-aos="fade-up" data-aos-delay="300">
-                    <!-- Alteração: Título Descrição -->
-                    <h3 class="brand-text">
-                        <i class="fas fa-file-alt"></i>
-                        <span th:text="#{job.about}">Sobre a Vaga</span>
-                    </h3>
-                    <p th:text="${anuncio.descricao}"></p>
-                </div>
-
-                <div class="vaga-action-area" data-aos="fade-up" data-aos-delay="400">
-                    <div class="d-grid">
-                        <th:block th:if="${!isAnunciante}">
-                            <button
-                                th:if="${!jaCandidatado}"
-                                type="button"
-                                class="btn btn-primary-karteria btn-lg w-100 shadow-lg"
-                                data-bs-toggle="modal"
-                                data-bs-target="#confirmarCandidaturaModal">
-                                <i class="fas fa-check-circle me-2"></i>
-                                <!-- Alteração: Botão Candidatar -->
-                                <span th:text="#{job.btn.apply}">Quero me candidatar agora</span>
-                            </button>
-
-                            <button th:if="${jaCandidatado}" type="button" class="btn btn-secondary btn-lg w-100 disabled border-0" disabled style="opacity: 0.8">
-                                <i class="fas fa-check-double me-2"></i>
-                                <!-- Alteração: Botão Já Candidatado -->
-                                <span th:text="#{job.btn.applied}">Você já se candidatou</span>
-                            </button>
-                        </th:block>
-
-                        <th:block th:if="${isAnunciante}">
-                            <div class="text-center text-muted fw-bold py-2">
-                                <i class="fas fa-user-edit me-2"></i>
-                                <!-- Alteração: Mensagem Dono -->
-                                <span th:text="#{job.owner}">Você é o dono desta vaga.</span>
+            </div> <div th:each="notificacao : ${notificacoesNaoLidas}">
+                <div class="modal fade" th:id="'modalExcluir-' + ${notificacao.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Excluir Notificação</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                        </th:block>
+                            <div class="modal-body">
+                                <p>Tem certeza que deseja excluir esta notificação?</p>
+                                <p class="text-danger fw-bold">Esta ação não pode ser revertida.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/notificacoes/excluir/{id}(id=${notificacao.id})}" method="post">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div th:each="notificacao : ${notificacoesLidas}">
+                <div class="modal fade" th:id="'modalExcluir-' + ${notificacao.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        </div>
                 </div>
             </div>
         </main>
 
-        <div class="modal fade" id="confirmarCandidaturaModal" tabindex="-1" aria-labelledby="confirmarCandidaturaModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmarCandidaturaModalLabel">Confirmar Candidatura</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Tem certeza que deseja se candidatar para a vaga "
-                        <span class="fw-bold" th:text="${anuncio.titulo}"></span>
-                        "?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <form th:action="@{/candidatar/{id}(id=${anuncio.id})}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-check me-1"></i>
-                                Sim, Candidatar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-main.js}"></script>
-        <script th:src="@{/js/anuncio-detalhes.js}"></script>
-        <script th:src="@{/js/karteria-forms.js}"></script>
-        <script th:src="@{/js/notification-dropdown.js}"></script>
         <script>
             AOS.init({ once: true, duration: 600 });
         </script>

@@ -1,4 +1,6 @@
-/* Estilos específicos para o Dashboard do Colaborador */
+/* ========================================
+   CSS Específico para Dashboard Colaborador
+   ======================================== */
 
 .dashboard-header {
     border-bottom: 1px solid var(--border-medium);
@@ -6,6 +8,7 @@
     margin-bottom: var(--space-xl);
 }
 
+/* --- CARD DO COLABORADOR --- */
 .anuncio-card-colab {
     background: var(--bg-secondary);
     border-radius: var(--radius-xl);
@@ -14,8 +17,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    
+    position: relative;
+    overflow: hidden;
 }
 
 .anuncio-card-colab:hover {
@@ -28,24 +31,84 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    border-radius: 10px;
-   
+    padding: 1.5rem;
 }
 
+/* Título da Vaga */
+.colab-card-title {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* Badge de Data */
+.colab-badge-date {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-light);
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    border-radius: var(--radius-sm);
+}
+
+/* Valor */
+.colab-card-price {
+    color: var(--brand-primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+.colab-card-price small {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+/* Localização e Descrição */
+.card-localizacao {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.card-descricao {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Rodapé do Card */
 .anuncio-card-colab .card-footer {
+    background-color: var(--bg-tertiary);
     border-top: 1px solid var(--border-light);
-    padding: var(--space-sm) var(--space-md);
-    font-size: 0.85rem; 
-    
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
 }
 
+/* Botão Ver Detalhes */
+.btn-details-colab {
+    border: 2px solid var(--border-medium);
+    color: var(--text-secondary);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+}
+.btn-details-colab:hover {
+    border-color: var(--brand-primary);
+    background-color: var(--bg-tertiary);
+    color: var(--brand-primary);
+}
+
+/* Estado Vazio */
 .empty-state {
     text-align: center;
     padding: var(--space-3xl) var(--space-xl);
     background: var(--bg-secondary);
     border-radius: var(--radius-2xl);
     border: 2px dashed var(--border-medium);
-    
 }
 
 .empty-state-icon {
