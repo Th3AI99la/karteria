@@ -49,6 +49,11 @@
                     </div>
                 </div>
 
+                <div th:if="${sucesso}" class="alert alert-success mb-4"
+                    th:text="${sucesso}"></div>
+                <div th:if="${erro}" class="alert alert-danger mb-4"
+                    th:text="${erro}"></div>
+
                 <div class="card-modern mb-4" data-aos="fade-up">
                     <div class="card-body">
                         <h5 class="card-title brand-text">Detalhes da Vaga</h5>
@@ -128,8 +133,7 @@
                                             <td
                                                 th:text="${cand.colaborador?.telefone ?: '-'}">Telefone
                                                 Indisponível</td>
-                                            <td
-                                                class="endereco-candidato"
+                                            <td class="endereco-candidato"
                                                 th:data-endereco-json="${cand.colaborador?.endereco}"
                                                 th:text="${cand.colaborador?.endereco != null ? 'Carregando...' : '-'}"></td>
                                             <td
@@ -145,11 +149,11 @@
                                                 </a>
 
                                                 <button
-                                                    th:if="${anuncio?.status?.name() != 'CONCLUIDO'}"
+                                                    th:if="${anuncio?.status?.name() != 'CONCLUIDO' and cand.colaborador != null}"
                                                     type="button"
                                                     class="btn btn-sm btn-success ms-1"
                                                     data-bs-toggle="modal"
-                                                    th:data-bs-target="'#modalAvaliar-' + ${cand.colaborador?.id}">
+                                                    th:data-bs-target="'#modalAvaliar-' + ${cand.colaborador.id}">
                                                     <i
                                                         class="fas fa-check-circle me-1"></i>
                                                     Contratar & Avaliar
@@ -198,33 +202,26 @@
                                     <hr />
 
                                     <div class="profile-item">
-                                        <strong>
-                                            <i
+                                        <strong><i
                                                 class="fas fa-phone fa-fw me-2"></i>
-                                            Telefone:
-                                        </strong>
+                                            Telefone:</strong>
                                         <span
                                             th:text="${cand.colaborador?.telefone ?: '-'}"></span>
                                     </div>
 
                                     <div class="profile-item">
-                                        <strong>
-                                            <i
+                                        <strong><i
                                                 class="fas fa-map-marker-alt fa-fw me-2"></i>
-                                            Endereço:
-                                        </strong>
-                                        <span
-                                            class="endereco-candidato"
+                                            Endereço:</strong>
+                                        <span class="endereco-candidato"
                                             th:data-endereco-json="${cand.colaborador?.endereco}"
                                             th:text="${cand.colaborador?.endereco != null ? 'Carregando...' : '-'}"></span>
                                     </div>
 
                                     <div class="profile-item">
-                                        <strong>
-                                            <i
+                                        <strong><i
                                                 class="fas fa-calendar-check fa-fw me-2"></i>
-                                            Na plataforma:
-                                        </strong>
+                                            Na plataforma:</strong>
                                         <span
                                             th:if="${cand.colaborador?.dataCadastro != null}"
                                             th:text="'Desde ' + ${#temporals.format(cand.colaborador.dataCadastro, 'MM/yyyy')}"></span>
@@ -245,7 +242,6 @@
 
                 <div th:each="cand : ${candidaturas}"
                     th:if="${cand != null and cand.colaborador != null}">
-
                     <div class="modal fade"
                         th:id="'modalAvaliar-' + ${cand.colaborador.id}"
                         tabindex="-1">
