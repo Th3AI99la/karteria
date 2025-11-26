@@ -28,6 +28,7 @@ public class AvaliacaoController {
             @RequestParam Long candidatoId,
             @RequestParam Integer nota,
             @RequestParam String comentario,
+            @RequestParam String codigoValidacaoInput, // <--- NOVO CAMPO
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
@@ -35,7 +36,15 @@ public class AvaliacaoController {
         Usuario avaliado = usuarioRepository.findById(candidatoId).orElseThrow();
         Anuncio anuncio = anuncioRepository.findById(anuncioId).orElseThrow();
 
-        // Cria a avaliação
+        // 1. SEGURANÇA: Verifica se o código confere
+        if (avaliado.getCodigoValidacao() == null || 
+            !avaliado.getCodigoValidacao().equalsIgnoreCase(codigoValidacaoInput.trim())) {
+            
+            redirectAttributes.addFlashAttribute("erro", "Código de validação incorreto! A avaliação não foi registrada.");
+            return "redirect:/anuncios/gerenciar/" + anuncioId;
+        }
+
+        // 2. Cria a avaliação
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setAvaliador(avaliador);
         avaliacao.setAvaliado(avaliado);
@@ -45,11 +54,11 @@ public class AvaliacaoController {
 
         avaliacaoRepository.save(avaliacao);
 
-        //Atualiza o status do anúncio para CONCLUIDO
+        // 3. Atualiza status e salva
         anuncio.setStatus(StatusAnuncio.CONCLUIDO);
         anuncioRepository.save(anuncio);
 
-        redirectAttributes.addFlashAttribute("sucesso", "Avaliação enviada e serviço concluído!");
+        redirectAttributes.addFlashAttribute("sucesso", "Serviço validado e avaliação registrada com sucesso!");
         
         return "redirect:/anuncios/gerenciar/" + anuncioId;
     }

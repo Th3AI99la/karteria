@@ -49,11 +49,14 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "anunciante", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Anuncio> anuncios;
 
-    // --- NOVO CAMPO ADICIONADO ---
     // Relacionamento com as avaliações onde este usuário é o "avaliado"
     @OneToMany(mappedBy = "avaliado", fetch = FetchType.LAZY)
     private List<Avaliacao> avaliacoesRecebidas;
     // -----------------------------
+
+    // Código de validação para confirmar email
+    @Column(unique = true, updatable = false)
+    private String codigoValidacao;
 
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
@@ -202,6 +205,14 @@ public class Usuario implements UserDetails {
         return (avaliacoesRecebidas == null) ? 0 : avaliacoesRecebidas.size();
     }
     // ------------------------------------
+
+    public String getCodigoValidacao() {
+        return codigoValidacao;
+    }
+
+    public void setCodigoValidacao(String codigoValidacao) {
+        this.codigoValidacao = codigoValidacao;
+    }
 
     public String getResetToken() {
         return resetToken;
