@@ -19,7 +19,7 @@ Uma plataforma para conectar prestadores de serviços informais a clientes. O pr
 ## ▶️ Como Executar o Projeto
 
 1.  **Pré-requisitos:**
-    * Ter o **Java JDK 17** ou superior instalado.
+    * Ter o **Java JDK 21** ou superior instalado.
     * Ter o **Maven** instalado.
 
 2.  **Passos para execução:**
