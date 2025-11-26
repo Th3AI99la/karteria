@@ -94,6 +94,14 @@
                             <span class="badge bg-secondary ms-1" th:text="${#lists.size(vagasArquivadas)}"></span>
                         </button>
                     </li>
+                    
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="concluidas-tab" data-bs-toggle="tab" data-bs-target="#concluidas-content" type="button" role="tab">
+                            Concluídas
+                            <span class="badge bg-info ms-1" th:text="${#lists.size(vagasConcluidas)}"></span>
+                        </button>
+                    </li>
+
                 </ul>
 
                 <!-- Informações de Contagem -->
@@ -366,6 +374,48 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ABA CONCLUÍDAS -->
+                    <div class="tab-pane fade" id="concluidas-content" role="tabpanel">
+                        <div th:if="${#lists.isEmpty(vagasConcluidas)}" class="empty-state" data-aos="zoom-in">
+                            <div class="empty-state-icon mb-3"><i class="fas fa-check-circle"></i></div>
+                            <h3 class="fw-bold">Nenhuma vaga concluída</h3>
+                            <p class="text-muted">As vagas finalizadas e avaliadas aparecerão aqui.</p>
+                        </div>
+
+                        <div class="row g-4" id="concluidasCardContainer">
+                            <div th:each="anuncio : ${vagasConcluidas}" class="col-lg-4 col-md-6 vaga-card-column">
+                                <div class="anuncio-card h-100" data-aos="fade-up" style="border-color: var(--info);">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="anuncio-card-header">
+                                            <h5 class="anuncio-card-title card-titulo" th:text="${anuncio?.titulo}"></h5>
+                                            <span class="badge text-bg-info">CONCLUÍDO</span>
+                                        </div>
+                                        
+                                        <div class="alert alert-light border mt-2 mb-3" style="background: var(--bg-tertiary);">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <small class="fw-bold text-uppercase text-muted" style="font-size: 0.7rem;">Avaliação Realizada</small>
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="fas fa-star"></i> <span th:text="${anuncio.avaliacao?.nota}">5</span>
+                                                </span>
+                                            </div>
+                                            <p class="small mb-0 text-muted fst-italic">
+                                                "<span th:text="${anuncio.avaliacao?.comentario}">Comentário...</span>"
+                                            </p>
+                                            <small class="d-block text-end mt-1 text-muted" style="font-size: 0.7rem;">
+                                                Em <span th:text="${#temporals.format(anuncio.avaliacao?.dataAvaliacao, 'dd/MM/yyyy')}">Data</span>
+                                            </small>
+                                        </div>
+
+                                        <p class="card-text text-secondary small card-localizacao">
+                                            <i class="fas fa-map-marker-alt me-2"></i>
+                                            <span th:text="${anuncio.localizacao}"></span>
+                                        </p>
+                                    </div>
+                                    </div>
                             </div>
                         </div>
                     </div>

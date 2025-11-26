@@ -18,9 +18,12 @@ import com.projeto.karteria.repository.UsuarioRepository;
 @Controller
 public class AvaliacaoController {
 
-    @Autowired private AvaliacaoRepository avaliacaoRepository;
-    @Autowired private UsuarioRepository usuarioRepository;
-    @Autowired private AnuncioRepository anuncioRepository;
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private AnuncioRepository anuncioRepository;
 
     @PostMapping("/avaliar/salvar")
     public String salvarAvaliacao(
@@ -28,7 +31,7 @@ public class AvaliacaoController {
             @RequestParam Long candidatoId,
             @RequestParam Integer nota,
             @RequestParam String comentario,
-            @RequestParam String codigoValidacaoInput, // <--- NOVO CAMPO
+            @RequestParam String codigoValidacaoInput,
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
@@ -37,10 +40,12 @@ public class AvaliacaoController {
         Anuncio anuncio = anuncioRepository.findById(anuncioId).orElseThrow();
 
         // 1. SEGURANÇA: Verifica se o código confere
-        if (avaliado.getCodigoValidacao() == null || 
-            !avaliado.getCodigoValidacao().equalsIgnoreCase(codigoValidacaoInput.trim())) {
-            
-            redirectAttributes.addFlashAttribute("erro", "Código de validação incorreto! A avaliação não foi registrada.");
+        if (avaliado.getCodigoValidacao() == null ||
+                !avaliado.getCodigoValidacao().equalsIgnoreCase(codigoValidacaoInput.trim())) {
+
+            // MENSAGEM Código incorreto
+            redirectAttributes.addFlashAttribute("erro",
+                    "Código incorreto, solicite ao colaborador o código de Validação, para conclusão e avaliação.");
             return "redirect:/anuncios/gerenciar/" + anuncioId;
         }
 
@@ -59,7 +64,7 @@ public class AvaliacaoController {
         anuncioRepository.save(anuncio);
 
         redirectAttributes.addFlashAttribute("sucesso", "Serviço validado e avaliação registrada com sucesso!");
-        
+
         return "redirect:/anuncios/gerenciar/" + anuncioId;
     }
 }

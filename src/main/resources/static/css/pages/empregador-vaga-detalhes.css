@@ -43,6 +43,52 @@
     color: var(--border-medium);
 }
 
-/* Nota: As classes .fa-star, .fa-star-half-alt 
-   já recebem a cor amarela do .rating-stars
-*/
+/* ========================================
+   Estilo para Caixa de Validação de Segurança (Modal)
+   ======================================== */
+
+.security-validation-box {
+    background-color: var(--bg-tertiary); /* Adapta ao tema */
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.security-validation-label {
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.security-input {
+    font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-medium);
+    color: var(--brand-primary);
+}
+
+.security-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.security-input:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(var(--karteria-green-500-rgb), 0.15);
+}
+
+/* Ajuste do checkbox para alinhar com o tema */
+.form-check-input:checked {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+}

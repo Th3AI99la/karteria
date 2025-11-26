@@ -101,6 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
             statusText = 'pausadas';
         } else if (tabId === 'arquivadas-content') {
             statusText = 'arquivadas';
+        } else if (tabId === 'concluidas-content') { 
+            statusText = 'concluídas';
         }
 
         const searchTerm = searchInput.value.trim();

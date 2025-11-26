@@ -245,6 +245,7 @@
 
                 <div th:each="cand : ${candidaturas}"
                     th:if="${cand != null and cand.colaborador != null}">
+
                     <div class="modal fade"
                         th:id="'modalAvaliar-' + ${cand.colaborador.id}"
                         tabindex="-1">
@@ -252,7 +253,7 @@
                             <div class="modal-content">
                                 <form th:action="@{/avaliar/salvar}"
                                     method="post">
-                                    <div class="modal-header border-0 bg-light">
+                                    <div class="modal-header border-0">
                                         <h5
                                             class="modal-title fw-bold text-success">
                                             <i
@@ -273,17 +274,17 @@
                                         <input type="hidden" name="candidatoId"
                                             th:value="${cand.colaborador.id}" />
 
-                                        <div
-                                            class="bg-light p-3 rounded border mb-3">
-                                            <label
-                                                class="form-label fw-bold small text-uppercase text-muted">Validação
-                                                de Segurança</label>
+                                        <div class="security-validation-box">
+                                            <span
+                                                class="security-validation-label">Validação
+                                                de Segurança</span>
 
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input"
                                                     type="checkbox" required
                                                     id="checkServico">
-                                                <label class="form-check-label"
+                                                <label
+                                                    class="form-check-label small"
                                                     for="checkServico">
                                                     Confirmo que o serviço foi
                                                     <strong>totalmente
@@ -292,18 +293,17 @@
                                             </div>
 
                                             <div class="mb-1">
-                                                <label for="codigoValidacao"
-                                                    class="form-label fw-bold">Insira
+                                                <label
+                                                    class="form-label fw-bold small">Insira
                                                     o Código do Colaborador
                                                     *</label>
                                                 <input type="text"
                                                     name="codigoValidacaoInput"
-                                                    class="form-control text-center font-monospace text-uppercase"
+                                                    class="form-control security-input"
                                                     placeholder="Ex: 1234567AB"
-                                                    required maxlength="9"
-                                                    style="letter-spacing: 2px; font-size: 1.2rem;">
+                                                    required maxlength="9">
                                                 <div
-                                                    class="form-text small">Solicite
+                                                    class="form-text small mt-1">Solicite
                                                     este código ao colaborador
                                                     presencialmente.</div>
                                             </div>
