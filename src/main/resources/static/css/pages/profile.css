@@ -79,3 +79,72 @@
     padding-left: 0 !important;
 }
 
+/* ========================================
+   4. BLOCO DE CÓDIGO DE VALIDAÇÃO (SEGURANÇA)
+   ======================================== */
+
+.security-box {
+    background-color: var(--bg-secondary); /* Adapta ao tema */
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--brand-primary); /* Destaque lateral verde */
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+    transition: all var(--transition-normal);
+}
+
+.security-box:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.security-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: var(--brand-primary);
+}
+
+.security-header i {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.security-header h6 {
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.security-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+}
+
+/* Input do Código (Visual de Ticket/Cupom) */
+.security-code-input {
+    background-color: var(--bg-tertiary) !important; /* Fundo sutil */
+    color: var(--brand-primary) !important; /* Texto verde */
+    border: 2px dashed var(--border-medium); /* Borda pontilhada estilo cupom */
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada */
+    font-weight: 800;
+    letter-spacing: 4px; /* Espaço entre caracteres */
+    font-size: 1.5rem;
+    text-align: center;
+    height: auto;
+    padding: 0.75rem;
+}
+
+.security-code-input:focus {
+    border-color: var(--brand-primary);
+    box-shadow: none;
+}
+
+/* Ajustes Dark Mode Específicos */
+[data-theme="dark"] .security-code-input {
+    background-color: rgba(34, 197, 94, 0.1) !important; /* Fundo verde bem escuro */
+    border-color: var(--karteria-green-800);
+}
