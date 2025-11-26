@@ -61,7 +61,7 @@
                             <strong>Status:</strong>
                             <span
                                 class="badge"
-                                th:classappend="${anuncio.status.name() == 'ATIVO' ? 'text-bg-success' : (anuncio.status.name() == 'PAUSADO' ? 'text-bg-warning' : 'text-bg-secondary')}"
+                                th:classappend="${anuncio.status.name() == 'ATIVO' ? 'text-bg-success' : (anuncio.status.name() == 'PAUSADO' ? 'text-bg-warning' : (anuncio.status.name() == 'CONCLUIDO' ? 'text-bg-info' : 'text-bg-secondary'))}"
                                 th:text="${anuncio.status}"></span>
                         </p>
                         <p>
@@ -106,6 +106,14 @@
                                                     <i class="fas fa-eye me-1"></i>
                                                     Ver Perfil
                                                 </a>
+
+                                                <button th:if="${anuncio.status.name() != 'CONCLUIDO'}"
+                                                        type="button" 
+                                                        class="btn btn-sm btn-success ms-1" 
+                                                        data-bs-toggle="modal" 
+                                                        th:data-bs-target="'#modalAvaliar-' + ${cand.colaborador.id}">
+                                                    <i class="fas fa-check-circle me-1"></i> Contratar & Avaliar
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -115,7 +123,9 @@
                     </div>
                 </div>
             </div>
+
             <div th:unless="${#lists.isEmpty(candidaturas)}">
+                
                 <div th:each="cand : ${candidaturas}">
                     <div class="modal fade" th:id="'modalPerfil-' + ${cand.id}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -128,14 +138,13 @@
                                     <h3 th:text="${cand.colaborador?.nome}"></h3>
 
                                     <div class="mb-3">
-                                        <div class="rating-stars">
+                                        <div class="rating-stars text-warning">
+                                            <span class="fw-bold h4" th:text="${cand.colaborador.mediaAvaliacoes > 0 ? #numbers.formatDecimal(cand.colaborador.mediaAvaliacoes, 1, 1) : '-'}"></span>
                                             <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
                                         </div>
-                                        <span class="text-muted small">Nota: 4.5 (N/A)</span>
+                                        <span class="text-muted small">
+                                            (<span th:text="${cand.colaborador.totalAvaliacoes}"></span> avaliações)
+                                        </span>
                                     </div>
 
                                     <hr />
@@ -177,6 +186,53 @@
                         </div>
                     </div>
                 </div>
+
+                <div th:each="cand : ${candidaturas}">
+                    <div class="modal fade" th:id="'modalAvaliar-' + ${cand.colaborador.id}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <form th:action="@{/avaliar/salvar}" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Avaliar Serviço</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <p>Como foi o serviço de <strong th:text="${cand.colaborador.nome}"></strong>?</p>
+                                        
+                                        <input type="hidden" name="anuncioId" th:value="${anuncio.id}" />
+                                        <input type="hidden" name="candidatoId" th:value="${cand.colaborador.id}" />
+
+                                        <div class="mb-3">
+                                            <label class="form-label d-block">Nota (1 a 5 estrelas)</label>
+                                            <div class="rating-input" style="font-size: 1.2rem;">
+                                                <select name="nota" class="form-select text-center" required>
+                                                    <option value="5">⭐⭐⭐⭐⭐ (Excelente)</option>
+                                                    <option value="4">⭐⭐⭐⭐ (Muito Bom)</option>
+                                                    <option value="3">⭐⭐⭐ (Bom)</option>
+                                                    <option value="2">⭐⭐ (Regular)</option>
+                                                    <option value="1">⭐ (Ruim)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <textarea name="comentario" class="form-control" rows="3" placeholder="Deixe um comentário sobre o trabalho realizado..." required></textarea>
+                                        </div>
+                                        
+                                        <div class="alert alert-info small">
+                                            <i class="fas fa-info-circle"></i> Ao avaliar, esta vaga será marcada como <strong>CONCLUÍDA</strong>.
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">Confirmar Avaliação</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
 

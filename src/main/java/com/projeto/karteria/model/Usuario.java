@@ -1,22 +1,25 @@
 package com.projeto.karteria.model;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority; // Importação adicionada
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "usuarios")
@@ -45,6 +48,12 @@ public class Usuario implements UserDetails {
 
     @OneToMany(mappedBy = "anunciante", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Anuncio> anuncios;
+
+    // --- NOVO CAMPO ADICIONADO ---
+    // Relacionamento com as avaliações onde este usuário é o "avaliado"
+    @OneToMany(mappedBy = "avaliado", fetch = FetchType.LAZY)
+    private List<Avaliacao> avaliacoesRecebidas;
+    // -----------------------------
 
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
@@ -156,6 +165,10 @@ public class Usuario implements UserDetails {
         return anuncios;
     }
 
+    public void setAnuncios(List<Anuncio> anuncios) {
+        this.anuncios = anuncios;
+    }
+
     public LocalDateTime getDataCadastro() {
         return dataCadastro;
     }
@@ -164,9 +177,31 @@ public class Usuario implements UserDetails {
         this.dataCadastro = dataCadastro;
     }
 
-    public void setAnuncios(List<Anuncio> anuncios) {
-        this.anuncios = anuncios;
+    // --- NOVOS MÉTODOS PARA AVALIAÇÃO ---
+
+    public List<Avaliacao> getAvaliacoesRecebidas() {
+        return avaliacoesRecebidas;
     }
+
+    public void setAvaliacoesRecebidas(List<Avaliacao> avaliacoesRecebidas) {
+        this.avaliacoesRecebidas = avaliacoesRecebidas;
+    }
+
+    // Calcula a média das notas recebidas (útil para exibir no perfil)
+    public Double getMediaAvaliacoes() {
+        if (avaliacoesRecebidas == null || avaliacoesRecebidas.isEmpty()) {
+            return 0.0;
+        }
+        // Assume que Avaliacao tem um método getNota() que retorna um número
+        double soma = avaliacoesRecebidas.stream().mapToInt(Avaliacao::getNota).sum();
+        return soma / avaliacoesRecebidas.size();
+    }
+
+    // Retorna o total de avaliações recebidas
+    public int getTotalAvaliacoes() {
+        return (avaliacoesRecebidas == null) ? 0 : avaliacoesRecebidas.size();
+    }
+    // ------------------------------------
 
     public String getResetToken() {
         return resetToken;

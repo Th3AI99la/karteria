@@ -42,6 +42,22 @@
 
                 <div class="card-modern" data-aos="fade-up">
                     <div class="card-body p-4">
+                        
+                        <div class="text-center mb-4" th:if="${usuario.tipo != null and usuario.tipo.name() == 'COLABORADOR'}">
+                            <h5 class="text-muted mb-2 small text-uppercase fw-bold">Minha Reputação</h5>
+                            
+                            <div class="rating-stars text-warning" style="font-size: 2rem;">
+                                <span class="fw-bold text-dark" 
+                                      th:text="${usuario.mediaAvaliacoes > 0 ? #numbers.formatDecimal(usuario.mediaAvaliacoes, 1, 1) : '-'}">
+                                </span>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            
+                            <span class="text-muted small">
+                                Com base em <strong th:text="${usuario.totalAvaliacoes}"></strong> avaliações
+                            </span>
+                            <hr class="mt-4 mb-4" style="opacity: 0.1">
+                        </div>
                         <div class="profile-item">
                             <strong>Nome Completo:</strong>
                             <span th:text="${usuario.nome + ' ' + (usuario.sobrenome ?: '')}">Nome Sobrenome</span>
@@ -70,6 +86,7 @@
                 </div>
             </div>
         </main>
+
         <div class="modal fade" id="modalEditarPerfil" tabindex="-1" aria-labelledby="modalEditarPerfilLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
@@ -238,7 +255,7 @@
         <script th:src="@{/js/form-masks-validations.js}"></script>
         <script th:src="@{/js/profile.js}"></script>
         <script th:src="@{/js/karteria-forms.js}"></script>
-        <script th:src="@{/js/form-masks-validations.js}"></script>
+        <script th:src="@{/js/notification-dropdown.js}"></script>
         <script>
             AOS.init({ once: true, duration: 600 });
         </script>
