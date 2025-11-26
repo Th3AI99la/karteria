@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority; // Importação adicionada
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
@@ -49,20 +49,25 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "anunciante", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Anuncio> anuncios;
 
-    // Relacionamento com as avaliações onde este usuário é o "avaliado"
     @OneToMany(mappedBy = "avaliado", fetch = FetchType.LAZY)
     private List<Avaliacao> avaliacoesRecebidas;
-    // -----------------------------
-
-    // Código de validação para confirmar email
-    @Column(unique = true, updatable = false)
-    private String codigoValidacao;
 
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
 
     @Column(nullable = true, updatable = false)
     private LocalDateTime dataCadastro;
+
+    @Column(unique = true, updatable = false)
+    private String codigoValidacao;
+
+    public String getCodigoValidacao() {
+        return codigoValidacao;
+    }
+
+    public void setCodigoValidacao(String codigoValidacao) {
+        this.codigoValidacao = codigoValidacao;
+    }
 
     // --- Construtores ---
     public Usuario() {
@@ -180,8 +185,6 @@ public class Usuario implements UserDetails {
         this.dataCadastro = dataCadastro;
     }
 
-    // --- NOVOS MÉTODOS PARA AVALIAÇÃO ---
-
     public List<Avaliacao> getAvaliacoesRecebidas() {
         return avaliacoesRecebidas;
     }
@@ -190,28 +193,16 @@ public class Usuario implements UserDetails {
         this.avaliacoesRecebidas = avaliacoesRecebidas;
     }
 
-    // Calcula a média das notas recebidas (útil para exibir no perfil)
     public Double getMediaAvaliacoes() {
         if (avaliacoesRecebidas == null || avaliacoesRecebidas.isEmpty()) {
             return 0.0;
         }
-        // Assume que Avaliacao tem um método getNota() que retorna um número
         double soma = avaliacoesRecebidas.stream().mapToInt(Avaliacao::getNota).sum();
         return soma / avaliacoesRecebidas.size();
     }
 
-    // Retorna o total de avaliações recebidas
     public int getTotalAvaliacoes() {
         return (avaliacoesRecebidas == null) ? 0 : avaliacoesRecebidas.size();
-    }
-    // ------------------------------------
-
-    public String getCodigoValidacao() {
-        return codigoValidacao;
-    }
-
-    public void setCodigoValidacao(String codigoValidacao) {
-        this.codigoValidacao = codigoValidacao;
     }
 
     public String getResetToken() {
@@ -230,14 +221,12 @@ public class Usuario implements UserDetails {
         this.resetTokenExpiry = resetTokenExpiry;
     }
 
-    // --- Métodos auxiliares ---
     public boolean isResetTokenValid() {
         return resetToken != null
                 && resetTokenExpiry != null
                 && LocalDateTime.now().isBefore(resetTokenExpiry);
     }
 
-    // --- Métodos do UserDetails ---
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.tipo == null)
@@ -275,7 +264,6 @@ public class Usuario implements UserDetails {
         return true;
     }
 
-    // --- equals, hashCode e toString ---
     @Override
     public boolean equals(Object o) {
         if (this == o)

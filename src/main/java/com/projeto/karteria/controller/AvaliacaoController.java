@@ -31,7 +31,7 @@ public class AvaliacaoController {
             @RequestParam Long candidatoId,
             @RequestParam Integer nota,
             @RequestParam String comentario,
-            @RequestParam String codigoValidacaoInput,
+            @RequestParam String codigoValidacaoInput, // <--- Recebe o código do HTML
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
@@ -39,17 +39,17 @@ public class AvaliacaoController {
         Usuario avaliado = usuarioRepository.findById(candidatoId).orElseThrow();
         Anuncio anuncio = anuncioRepository.findById(anuncioId).orElseThrow();
 
-        // 1. SEGURANÇA: Verifica se o código confere
-        if (avaliado.getCodigoValidacao() == null ||
-                !avaliado.getCodigoValidacao().equalsIgnoreCase(codigoValidacaoInput.trim())) {
+        // 4. LÓGICA DE VALIDAÇÃO: Verifica se o código bate
+        String codigoCorreto = avaliado.getCodigoValidacao();
 
-            // MENSAGEM Código incorreto
+        if (codigoCorreto == null || !codigoCorreto.equalsIgnoreCase(codigoValidacaoInput.trim())) {
+            // --- MENSAGEM DE ERRO ---
             redirectAttributes.addFlashAttribute("erro",
-                    "Código incorreto, solicite ao colaborador o código de Validação, para conclusão e avaliação.");
+                    "Código incorreto! Solicite ao colaborador o código de Validação para concluir.");
             return "redirect:/anuncios/gerenciar/" + anuncioId;
         }
 
-        // 2. Cria a avaliação
+        // Se passou, salva tudo
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setAvaliador(avaliador);
         avaliacao.setAvaliado(avaliado);
@@ -59,7 +59,6 @@ public class AvaliacaoController {
 
         avaliacaoRepository.save(avaliacao);
 
-        // 3. Atualiza status e salva
         anuncio.setStatus(StatusAnuncio.CONCLUIDO);
         anuncioRepository.save(anuncio);
 
