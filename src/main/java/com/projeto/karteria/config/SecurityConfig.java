@@ -29,12 +29,6 @@ public class SecurityConfig {
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     // ======================================================================
     // 1. CONFIGURAÇÃO DA API MOBILE (REST + JWT)
     // ======================================================================
