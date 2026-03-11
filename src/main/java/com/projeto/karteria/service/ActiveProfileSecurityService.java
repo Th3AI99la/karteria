@@ -1,12 +1,14 @@
 package com.projeto.karteria.service;
 
-import com.projeto.karteria.model.TipoUsuario;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.projeto.karteria.model.TipoUsuario;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service("activeProfileSecurityService")
 public class ActiveProfileSecurityService {

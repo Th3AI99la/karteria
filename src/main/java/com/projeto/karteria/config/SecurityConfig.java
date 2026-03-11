@@ -1,44 +1,75 @@
 package com.projeto.karteria.config;
 
-import com.projeto.karteria.service.ActiveProfileSecurityService;
-import com.projeto.karteria.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.projeto.karteria.service.ActiveProfileSecurityService;
+import com.projeto.karteria.service.UsuarioService;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-
-// Habilita segurança baseada em métodos (anotações @PreAuthorize, etc.)
 public class SecurityConfig {
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(
-      HttpSecurity http,
-      UsuarioService usuarioService,
-      ActiveProfileSecurityService activeProfileSecurityService)
-      throws Exception {
+    // Injeta o nosso novo porteiro
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
-    http.csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(
-            authorize ->
-                authorize
-                    // 1. REGRAS PÚBLICAS
-                    .requestMatchers(
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // ======================================================================
+    // 1. CONFIGURAÇÃO DA API MOBILE (REST + JWT)
+    // ======================================================================
+    @Bean
+    @Order(1) // O Spring vai ler esta regra PRIMEIRO
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/api/**") // Aplica estas regras APENAS a rotas que comecem por /api/
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Desliga as sessões para a app
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll() // Rota de login da app é pública
+                .anyRequest().authenticated() // Qualquer outra rota da app requer token JWT válido
+            )
+            // Coloca o nosso filtro JWT antes do filtro padrão do Spring
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            
+        return http.build();
+    }
+
+    // ======================================================================
+    // 2. CONFIGURAÇÃO WEB (THYMELEAF + SESSÃO DE NAVEGADOR)
+    // ======================================================================
+    @Bean
+    @Order(2) // O Spring vai ler esta regra em SEGUNDO LUGAR (se a rota não começar por /api/)
+    public SecurityFilterChain webFilterChain(
+            HttpSecurity http,
+            UsuarioService usuarioService,
+            ActiveProfileSecurityService activeProfileSecurityService)
+            throws Exception {
+
+        http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authorize -> authorize
+                // 1. REGRAS PÚBLICAS
+                .requestMatchers(
                         "/",
                         "/login",
                         "/register",
@@ -48,10 +79,10 @@ public class SecurityConfig {
                         "/css/**",
                         "/js/**",
                         "/images/**")
-                    .permitAll()
+                .permitAll()
 
-                    // 2. REGRAS EMPREGADOR
-                    .requestMatchers(
+                // 2. REGRAS EMPREGADOR
+                .requestMatchers(
                         "/anuncios/novo",
                         "/anuncios/salvar",
                         "/anuncios/editar/**",
@@ -60,70 +91,54 @@ public class SecurityConfig {
                         "/anuncios/arquivar/**",
                         "/anuncios/desarquivar/**",
                         "/anuncios/gerenciar/**")
-                    .access(
-                        (authenticationSupplier, context) -> {
-                          Authentication authentication = authenticationSupplier.get();
-                          // Verifica se está autenticado (e não é anônimo)
-                          boolean isAuthenticated =
-                              authentication != null
-                                  && authentication.isAuthenticated()
-                                  && !(authentication instanceof AnonymousAuthenticationToken);
-                          if (!isAuthenticated) {
-                            return new AuthorizationDecision(false);
-                          }
-                          // Verifica Authority original
-                          @SuppressWarnings("null")
-                          boolean hasRequiredAuthority =
-                              authentication.getAuthorities().stream()
-                                  .anyMatch(
-                                      grantedAuthority ->
-                                          grantedAuthority.getAuthority().equals("EMPREGADOR"));
-                          // Verifica Perfil Ativo na sessão usando o serviço injetado
-                          boolean hasRequiredActiveRole =
-                              activeProfileSecurityService.hasActiveRole("EMPREGADOR");
+                .access((authenticationSupplier, context) -> {
+                    Authentication authentication = authenticationSupplier.get();
+                    boolean isAuthenticated = authentication != null
+                            && authentication.isAuthenticated()
+                            && !(authentication instanceof AnonymousAuthenticationToken);
+                    if (!isAuthenticated) return new AuthorizationDecision(false);
 
-                          // Permite se tiver a Authority OU o Perfil Ativo correto
-                          return new AuthorizationDecision(
-                              hasRequiredAuthority || hasRequiredActiveRole);
-                        })
+                    @SuppressWarnings("null")
+                    boolean hasRequiredAuthority = authentication.getAuthorities().stream()
+                            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("EMPREGADOR"));
+                    boolean hasRequiredActiveRole = activeProfileSecurityService.hasActiveRole("EMPREGADOR");
 
-                    // ** 3. REGRAS COLABORADOR
-                    .requestMatchers("/candidatar/**")
-                    .access(
-                        (authenticationSupplier, context) -> { // Usa lambda
-                          Authentication authentication = authenticationSupplier.get();
-                          boolean isAuthenticated =
-                              authentication != null
-                                  && authentication.isAuthenticated()
-                                  && !(authentication instanceof AnonymousAuthenticationToken);
-                          if (!isAuthenticated) {
-                            return new AuthorizationDecision(false);
-                          }
-                          @SuppressWarnings("null")
-                          boolean hasRequiredAuthority =
-                              authentication.getAuthorities().stream()
-                                  .anyMatch(
-                                      grantedAuthority ->
-                                          grantedAuthority.getAuthority().equals("COLABORADOR"));
-                          boolean hasRequiredActiveRole =
-                              activeProfileSecurityService.hasActiveRole("COLABORADOR");
+                    return new AuthorizationDecision(hasRequiredAuthority || hasRequiredActiveRole);
+                })
 
-                          return new AuthorizationDecision(
-                              hasRequiredAuthority || hasRequiredActiveRole);
-                        })
+                // 3. REGRAS COLABORADOR
+                .requestMatchers("/candidatar/**")
+                .access((authenticationSupplier, context) -> {
+                    Authentication authentication = authenticationSupplier.get();
+                    boolean isAuthenticated = authentication != null
+                            && authentication.isAuthenticated()
+                            && !(authentication instanceof AnonymousAuthenticationToken);
+                    if (!isAuthenticated) return new AuthorizationDecision(false);
 
-                    // 4. QUALQUER OUTRA URL AUTENTICADA
-                    .anyRequest()
-                    .authenticated())
-        // Configuração do login
-        .formLogin(
-            form ->
-                form.loginPage("/login").defaultSuccessUrl("/escolher-perfil", true).permitAll())
-        // Configuração do logout
-        .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/?logout").permitAll())
-        .userDetailsService(usuarioService);
+                    @SuppressWarnings("null")
+                    boolean hasRequiredAuthority = authentication.getAuthorities().stream()
+                            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("COLABORADOR"));
+                    boolean hasRequiredActiveRole = activeProfileSecurityService.hasActiveRole("COLABORADOR");
 
-    // Construir a cadeia de filtros de segurança
-    return http.build();
-  }
+                    return new AuthorizationDecision(hasRequiredAuthority || hasRequiredActiveRole);
+                })
+
+                // 4. QUALQUER OUTRA URL AUTENTICADA (Site)
+                .anyRequest().authenticated())
+            
+            // Configuração do login web normal
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/escolher-perfil", true)
+                .permitAll())
+            
+            // Configuração do logout web normal
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/?logout")
+                .permitAll())
+            .userDetailsService(usuarioService);
+
+        return http.build();
+    }
 }
