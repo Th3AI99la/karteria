@@ -1,48 +1,54 @@
 # Karteria
 
-Uma plataforma para conectar prestadores de serviços informais a clientes. O projeto está sendo desenvolvido com Java e Spring Boot.
-
----
+Uma plataforma robusta para conectar prestadores de serviços informais a clientes, focada em escalabilidade e segurança. Projeto desenvolvido para a disciplina de Práticas de Laboratório 2.
 
 ## 💻 Tecnologias Utilizadas
 
-* **Java 21**
-* **Spring Boot**
-* **Maven**
-* **JPA / Hibernate**
-* **Thymeleaf** (para renderização de HTML no servidor)
-* **H2 Database** (utilizado para o ambiente de desenvolvimento)
-* **PostgreSQL** (planejado para o ambiente de produção)
+* Java 21 (LTS)
+* Spring Boot 3.x
+* Maven
+* Docker (Gerenciamento de containers)
+* PostgreSQL (Banco de dados relacional oficial)
+* JPA / Hibernate (Persistência de dados)
+* Thymeleaf (Renderização server-side)
 
----
+## 🚀 Como Executar o Projeto
 
-## ▶️ Como Executar o Projeto
+### 1. Preparando o Banco de Dados (Docker)
 
-1.  **Pré-requisitos:**
-    * Ter o **Java JDK 21** ou superior instalado.
-    * Ter o **Maven** instalado.
+Antes de rodar a aplicação, é necessário subir o container do PostgreSQL. Certifique-se de que o Docker está em execução e rode o comando abaixo no terminal:
 
-2.  **Passos para execução:**
-    * Clone este repositório.
-    * Abra o projeto em sua IDE de preferência (IntelliJ, VSCode, Eclipse).
-    * Aguarde o Maven baixar todas as dependências listadas no `pom.xml`.
-    * Execute a classe principal `KarteriaApplication.java`.
-    * A aplicação estará disponível em **`http://localhost:8080`**.
+```bash
+docker run --name karteria-db -e POSTGRES_PASSWORD=kart_2001 -p 5432:5432 -v karteria_data:/var/lib/postgresql -d postgres
+```
 
----
+### 2. Visualização com pgAdmin4
 
-### Banco de Dados de Desenvolvimento (H2)
+Para gerenciar e visualizar as tabelas do sistema, configure uma nova conexão no pgAdmin4 com as seguintes credenciais:
 
-Para visualizar e interagir com o banco de dados em memória durante o desenvolvimento:
+| Campo                | Valor        |
+| :------------------- | :----------- |
+| Host name/address    | `localhost`  |
+| Port                 | `5432`       |
+| Maintenance database | `postgres`   |
+| Username             | `postgres`   |
+| Password             | `kart_2001`  |
 
-1.  Acesse o console do H2 em **`http://localhost:8080/h2-console`**.
-2.  Insira as seguintes informações para conectar:
-    * **JDBC URL:** `jdbc:h2:mem:karteria_db`
-    * **User Name:** `sa`
-    * **Password:** `password`
+### 3. Executando a Aplicação
 
----
+Com o banco de dados ativo, navegue até a pasta raiz do projeto e execute o comando:
 
-## 🚧 Status do Projeto
+```bash
+./mvnw spring-boot:run
+```
 
-O projeto está em sua fase inicial de desenvolvimento. A estrutura base e a configuração do ambiente foram concluídas.
+A aplicação estará disponível em: `http://localhost:8080`.
+
+## 🛠️ Implementações de Laboratório
+
+Atualmente, o projeto foca nos seguintes pilares técnicos:
+
+* **Arquitetura Cliente-Servidor**: Desacoplamento de lógica e persistência.
+* **Persistência Real**: Migração completa do H2 (em memória) para PostgreSQL (persistente via Docker).
+* **Segurança**: Implementação planejada de Hashing BCrypt para proteção de dados sensíveis.
+* **Real-time**: Planejamento de notificações via WebSockets.
