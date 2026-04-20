@@ -28,7 +28,7 @@ Para gerenciar e visualizar as tabelas do sistema, configure uma nova conexão n
 
 | Campo                | Valor        |
 | :------------------- | :----------- |
-| Host name/address    | `localhost`  |
+| Host name/address    | `Karteria-db`  |
 | Port                 | `5432`       |
 | Maintenance database | `postgres`   |
 | Username             | `postgres`   |
