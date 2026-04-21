@@ -68,26 +68,18 @@ public class NotificacaoController {
         return ResponseEntity.ok().build();
     }
 
-    /**
+/**
      * ETAPA 3: Exibe a página "Ver Todas as Notificações"
      */
     @GetMapping("/notificacoes")
     public String verTodasNotificacoes(Model model, Authentication authentication) {
         Usuario usuario = getUsuarioLogado(authentication);
 
-        // Correção: verificação por boolean (perfil ativo)
-        boolean isColaborador = activeProfileSecurityService.hasActiveRole("COLABORADOR");
-        boolean isEmpregador = activeProfileSecurityService.hasActiveRole("EMPREGADOR");
-
+        // Procura todas as notificações no banco, sem esconder nada!
         List<Notificacao> naoLidas = notificacaoRepository
                 .findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(usuario);
-
         List<Notificacao> lidas = notificacaoRepository
                 .findByUsuarioDestinatarioAndLidaIsTrueOrderByDataCriacaoDesc(usuario);
-
-        // Filtro inteligente por perfil
-        naoLidas = filtrarPorPerfil(naoLidas, isColaborador, isEmpregador);
-        lidas = filtrarPorPerfil(lidas, isColaborador, isEmpregador);
 
         model.addAttribute("notificacoesNaoLidas", naoLidas);
         model.addAttribute("notificacoesLidas", lidas);
@@ -96,25 +88,6 @@ public class NotificacaoController {
         return "notificacoes";
     }
 
-    /**
-     * ETAPA 3.1: Método auxiliar para filtrar notificações por perfil
-     */
-    private List<Notificacao> filtrarPorPerfil(List<Notificacao> lista, boolean isColaborador, boolean isEmpregador) {
-        return lista.stream().filter(n -> {
-            if (n.getLink() == null)
-                return true;
-
-            // Colaborador não pode ver links de gerenciar
-            if (isColaborador && n.getLink().contains("/gerenciar"))
-                return false;
-
-            // Empregador não pode ver links de candidatar
-            if (isEmpregador && n.getLink().contains("/candidatar"))
-                return false;
-
-            return true;
-        }).toList();
-    }
 
     /**
      * ETAPA 4: Excluir notificação (página completa)
@@ -156,5 +129,25 @@ public class NotificacaoController {
         // Pega o link original (ex: /anuncios/gerenciar/10) e redireciona
         String destino = notificacao.getLink();
         return "redirect:" + (destino != null ? destino : "/home");
+    }
+
+    /**
+     * ETAPA 6: Excluir TODAS as notificações LIDAS
+     */
+    @PostMapping("/notificacoes/excluir-lidas")
+    @Transactional
+    public String excluirTodasLidas(Authentication authentication, RedirectAttributes redirectAttributes) {
+        Usuario usuario = getUsuarioLogado(authentication);
+        
+        // Busca todas as lidas
+        List<Notificacao> lidas = notificacaoRepository.findByUsuarioDestinatarioAndLidaIsTrueOrderByDataCriacaoDesc(usuario);
+        
+        // Apaga do banco
+        notificacaoRepository.deleteAll(lidas);
+        
+        redirectAttributes.addFlashAttribute("sucesso", "Todas as notificações antigas foram excluídas.");
+        
+        // O truque: Adiciona "?tab=lidas" na URL para o JavaScript saber para onde voltar
+        return "redirect:/notificacoes?tab=lidas";
     }
 }

@@ -18,7 +18,7 @@
             th:href="@{/css/fragments/_notification_dropdown.css}" />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css"
             rel="stylesheet" />
-            <link rel="stylesheet" th:href="@{/css/pages/notification.css}" />
+        <link rel="stylesheet" th:href="@{/css/pages/notification.css}" />
     </head>
 
     <body class="dashboard-layout">
@@ -55,33 +55,48 @@
                                     data-bs-target="#lidas-content"
                                     type="button" role="tab">
                                     Lidas
+                                    <span class="badge bg-secondary ms-1"
+                                        th:text="${#lists.size(notificacoesLidas)}"></span>
                                 </button>
                             </li>
                         </ul>
 
-<div class="tab-content" id="notificacoesTabContent">
-                            
-                            <div class="tab-pane fade show active" id="novas-content" role="tabpanel">
-                                <div th:if="${#lists.isEmpty(notificacoesNaoLidas)}" class="notification-empty-state py-5">
-                                    <div><i class="fas fa-bell-slash fa-2x mb-3"></i><p>Nenhuma notificação nova</p></div>
+                        <div class="tab-content" id="notificacoesTabContent">
+
+                            <div class="tab-pane fade show active"
+                                id="novas-content" role="tabpanel">
+                                <div
+                                    th:if="${#lists.isEmpty(notificacoesNaoLidas)}"
+                                    class="notification-empty-state py-5">
+                                    <div><i
+                                            class="fas fa-bell-slash fa-2x mb-3"></i><p>Nenhuma
+                                            notificação nova</p></div>
                                 </div>
-                                <div class="notification-list-container" style="max-height: none;">
+
+                                <div class="notification-list-container"
+                                    style="max-height: none;">
                                     <ul>
-                                        <li th:each="notificacao : ${notificacoesNaoLidas}"
-                                            class="notification-item-wrapper d-flex align-items-center">   
+                                        <li
+                                            th:each="notificacao : ${notificacoesNaoLidas}"
+                                            class="notification-item-wrapper d-flex align-items-center">
 
-                                                <a class="notification-item flex-grow-1" 
+                                            <a
+                                                class="notification-item flex-grow-1"
                                                 th:href="@{/notificacoes/ir/{id}(id=${notificacao.id})}">
-                                                    <div class="notification-item-content">
-                                                        <p th:utext="${notificacao.mensagem}"></p>
-                                                        <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
-                                                    </div>
-                                                </a>
+                                                <div
+                                                    class="notification-item-content">
+                                                    <p
+                                                        th:utext="${notificacao.mensagem}"></p>
+                                                    <small
+                                                        th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
+                                                </div>
+                                            </a>
 
-                                            <button type="button" class="btn-excluir-notificacao ms-2 me-3"
-                                                    data-bs-toggle="modal" 
-                                                    th:data-bs-target="'#modalExcluir-' + ${notificacao.id}"
-                                                    aria-label="Excluir notificação">
+                                            <button type="button"
+                                                class="btn-excluir-notificacao ms-2 me-3"
+                                                data-bs-toggle="modal"
+                                                th:data-bs-target="'#modalExcluir-' + ${notificacao.id}"
+                                                aria-label="Excluir notificação">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </li>
@@ -89,27 +104,41 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" id="lidas-content" role="tabpanel">
-                                <div th:if="${#lists.isEmpty(notificacoesLidas)}" class="notification-empty-state py-5">
-                                    <div><i class="fas fa-check-circle fa-2x mb-3"></i><p>Nenhuma notificação lida</p></div>
+                            <div class="tab-pane fade" id="lidas-content"
+                                role="tabpanel">
+
+                                <div
+                                    th:if="${#lists.isEmpty(notificacoesLidas)}"
+                                    class="notification-empty-state py-5">
+                                    <div><i
+                                            class="fas fa-check-circle fa-2x mb-3"></i><p>Nenhuma
+                                            notificação lida</p></div>
                                 </div>
-                                <div class="notification-list-container" style="max-height: none; opacity: 0.6;">
+
+                                <div class="notification-list-container"
+                                    style="max-height: none; opacity: 0.6;">
                                     <ul>
-                                        <li th:each="notificacao : ${notificacoesLidas}"
+                                        <li
+                                            th:each="notificacao : ${notificacoesLidas}"
                                             class="notification-item-wrapper d-flex align-items-center">
-                                            
-                                                <a class="notification-item flex-grow-1" 
+
+                                            <a
+                                                class="notification-item flex-grow-1"
                                                 th:href="@{/notificacoes/ir/{id}(id=${notificacao.id})}">
-                                                    <div class="notification-item-content">
-                                                        <p th:utext="${notificacao.mensagem}"></p>
-                                                        <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
-                                                    </div>
-                                                </a>
-                                            
-                                            <button type="button" class="btn-excluir-notificacao ms-2 me-3"
-                                                    data-bs-toggle="modal" 
-                                                    th:data-bs-target="'#modalExcluir-' + ${notificacao.id}"
-                                                    aria-label="Excluir notificação">
+                                                <div
+                                                    class="notification-item-content">
+                                                    <p
+                                                        th:utext="${notificacao.mensagem}"></p>
+                                                    <small
+                                                        th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
+                                                </div>
+                                            </a>
+
+                                            <button type="button"
+                                                class="btn-excluir-notificacao ms-2 me-3"
+                                                data-bs-toggle="modal"
+                                                th:data-bs-target="'#modalExcluir-' + ${notificacao.id}"
+                                                aria-label="Excluir notificação">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </li>
@@ -121,35 +150,72 @@
                 </div>
             </div>
 
-
-            </div> <div th:each="notificacao : ${notificacoesNaoLidas}">
-                <div class="modal fade" th:id="'modalExcluir-' + ${notificacao.id}" tabindex="-1">
+            <div th:each="notificacao : ${notificacoesNaoLidas}">
+                <div class="modal fade"
+                    th:id="'modalExcluir-' + ${notificacao.id}" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Excluir Notificação</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                <p>Tem certeza que deseja excluir esta notificação?</p>
-                                <p class="text-danger fw-bold">Esta ação não pode ser revertida.</p>
+                                <p>Tem certeza que deseja excluir esta
+                                    notificação?</p>
+                                <p class="text-danger fw-bold">Esta ação não
+                                    pode ser revertida.</p>
                             </div>
                             <div class="modal-footer">
-                                <form th:action="@{/notificacoes/excluir/{id}(id=${notificacao.id})}" method="post">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+                                <form
+                                    th:action="@{/notificacoes/excluir/{id}(id=${notificacao.id})}"
+                                    method="post">
+                                    <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit"
+                                        class="btn btn-danger">Sim,
+                                        Excluir</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div th:each="notificacao : ${notificacoesLidas}">
-                <div class="modal fade" th:id="'modalExcluir-' + ${notificacao.id}" tabindex="-1">
+                <div class="modal fade"
+                    th:id="'modalExcluir-' + ${notificacao.id}" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Excluir Notificação</h5>
+                                <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Tem certeza que deseja excluir esta
+                                    notificação do seu histórico?</p>
+                                <p class="text-danger fw-bold">Esta ação não
+                                    pode ser revertida.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form
+                                    th:action="@{/notificacoes/excluir/{id}(id=${notificacao.id})}"
+                                    method="post">
+                                    <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit"
+                                        class="btn btn-danger">Sim,
+                                        Excluir</button>
+                                </form>
+                            </div>
                         </div>
+                    </div>
                 </div>
             </div>
+
         </main>
 
         <script
