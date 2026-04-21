@@ -3,6 +3,8 @@
     <head>
         <meta name="_csrf" th:content="${_csrf?.token}" />
         <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+        <meta name="user-id" th:content="${usuarioLogadoId}" />
+        
         <link rel="stylesheet" th:href="@{/css/pages/notification.css}" />
     </head>
     <body>
@@ -50,6 +52,9 @@
         <div th:fragment="global_loader" id="global-loader">
             <span class="loader"></span>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+        <script th:src="@{/js/websocket.js}"></script>
 
         <script th:src="@{/js/notification-dropdown.js}"></script>
     </body>

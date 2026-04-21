@@ -35,4 +35,12 @@ public class GlobalControllerAdvice {
     public int getContagemGlobal(Authentication auth) {
         return getNotificacoesNaoLidasGlobais(auth).size();
     }
+
+    // INJETA O ID DO USUÁRIO NA SESSÃO PARA O WEBSOCKET
+    @ModelAttribute("usuarioLogadoId")
+    public Long getUsuarioLogadoId(Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) return null;
+        Usuario usuario = usuarioRepository.findByEmail(auth.getName()).orElse(null);
+        return usuario != null ? usuario.getId() : null;
+    }
 }
