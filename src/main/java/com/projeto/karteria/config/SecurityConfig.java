@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -125,7 +123,10 @@ public class SecurityConfig {
                             return new AuthorizationDecision(hasRequiredAuthority || hasRequiredActiveRole);
                         })
 
-                        // 4. QUALQUER OUTRA URL AUTENTICADA (Site)
+                        // 4. REGRAS COMPARTILHADAS (Notificações e WebSockets)
+                        .requestMatchers("/notificacoes/**", "/ws/**").authenticated()
+
+                        // 5. QUALQUER OUTRA URL AUTENTICADA (Site)
                         .anyRequest().authenticated())
 
                 // Configuração do login web normal
