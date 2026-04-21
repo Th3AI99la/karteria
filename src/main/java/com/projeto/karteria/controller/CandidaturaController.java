@@ -89,7 +89,7 @@ public class CandidaturaController {
             // Envia para o canal específico do empregador
             messagingTemplate.convertAndSend("/topic/notificacoes/" + empregador.getId(), payload);
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             System.err.println("Erro ao processar notificação em tempo real: " + e.getMessage());
         }
         

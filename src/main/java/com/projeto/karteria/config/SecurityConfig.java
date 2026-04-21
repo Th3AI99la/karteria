@@ -67,6 +67,7 @@ public class SecurityConfig {
                                 "/",
                                 "/login",
                                 "/register",
+                                "/ws/**",
                                 "/esqueci-senha",
                                 "/resetar-senha",
                                 "/completar-cadastro",
@@ -89,12 +90,9 @@ public class SecurityConfig {
                         .access((authenticationSupplier, context) -> {
                             Authentication authentication = authenticationSupplier.get();
 
-                            boolean isAuthenticated = authentication != null
-                                    && authentication.isAuthenticated()
-                                    && !(authentication instanceof AnonymousAuthenticationToken);
-
-                            if (!isAuthenticated)
-                                return new AuthorizationDecision(false);
+                        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+                        return new AuthorizationDecision(false);
+                        }
 
                             boolean hasAuthority = authentication.getAuthorities().stream()
                                     .anyMatch(a -> a.getAuthority().equals("EMPREGADOR"));
@@ -112,12 +110,9 @@ public class SecurityConfig {
                         .access((authenticationSupplier, context) -> {
                             Authentication authentication = authenticationSupplier.get();
 
-                            boolean isAuthenticated = authentication != null
-                                    && authentication.isAuthenticated()
-                                    && !(authentication instanceof AnonymousAuthenticationToken);
-
-                            if (!isAuthenticated)
-                                return new AuthorizationDecision(false);
+                        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+                        return new AuthorizationDecision(false);
+                        }
 
                             boolean hasAuthority = authentication.getAuthorities().stream()
                                     .anyMatch(a ->
@@ -138,12 +133,9 @@ public class SecurityConfig {
                         .access((authenticationSupplier, context) -> {
                             Authentication authentication = authenticationSupplier.get();
 
-                            boolean isAuthenticated = authentication != null
-                                    && authentication.isAuthenticated()
-                                    && !(authentication instanceof AnonymousAuthenticationToken);
-
-                            if (!isAuthenticated)
-                                return new AuthorizationDecision(false);
+                        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+                        return new AuthorizationDecision(false);
+                        }
 
                             boolean hasAuthority = authentication.getAuthorities().stream()
                                     .anyMatch(a -> a.getAuthority().equals("COLABORADOR"));

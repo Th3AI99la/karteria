@@ -19,7 +19,6 @@ import com.projeto.karteria.model.Notificacao;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.NotificacaoRepository;
 import com.projeto.karteria.repository.UsuarioRepository;
-import com.projeto.karteria.service.ActiveProfileSecurityService;
 
 @Controller
 public class NotificacaoController {
@@ -29,9 +28,6 @@ public class NotificacaoController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private ActiveProfileSecurityService activeProfileSecurityService;
 
     /**
      * ETAPA 1: Método auxiliar para pegar o usuário logado
@@ -149,5 +145,27 @@ public class NotificacaoController {
         
         // O truque: Adiciona "?tab=lidas" na URL para o JavaScript saber para onde voltar
         return "redirect:/notificacoes?tab=lidas";
+    }
+
+    // ETAPA 7: Marcar TODAS as notificações como lidas (sem excluir, só marcar)
+    
+    @PostMapping("/notificacoes/marcar-todas-lidas")
+    public String marcarTodasComoLidas(Authentication authentication) {
+        Usuario usuario = getUsuarioLogado(authentication);
+
+        // Busca todas as notificações pendentes do usuário atual
+        List<Notificacao> naoLidas = notificacaoRepository
+                .findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(usuario);
+
+        // Altera o status de cada uma para lida
+        for (Notificacao notificacao : naoLidas) {
+            notificacao.setLida(true);
+        }
+
+        // Salva as alterações no banco de dados
+        notificacaoRepository.saveAll(naoLidas);
+
+        // Redireciona o usuário para a página central de notificações
+        return "redirect:/notificacoes";
     }
 }
