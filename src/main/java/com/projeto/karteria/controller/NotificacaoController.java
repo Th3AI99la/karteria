@@ -19,6 +19,7 @@ import com.projeto.karteria.model.Notificacao;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.NotificacaoRepository;
 import com.projeto.karteria.repository.UsuarioRepository;
+import com.projeto.karteria.service.ActiveProfileSecurityService;
 
 @Controller
 public class NotificacaoController {
@@ -29,7 +30,12 @@ public class NotificacaoController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Método auxiliar para pegar o usuário logado
+    @Autowired
+    private ActiveProfileSecurityService activeProfileSecurityService;
+
+    /**
+     * ETAPA 1: Método auxiliar para pegar o usuário logado
+     */
     private Usuario getUsuarioLogado(Authentication authentication) {
         String email = authentication.getName();
         return usuarioRepository.findByEmail(email)
@@ -37,37 +43,7 @@ public class NotificacaoController {
     }
 
     /**
-     * ETAPA 3: Exibe a página "Ver Todas as Notificações"
-     */
-    @GetMapping("/notificacoes")
-    public String verTodasNotificacoes(Model model, Authentication authentication) {
-        Usuario usuario = getUsuarioLogado(authentication);
-
-        // Busca as duas listas
-        List<Notificacao> naoLidas = notificacaoRepository.findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(usuario);
-        List<Notificacao> lidas = notificacaoRepository.findByUsuarioDestinatarioAndLidaIsTrueOrderByDataCriacaoDesc(usuario);
-
-        // Adiciona ao model
-        model.addAttribute("notificacoesNaoLidas", naoLidas);
-        model.addAttribute("notificacoesLidas", lidas);
-        model.addAttribute("contagemNotificacoesNaoLidas", naoLidas.size()); // Para o _navbar
-
-        return "notificacoes"; // Nome do novo arquivo HTML
-    }
-
-    /**
-     * ETAPA 1: Processa o botão "Limpar Tudo"
-     */
-    @PostMapping("/notificacoes/marcar-todas-lidas")
-    public String marcarTodasComoLidas(Authentication authentication) {
-        Usuario usuario = getUsuarioLogado(authentication);
-        notificacaoRepository.marcarTodasComoLidas(usuario);
-        return "redirect:/home"; // Ou redirecionar para /notificacoes
-    }
-
-    /**
-     * ETAPA 2: Processa o "X" (Apagar Individualmente) via AJAX
-     * @ResponseBody faz este método retornar uma resposta HTTP em vez de um template
+     * ETAPA 2: Processa o "X" (marcar como lida via AJAX)
      */
     @PostMapping("/notificacoes/marcar-lida/{id}")
     @ResponseBody
@@ -81,30 +57,80 @@ public class NotificacaoController {
 
         Notificacao notificacao = notificacaoOpt.get();
 
-        // Verifica se a notificação pertence ao usuário logado
+        // Segurança: garante que a notificação pertence ao usuário
         if (!notificacao.getUsuarioDestinatario().getId().equals(usuario.getId())) {
-            return ResponseEntity.status(403).body("Acesso negado"); // 403 Forbidden
+            return ResponseEntity.status(403).body("Acesso negado");
         }
 
         notificacao.setLida(true);
         notificacaoRepository.save(notificacao);
 
-        return ResponseEntity.ok().build(); // Retorna 200 OK
+        return ResponseEntity.ok().build();
     }
 
+    /**
+     * ETAPA 3: Exibe a página "Ver Todas as Notificações"
+     */
+    @GetMapping("/notificacoes")
+    public String verTodasNotificacoes(Model model, Authentication authentication) {
+        Usuario usuario = getUsuarioLogado(authentication);
+
+        // Correção: verificação por boolean (perfil ativo)
+        boolean isColaborador = activeProfileSecurityService.hasActiveRole("COLABORADOR");
+        boolean isEmpregador = activeProfileSecurityService.hasActiveRole("EMPREGADOR");
+
+        List<Notificacao> naoLidas = notificacaoRepository
+                .findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(usuario);
+
+        List<Notificacao> lidas = notificacaoRepository
+                .findByUsuarioDestinatarioAndLidaIsTrueOrderByDataCriacaoDesc(usuario);
+
+        // Filtro inteligente por perfil
+        naoLidas = filtrarPorPerfil(naoLidas, isColaborador, isEmpregador);
+        lidas = filtrarPorPerfil(lidas, isColaborador, isEmpregador);
+
+        model.addAttribute("notificacoesNaoLidas", naoLidas);
+        model.addAttribute("notificacoesLidas", lidas);
+        model.addAttribute("contagemNotificacoesNaoLidas", naoLidas.size());
+
+        return "notificacoes";
+    }
 
     /**
-     * ETAPA 4: Processa o botão "Excluir" (da página "Ver Todas")
+     * ETAPA 3.1: Método auxiliar para filtrar notificações por perfil
+     */
+    private List<Notificacao> filtrarPorPerfil(List<Notificacao> lista, boolean isColaborador, boolean isEmpregador) {
+        return lista.stream().filter(n -> {
+            if (n.getLink() == null)
+                return true;
+
+            // Colaborador não pode ver links de gerenciar
+            if (isColaborador && n.getLink().contains("/gerenciar"))
+                return false;
+
+            // Empregador não pode ver links de candidatar
+            if (isEmpregador && n.getLink().contains("/candidatar"))
+                return false;
+
+            return true;
+        }).toList();
+    }
+
+    /**
+     * ETAPA 4: Excluir notificação (página completa)
      */
     @PostMapping("/notificacoes/excluir/{id}")
     @Transactional
-    public String excluirNotificacao(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String excluirNotificacao(@PathVariable Long id, Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+
         Usuario usuario = getUsuarioLogado(authentication);
         Optional<Notificacao> notificacaoOpt = notificacaoRepository.findById(id);
 
         if (notificacaoOpt.isPresent()) {
             Notificacao notificacao = notificacaoOpt.get();
-            // Verifica se a notificação pertence ao usuário logado
+
+            // Segurança: garante que pertence ao usuário
             if (notificacao.getUsuarioDestinatario().getId().equals(usuario.getId())) {
                 notificacaoRepository.delete(notificacao);
                 redirectAttributes.addFlashAttribute("sucesso", "Notificação excluída com sucesso.");
@@ -112,7 +138,23 @@ public class NotificacaoController {
                 redirectAttributes.addFlashAttribute("erro", "Não foi possível excluir a notificação.");
             }
         }
-        
-        return "redirect:/notificacoes"; // Volta para a página de notificações
+
+        return "redirect:/notificacoes";
+    }
+
+    /// ETAPA 5: Redirecionar ao clicar na notificação (marcar como lida +
+    /// redirecionar)
+    @GetMapping("/notificacoes/ir/{id}")
+    public String redirecionarNotificacao(@PathVariable Long id) {
+        Notificacao notificacao = notificacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Notificação não encontrada"));
+
+        // Marca como lida
+        notificacao.setLida(true);
+        notificacaoRepository.save(notificacao);
+
+        // Pega o link original (ex: /anuncios/gerenciar/10) e redireciona
+        String destino = notificacao.getLink();
+        return "redirect:" + (destino != null ? destino : "/home");
     }
 }

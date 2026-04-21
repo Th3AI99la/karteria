@@ -23,40 +23,34 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
 
-    // Injeta o nosso novo porteiro
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
+
     // ======================================================================
-    // 1. CONFIGURAÇÃO DA API MOBILE (REST + JWT)
+    // 1. API (JWT)
     // ======================================================================
     @Bean
-    @Order(1) // O Spring vai ler esta regra PRIMEIRO
+    @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**") // Aplica estas regras APENAS a rotas que comecem por /api/
+                .securityMatcher("/api/**")
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Desliga
-                                                                                                              // as
-                                                                                                              // sessões
-                                                                                                              // para a
-                                                                                                              // app
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Rota de login da app é pública
-                        .anyRequest().authenticated() // Qualquer outra rota da app requer token JWT válido
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                // Coloca o nosso filtro JWT antes do filtro padrão do Spring
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     // ======================================================================
-    // 2. CONFIGURAÇÃO WEB (THYMELEAF + SESSÃO DE NAVEGADOR)
+    // 2. WEB (SESSION)
     // ======================================================================
     @Bean
-    @Order(2) // O Spring vai ler esta regra em SEGUNDO LUGAR (se a rota não começar por
-              // /api/)
+    @Order(2)
     public SecurityFilterChain webFilterChain(
             HttpSecurity http,
             UsuarioService usuarioService,
@@ -65,7 +59,10 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        // 1. REGRAS PÚBLICAS
+
+                        // =========================
+                        // 1. PÚBLICO
+                        // =========================
                         .requestMatchers(
                                 "/",
                                 "/login",
@@ -78,7 +75,9 @@ public class SecurityConfig {
                                 "/images/**")
                         .permitAll()
 
-                        // 2. REGRAS EMPREGADOR
+                        // =========================
+                        // 2. EMPREGADOR (restrito)
+                        // =========================
                         .requestMatchers(
                                 "/anuncios/novo",
                                 "/anuncios/salvar",
@@ -86,60 +85,98 @@ public class SecurityConfig {
                                 "/anuncios/apagar/**",
                                 "/anuncios/status/**",
                                 "/anuncios/arquivar/**",
-                                "/anuncios/desarquivar/**",
-                                "/anuncios/gerenciar/**")
+                                "/anuncios/desarquivar/**")
                         .access((authenticationSupplier, context) -> {
                             Authentication authentication = authenticationSupplier.get();
+
                             boolean isAuthenticated = authentication != null
                                     && authentication.isAuthenticated()
                                     && !(authentication instanceof AnonymousAuthenticationToken);
+
                             if (!isAuthenticated)
                                 return new AuthorizationDecision(false);
 
-                            @SuppressWarnings("null")
-                            boolean hasRequiredAuthority = authentication.getAuthorities().stream()
-                                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("EMPREGADOR"));
-                            boolean hasRequiredActiveRole = activeProfileSecurityService.hasActiveRole("EMPREGADOR");
+                            boolean hasAuthority = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("EMPREGADOR"));
 
-                            return new AuthorizationDecision(hasRequiredAuthority || hasRequiredActiveRole);
+                            boolean hasActiveRole =
+                                    activeProfileSecurityService.hasActiveRole("EMPREGADOR");
+
+                            return new AuthorizationDecision(hasAuthority || hasActiveRole);
                         })
 
-                        // 3. REGRAS COLABORADOR
+                        // =========================
+                        // 3. GERENCIAR (AMBOS)
+                        // =========================
+                        .requestMatchers("/anuncios/gerenciar/**")
+                        .access((authenticationSupplier, context) -> {
+                            Authentication authentication = authenticationSupplier.get();
+
+                            boolean isAuthenticated = authentication != null
+                                    && authentication.isAuthenticated()
+                                    && !(authentication instanceof AnonymousAuthenticationToken);
+
+                            if (!isAuthenticated)
+                                return new AuthorizationDecision(false);
+
+                            boolean hasAuthority = authentication.getAuthorities().stream()
+                                    .anyMatch(a ->
+                                            a.getAuthority().equals("EMPREGADOR") ||
+                                            a.getAuthority().equals("COLABORADOR"));
+
+                            boolean hasActiveRole =
+                                    activeProfileSecurityService.hasActiveRole("EMPREGADOR") ||
+                                    activeProfileSecurityService.hasActiveRole("COLABORADOR");
+
+                            return new AuthorizationDecision(hasAuthority || hasActiveRole);
+                        })
+
+                        // =========================
+                        // 4. COLABORADOR
+                        // =========================
                         .requestMatchers("/candidatar/**")
                         .access((authenticationSupplier, context) -> {
                             Authentication authentication = authenticationSupplier.get();
+
                             boolean isAuthenticated = authentication != null
                                     && authentication.isAuthenticated()
                                     && !(authentication instanceof AnonymousAuthenticationToken);
+
                             if (!isAuthenticated)
                                 return new AuthorizationDecision(false);
 
-                            @SuppressWarnings("null")
-                            boolean hasRequiredAuthority = authentication.getAuthorities().stream()
-                                    .anyMatch(
-                                            grantedAuthority -> grantedAuthority.getAuthority().equals("COLABORADOR"));
-                            boolean hasRequiredActiveRole = activeProfileSecurityService.hasActiveRole("COLABORADOR");
+                            boolean hasAuthority = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("COLABORADOR"));
 
-                            return new AuthorizationDecision(hasRequiredAuthority || hasRequiredActiveRole);
+                            boolean hasActiveRole =
+                                    activeProfileSecurityService.hasActiveRole("COLABORADOR");
+
+                            return new AuthorizationDecision(hasAuthority || hasActiveRole);
                         })
 
-                        // 4. REGRAS COMPARTILHADAS (Notificações e WebSockets)
-                        .requestMatchers("/notificacoes/**", "/ws/**").authenticated()
+                        // =========================
+                        // 5. COMUM AUTENTICADO
+                        // =========================
+                        .requestMatchers("/notificacoes/**", "/ws/**")
+                        .authenticated()
 
-                        // 5. QUALQUER OUTRA URL AUTENTICADA (Site)
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
 
-                // Configuração do login web normal
+                // LOGIN
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/escolher-perfil", true)
-                        .permitAll())
+                        .permitAll()
+                )
 
-                // Configuração do logout web normal
+                // LOGOUT
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/?logout")
-                        .permitAll())
+                        .permitAll()
+                )
+
                 .userDetailsService(usuarioService);
 
         return http.build();

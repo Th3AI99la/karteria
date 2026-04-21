@@ -38,7 +38,7 @@
                             th:id="'notificacao-item-' + ${notificacao.id}">
                             
                             <a class="notification-item flex-grow-1 notification-link"
-                               th:href="@{${notificacao.link != null ? notificacao.link : '#'}}"
+                               th:href="@{/notificacoes/ir/{id}(id=${notificacao.id})}"
                                th:data-id="${notificacao.id}">
                                 <div class="notification-item-content">
                                     <p

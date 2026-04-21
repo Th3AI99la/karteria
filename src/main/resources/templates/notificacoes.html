@@ -68,16 +68,16 @@
                                 <div class="notification-list-container" style="max-height: none;">
                                     <ul>
                                         <li th:each="notificacao : ${notificacoesNaoLidas}"
-                                            class="notification-item-wrapper d-flex align-items-center">
-                                            
-                                            <a class="notification-item flex-grow-1"
-                                               th:href="@{${notificacao.link != null ? notificacao.link : '#'}}">
-                                                <div class="notification-item-content">
-                                                    <p th:utext="${#strings.replace(notificacao.mensagem, #strings.substringBefore(notificacao.mensagem, ' se candidatou'), '<strong class=&quot;notification-user-name&quot;>' + #strings.substringBefore(notificacao.mensagem, ' se candidatou') + '</strong>')}"></p>
-                                                    <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
-                                                </div>
-                                            </a>
-                                            
+                                            class="notification-item-wrapper d-flex align-items-center">   
+
+                                                <a class="notification-item flex-grow-1" 
+                                                th:href="@{/notificacoes/ir/{id}(id=${notificacao.id})}">
+                                                    <div class="notification-item-content">
+                                                        <p th:utext="${notificacao.mensagem}"></p>
+                                                        <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
+                                                    </div>
+                                                </a>
+
                                             <button type="button" class="btn-excluir-notificacao ms-2 me-3"
                                                     data-bs-toggle="modal" 
                                                     th:data-bs-target="'#modalExcluir-' + ${notificacao.id}"
@@ -98,13 +98,13 @@
                                         <li th:each="notificacao : ${notificacoesLidas}"
                                             class="notification-item-wrapper d-flex align-items-center">
                                             
-                                            <a class="notification-item flex-grow-1"
-                                               th:href="@{${notificacao.link != null ? notificacao.link : '#'}}">
-                                                <div class="notification-item-content">
-                                                    <p th:utext="${#strings.replace(notificacao.mensagem, #strings.substringBefore(notificacao.mensagem, ' se candidatou'), '<strong class=&quot;notification-user-name&quot;>' + #strings.substringBefore(notificacao.mensagem, ' se candidatou') + '</strong>')}"></p>
-                                                    <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
-                                                </div>
-                                            </a>
+                                                <a class="notification-item flex-grow-1" 
+                                                th:href="@{/notificacoes/ir/{id}(id=${notificacao.id})}">
+                                                    <div class="notification-item-content">
+                                                        <p th:utext="${notificacao.mensagem}"></p>
+                                                        <small th:text="${#temporals.format(notificacao.dataCriacao, 'dd/MM/yyyy HH:mm')}"></small>
+                                                    </div>
+                                                </a>
                                             
                                             <button type="button" class="btn-excluir-notificacao ms-2 me-3"
                                                     data-bs-toggle="modal" 

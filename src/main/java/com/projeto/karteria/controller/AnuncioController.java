@@ -269,21 +269,17 @@ public class AnuncioController {
 
   // ================= GERENCIAR VAGA =================
   @GetMapping("/gerenciar/{id}")
-  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
+  // 1. Permitir acesso para ambos os perfis na anotação de segurança
+  @PreAuthorize("hasAnyAuthority('EMPREGADOR', 'COLABORADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('COLABORADOR')")
   public String showGerenciarVaga(
       @PathVariable Long id,
       Model model,
       Authentication authentication,
       RedirectAttributes redirectAttributes) {
+
     Anuncio anuncio = anuncioRepository
         .findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
-
-    if (!isAnunciante(anuncio, authentication)) {
-      redirectAttributes.addFlashAttribute(
-          "erro", "Você não tem permissão para gerenciar esta vaga.");
-      return "redirect:/home";
-    }
 
     List<Candidatura> candidaturas = candidaturaRepository.findByAnuncioOrderByDataCandidaturaDesc(anuncio);
     model.addAttribute("anuncio", anuncio);
