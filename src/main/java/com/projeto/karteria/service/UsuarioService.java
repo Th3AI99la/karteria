@@ -128,35 +128,40 @@ public class UsuarioService implements UserDetailsService {
 
             // Template HTML do e-mail (usando Text Blocks do Java)
             String htmlMsg = """
-                    <table width="100%%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f6f6f6; padding: 20px 0;">
+                    <table width="100%%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8f9fa; padding: 40px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
                         <tr>
                             <td align="center">
-                                <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 10px; border: 1px solid #e0e0e0; padding: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                                <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
 
-                                    <!-- Logo -->
+                                    <!-- Faixa de Destaque no Topo (Substitua pela cor primária do Karteria) -->
                                     <tr>
-                                        <td align="center" style="padding-bottom: 20px;">
-                                            <img src="https://raw.githubusercontent.com/Th3AI99la/karteria/refs/heads/main/src/main/resources/static/images/karteria-logo.jpg" alt="Karteria" width="160" style="display: block;">
+                                        <td style="background-color: #198754; height: 6px;"></td> <!-- SEU_HEX_AQUI -->
+                                    </tr>
+
+                                    <!-- Logo (Largura aumentada para compensar o formato 3456x1246) -->
+                                    <tr>
+                                        <td align="center" style="padding: 40px 0 20px 0;">
+                                            <img src="https://github.com/Th3AI99la/karteria/blob/main/src/main/resources/static/images/logo-mail.png?raw=true" alt="Karteria" width="280" style="display: block; max-width: 100%%; height: auto;">
                                         </td>
                                     </tr>
 
                                     <!-- Título -->
                                     <tr>
-                                        <td align="center" style="color: #2c3e50; font-size: 22px; font-weight: bold; padding-bottom: 10px;">
+                                        <td align="center" style="color: #1e293b; font-size: 24px; font-weight: 700; padding-bottom: 15px;">
                                             Recuperação de Senha
                                         </td>
                                     </tr>
 
                                     <!-- Saudação -->
                                     <tr>
-                                        <td style="color: #555555; font-size: 16px; padding-top: 10px;">
+                                        <td style="color: #475569; font-size: 16px; padding: 0 40px 10px 40px;">
                                             Olá,
                                         </td>
                                     </tr>
 
                                     <!-- Texto -->
                                     <tr>
-                                        <td style="color: #555555; font-size: 16px; line-height: 1.5; padding-top: 10px;">
+                                        <td style="color: #475569; font-size: 16px; line-height: 1.6; padding: 0 40px;">
                                             Recebemos uma solicitação para redefinir a senha da sua conta no <strong>Karteria</strong>.
                                             Se foi você, clique no botão abaixo para criar uma nova senha com segurança.
                                         </td>
@@ -164,8 +169,9 @@ public class UsuarioService implements UserDetailsService {
 
                                     <!-- Botão -->
                                     <tr>
-                                        <td align="center" style="padding: 30px 0;">
-                                            <a href="%s" style="background-color: #198754; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                                        <td align="center" style="padding: 35px 0;">
+                                            <!-- Substitua o background-color pela cor primária do Karteria -->
+                                            <a href="%s" style="background-color: #198754; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px; transition: background-color 0.3s;">
                                                 Redefinir minha senha
                                             </a>
                                         </td>
@@ -173,24 +179,24 @@ public class UsuarioService implements UserDetailsService {
 
                                     <!-- Aviso -->
                                     <tr>
-                                        <td align="center" style="color: #888888; font-size: 14px;">
-                                            Este link é válido por <strong>15 minutos</strong>.
+                                        <td align="center" style="color: #64748b; font-size: 14px; padding-bottom: 20px;">
+                                            ⏱️ Este link é válido por <strong>15 minutos</strong>.
                                         </td>
                                     </tr>
 
-                                    <!-- Linha -->
+                                    <!-- Linha Divisória -->
                                     <tr>
-                                        <td style="padding: 25px 0;">
-                                            <hr style="border: none; border-top: 1px solid #eeeeee;">
+                                        <td style="padding: 0 40px;">
+                                            <hr style="border: none; border-top: 1px solid #e2e8f0;">
                                         </td>
                                     </tr>
 
                                     <!-- Rodapé -->
                                     <tr>
-                                        <td align="center" style="color: #aaaaaa; font-size: 12px; line-height: 1.5;">
+                                        <td align="center" style="color: #94a3b8; font-size: 12px; line-height: 1.6; padding: 20px 40px 30px 40px;">
                                             Se você não solicitou esta alteração, ignore este e-mail.<br>
                                             Sua senha permanecerá inalterada.<br><br>
-                                            Equipe Karteria &copy; 2026
+                                            <strong>Equipe Karteria &copy; 2026</strong>
                                         </td>
                                     </tr>
 
