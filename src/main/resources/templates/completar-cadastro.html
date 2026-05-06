@@ -12,6 +12,34 @@
         <link rel="stylesheet" th:href="@{/css/pages/notification.css}" />
         <link rel="stylesheet" th:href="@{/css/pages/completar-cadastro.css}" />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+        <style>
+            .input-label {
+                font-size: 0.85rem;
+                font-weight: 600;
+            }
+            .form-card {
+                max-width: 800px;
+                margin: auto;
+            }
+            .section-header-custom {
+                font-size: 1.1rem;
+                letter-spacing: 1.2px;
+                border-bottom: 2px solid #28a745;
+                padding-bottom: 5px;
+                color: #28a745;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+            .error-message {
+                color: #dc3545;
+                font-size: 0.75rem;
+                display: none;
+                margin-top: 4px;
+            }
+            input.is-invalid {
+                border-color: #dc3545 !important;
+            }
+        </style>
     </head>
     <body>
         <div th:replace="~{_navbar_dashboard :: global_loader}"></div>
@@ -22,411 +50,327 @@
 
                 <header class="form-header" data-aos="fade-down" data-aos-delay="200">
                     <h1 class="form-title">Complete o Cadastro</h1>
-                    <p class="form-subtitle">Quase lá! Precisamos de mais algumas informações.</p>
-                    <p class="small text-muted" th:text="'Para a conta: ' + ${userEmail}"></p>
+                    <p class="form-subtitle">Precisamos de apenas mais alguns detalhes para finalizar.</p>
                 </header>
 
-                <div th:if="${#fields.hasErrors('${usuario.*}')}" class="alert alert-danger" data-aos="fade-in" data-aos-delay="300">Por favor, corrija os erros abaixo.</div>
-
                 <form th:action="@{/completar-cadastro}" th:object="${usuario}" method="post" id="completeRegisterForm" data-aos="fade-up" data-aos-delay="400" novalidate>
-                    <!-- Nome -->
-                    <div class="input-group mb-3">
-                        <label for="nome" class="input-label mb-1">Nome:</label>
-                        <div class="input-wrapper position-relative w-100">
-                            <i class="input-icon fas fa-user"></i>
-                            <input type="text" id="nome" th:field="*{nome}" class="form-input" placeholder="Seu primeiro nome" autocomplete="given-name" required />
-                        </div>
-                        <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="error-message" style="display: block"></div>
-                    </div>
+                    <h6 class="section-header-custom mb-3">
+                        <i class="fas fa-user-circle me-2"></i>
+                        Informações Pessoais
+                    </h6>
 
-                    <!-- Sobrenome -->
-                    <div class="input-group mb-3">
-                        <label for="sobrenome" class="input-label mb-1">Sobrenome:</label>
-                        <div class="input-wrapper position-relative w-100">
-                            <i class="input-icon fas fa-user"></i>
-                            <input type="text" id="sobrenome" th:field="*{sobrenome}" class="form-input" placeholder="Seu sobrenome" autocomplete="family-name" required />
-                        </div>
-                        <div th:if="${#fields.hasErrors('sobrenome')}" th:errors="*{sobrenome}" class="error-message" style="display: block"></div>
-                    </div>
-
-                    <!-- Telefones -->
-                    <div class="row">
+                    <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <div class="input-group mb-3">
-                                <label for="telefone" class="input-label mb-1">Telefone 1 (Obrigatório):</label>
-                                <div class="input-wrapper position-relative w-100">
-                                    <i class="input-icon fas fa-phone"></i>
-                                    <input
-                                        type="tel"
-                                        id="telefone"
-                                        th:field="*{telefone}"
-                                        class="form-input"
-                                        placeholder="(XX) XXXXX-XXXX"
-                                        autocomplete="tel-national"
-                                        required
-                                        maxlength="15" />
-                                </div>
-                                <div th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="error-message" style="display: block"></div>
+                            <label for="nome" class="input-label mb-1">Nome:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-user"></i>
+                                <input type="text" id="nome" th:field="*{nome}" class="form-input" placeholder="Seu nome" required />
                             </div>
+                            <div class="error-message" id="nomeError">O nome é obrigatório.</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="input-group mb-3">
-                                <label for="telefone2" class="input-label mb-1">Telefone 2 (Opcional):</label>
-                                <div class="input-wrapper position-relative w-100">
-                                    <i class="input-icon fas fa-phone"></i>
-                                    <input
-                                        type="tel"
-                                        id="telefone2"
-                                        th:field="*{telefone2}"
-                                        class="form-input"
-                                        placeholder="(XX) XXXXX-XXXX"
-                                        autocomplete="tel-national"
-                                        maxlength="15" />
-                                </div>
+                            <label for="sobrenome" class="input-label mb-1">Sobrenome:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-user"></i>
+                                <input type="text" id="sobrenome" th:field="*{sobrenome}" class="form-input" placeholder="Seu sobrenome" required />
                             </div>
+                            <div class="error-message" id="sobrenomeError">O sobrenome é obrigatório.</div>
                         </div>
                     </div>
 
-                    <!-- CPF -->
-                    <div class="input-group mb-3">
-                        <label for="cpf" class="input-label mb-1">CPF (Obrigatório):</label>
-                        <div class="input-wrapper position-relative w-100">
-                            <i class="input-icon fas fa-id-card"></i>
-                            <input
-                                type="text"
-                                id="cpf"
-                                th:field="*{cpf}"
-                                class="form-input"
-                                placeholder="000.000.000-00"
-                                required
-                                maxlength="14"
-                                aria-describedby="cpfJsError cpfSpringError" />
-                        </div>
-
-                        <div id="cpfSpringError" class="error-message" style="display: block; padding-left: 0" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
-
-                        <div id="cpfError" class="error-message" style="display: block; padding-left: 0"></div>
-                    </div>
-
-                    <!-- CEP -->
-                    <div class="input-group mb-3">
-                        <label for="cepInput" class="input-label mb-1">CEP (Opcional):</label>
-                        <div class="input-wrapper position-relative w-100">
-                            <i class="input-icon fas fa-mail-bulk"></i>
-                            <input type="text" id="cepInput" class="form-input" placeholder="00000-000 (preenche endereço)" maxlength="9" />
-                        </div>
-                        <div class="error-message" id="cepError" style="display: block"></div>
-                    </div>
-
-                    <!-- Rua -->
-                    <div class="input-group mb-3">
-                        <label for="ruaInput" class="input-label mb-1">Rua:</label>
-                        <div class="input-wrapper position-relative w-100">
-                            <i class="input-icon fas fa-road"></i>
-                            <input type="text" id="ruaInput" class="form-input" placeholder="Nome da Rua" required />
-                        </div>
-                        <div class="error-message" id="ruaError" style="display: block"></div>
-                    </div>
-
-                    <!-- Número e Complemento -->
-                    <div class="row">
+                    <div class="row g-3 mb-4">
                         <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <label for="numeroInput" class="input-label mb-1">Número:</label>
-                                <div class="input-wrapper position-relative w-100">
-                                    <i class="input-icon fas fa-hashtag"></i>
-                                    <input type="text" id="numeroInput" class="form-input" placeholder="Nº" required />
-                                </div>
-                                <div class="error-message" id="numeroError" style="display: block"></div>
+                            <label for="cpf" class="input-label mb-1">CPF:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-id-card"></i>
+                                <input type="text" id="cpf" th:field="*{cpf}" class="form-input" placeholder="000.000.000-00" required maxlength="14" />
                             </div>
+                            <div class="error-message" id="cpfError">CPF inválido ou obrigatório.</div>
                         </div>
-                        <div class="col-md-8">
-                            <div class="input-group mb-3">
-                                <label for="complementoInput" class="input-label mb-1">Complemento:</label>
-                                <div class="input-wrapper position-relative w-100">
-                                    <i class="input-icon fas fa-building"></i>
-                                    <input type="text" id="complementoInput" class="form-input" placeholder="Apto, Bloco, Casa (Opcional)" />
-                                </div>
+                        <div class="col-md-4">
+                            <label for="telefone" class="input-label mb-1">Telefone 1:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-phone"></i>
+                                <input type="tel" id="telefone" th:field="*{telefone}" class="form-input" placeholder="(00) 00000-0000" required maxlength="15" />
+                            </div>
+                            <div class="error-message" id="telefoneError">Telefone obrigatório.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="telefone2" class="input-label mb-1">Telefone 2 (Opcional):</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-phone"></i>
+                                <input type="tel" id="telefone2" th:field="*{telefone2}" class="form-input" placeholder="(00) 00000-0000" maxlength="15" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Bairro, Estado e Cidade -->
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="input-group mb-3">
-                                <label for="bairroInput" class="input-label mb-1">Bairro:</label>
-                                <div class="input-wrapper position-relative w-100">
-                                    <i class="input-icon fas fa-map-signs"></i>
-                                    <input type="text" id="bairroInput" class="form-input" placeholder="Bairro" required />
-                                </div>
-                                <div class="error-message" id="bairroError" style="display: block"></div>
-                            </div>
-                        </div>
+                    <h6 class="section-header-custom mb-3">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        Endereço
+                    </h6>
 
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label for="cepInput" class="input-label mb-1">CEP:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-mail-bulk"></i>
+                                <input type="text" id="cepInput" class="form-input" placeholder="00000-000" maxlength="9" />
+                            </div>
+                            <div class="error-message" id="cepError">CEP obrigatório.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ruaInput" class="input-label mb-1">Rua:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-road"></i>
+                                <input type="text" id="ruaInput" class="form-input" placeholder="Nome da rua" required />
+                            </div>
+                            <div class="error-message" id="ruaError">A rua é obrigatória.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="numeroInput" class="input-label mb-1">Número:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-hashtag"></i>
+                                <input type="text" id="numeroInput" class="form-input" placeholder="Nº" required />
+                            </div>
+                            <div class="error-message" id="numeroError">Obrigatório.</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-5">
+                            <label for="bairroInput" class="input-label mb-1">Bairro:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-map-signs"></i>
+                                <input type="text" id="bairroInput" class="form-input" placeholder="Seu bairro" required />
+                            </div>
+                            <div class="error-message" id="bairroError">O bairro é obrigatório.</div>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="cidadeSelect" class="input-label mb-1">Cidade:</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-city"></i>
+                                <select id="cidadeSelect" class="form-select form-input" required disabled>
+                                    <option value disabled selected>Cidade</option>
+                                </select>
+                            </div>
+                            <div class="error-message" id="cidadeError">Selecione a cidade.</div>
+                        </div>
                         <div class="col-md-2">
-                            <div class="input-group mb-3">
-                                <label for="estadoSelect" class="input-label mb-1">UF:</label>
-                                <div class="input-wrapper position-relative w-100">
-                                    <i class="input-icon fas fa-flag"></i>
-                                    <select id="estadoSelect" class="form-select form-input" required>
-                                        <option value disabled selected>UF</option>
-                                    </select>
-                                </div>
-                                <div class="error-message" id="estadoError" style="display: block"></div>
-                            </div>
+                            <label for="estadoSelect" class="input-label mb-1">UF:</label>
+                            <select id="estadoSelect" class="form-select form-input" required>
+                                <option value disabled selected>UF</option>
+                            </select>
+                            <div class="error-message" id="estadoError">UF.</div>
                         </div>
+                    </div>
 
-                        <div class="col-md-5">
-                            <div class="input-group mb-3">
-                                <label for="cidadeSelect" class="input-label mb-1">Cidade:</label>
-                                <div class="input-wrapper position-relative w-100">
-                                    <i class="input-icon fas fa-city"></i>
-                                    <select id="cidadeSelect" class="form-select form-input" required disabled>
-                                        <option value disabled selected>Selecione o Estado</option>
-                                    </select>
-                                </div>
-                                <div class="error-message" id="cidadeError" style="display: block"></div>
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <label for="complementoInput" class="input-label mb-1">Complemento (Opcional):</label>
+                            <div class="input-wrapper position-relative">
+                                <i class="input-icon fas fa-building"></i>
+                                <input type="text" id="complementoInput" class="form-input" placeholder="Ex: Apto 10, Bloco C..." />
                             </div>
                         </div>
                     </div>
 
                     <input type="hidden" id="enderecoCompleto" th:field="*{endereco}" />
 
-                    <!-- Termos -->
-                    <div class="input-group mb-3">
-                        <div class="form-check">
+                    <div class="d-flex flex-column align-items-center mt-4">
+                        <div class="form-check mb-4">
                             <input class="form-check-input" type="checkbox" id="termsComplete" required />
                             <label class="form-check-label text-muted small" for="termsComplete">
-                                Confirmo que li e concordo com os
-                                <a href="#" class="form-link primary" target="_blank" rel="noopener noreferrer">Termos de Uso</a>
-                                e
-                                <a href="#" class="form-link primary" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+                                Concordo com os
+                                <a href="#" class="form-link primary">Termos de Uso</a>
+                                .
                             </label>
+                            <div class="error-message" id="termsError">Você deve aceitar os termos.</div>
                         </div>
-                        <div class="error-message" id="termsError" style="display: block"></div>
-                    </div>
 
-                    <button type="submit" class="form-button mb-3" id="submitCompleteButton">
-                        <i class="fas fa-check-circle me-2"></i>
-                        Finalizar Cadastro
-                    </button>
+                        <button type="submit" class="form-button px-5 py-2" id="submitCompleteButton">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Finalizar Cadastro
+                        </button>
 
-                    <div class="text-center">
-                        <a th:href="@{/logout}" class="form-link small">Cancelar e Sair</a>
+                        <div class="mt-3">
+                            <a th:href="@{/logout}" class="form-link small text-decoration-none">Sair e completar depois</a>
+                        </div>
                     </div>
                 </form>
             </section>
         </main>
 
-        <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script th:src="@{/js/karteria-forms.js}"></script>
         <script th:src="@{/js/form-masks-validations.js}"></script>
         <script>
             AOS.init({ once: true });
-        </script>
 
-        <script>
             document.addEventListener("DOMContentLoaded", () => {
-                const cepInput = document.getElementById("cepInput");
-                const ruaInput = document.getElementById("ruaInput");
-                const bairroInput = document.getElementById("bairroInput");
-                const cidadeSelect = document.getElementById("cidadeSelect");
-                const estadoSelect = document.getElementById("estadoSelect");
-                const numeroInput = document.getElementById("numeroInput");
-                const complementoInput = document.getElementById("complementoInput");
-                const enderecoCompletoHidden = document.getElementById("enderecoCompleto");
-                const cepErrorDiv = document.getElementById("cepError");
+                const form = document.getElementById("completeRegisterForm");
+                const el = {
+                    nome: document.getElementById("nome"),
+                    sobrenome: document.getElementById("sobrenome"),
+                    cpf: document.getElementById("cpf"),
+                    telefone: document.getElementById("telefone"),
+                    cep: document.getElementById("cepInput"),
+                    rua: document.getElementById("ruaInput"),
+                    bairro: document.getElementById("bairroInput"),
+                    cidade: document.getElementById("cidadeSelect"),
+                    estado: document.getElementById("estadoSelect"),
+                    numero: document.getElementById("numeroInput"),
+                    compl: document.getElementById("complementoInput"),
+                    terms: document.getElementById("termsComplete"),
+                    hidden: document.getElementById("enderecoCompleto")
+                };
 
-                // Popula estados
-                const estados = [
-                    { sigla: "AC", nome: "Acre" },
-                    { sigla: "AL", nome: "Alagoas" },
-                    { sigla: "AP", nome: "Amapá" },
-                    { sigla: "AM", nome: "Amazonas" },
-                    { sigla: "BA", nome: "Bahia" },
-                    { sigla: "CE", nome: "Ceará" },
-                    { sigla: "DF", nome: "Distrito Federal" },
-                    { sigla: "ES", nome: "Espírito Santo" },
-                    { sigla: "GO", nome: "Goiás" },
-                    { sigla: "MA", nome: "Maranhão" },
-                    { sigla: "MT", nome: "Mato Grosso" },
-                    { sigla: "MS", nome: "Mato Grosso do Sul" },
-                    { sigla: "MG", nome: "Minas Gerais" },
-                    { sigla: "PA", nome: "Pará" },
-                    { sigla: "PB", nome: "Paraíba" },
-                    { sigla: "PR", nome: "Paraná" },
-                    { sigla: "PE", nome: "Pernambuco" },
-                    { sigla: "PI", nome: "Piauí" },
-                    { sigla: "RJ", nome: "Rio de Janeiro" },
-                    { sigla: "RN", nome: "Rio Grande do Norte" },
-                    { sigla: "RS", nome: "Rio Grande do Sul" },
-                    { sigla: "RO", nome: "Rondônia" },
-                    { sigla: "RR", nome: "Roraima" },
-                    { sigla: "SC", nome: "Santa Catarina" },
-                    { sigla: "SP", nome: "São Paulo" },
-                    { sigla: "SE", nome: "Sergipe" },
-                    { sigla: "TO", nome: "Tocantins" }
-                ];
-
-                // Ordena estados por sigla
-                if (estadoSelect) {
-                    // Ordena por sigla antes de adicionar
-                    estados.sort((a, b) => a.sigla.localeCompare(b.sigla));
-                    estados.forEach((uf) => {
-                        const option = document.createElement("option");
-                        option.value = uf.sigla;
-                        option.textContent = uf.sigla;
-                        estadoSelect.appendChild(option);
-                    });
+                // --- Lógica de Validação de CPF ---
+                function validarCPF(cpf) {
+                    cpf = cpf.replace(/[^\d]+/g, "");
+                    if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) return false;
+                    let soma = 0,
+                        resto;
+                    for (let i = 1; i <= 9; i++) soma = soma + parseInt(cpf.substring(i - 1, i)) * (11 - i);
+                    resto = (soma * 10) % 11;
+                    if (resto == 10 || resto == 11) resto = 0;
+                    if (resto != parseInt(cpf.substring(9, 10))) return false;
+                    soma = 0;
+                    for (let i = 1; i <= 10; i++) soma = soma + parseInt(cpf.substring(i - 1, i)) * (12 - i);
+                    resto = (soma * 10) % 11;
+                    if (resto == 10 || resto == 11) resto = 0;
+                    if (resto != parseInt(cpf.substring(10, 11))) return false;
+                    return true;
                 }
 
-                // Carrega cidades via IBGE
-                const carregarCidades = async (uf) => {
-                    if (!uf) {
-                        cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
-                        cidadeSelect.disabled = true;
-                        return;
-                    }
-                    cidadeSelect.disabled = true;
-                    cidadeSelect.innerHTML = '<option value="" disabled selected>Carregando...</option>';
+                function showError(fieldId, show) {
+                    const errorEl = document.getElementById(fieldId + "Error");
+                    const inputEl = document.getElementById(fieldId);
+                    if (errorEl) errorEl.style.display = show ? "block" : "none";
+                    if (inputEl) inputEl.classList.toggle("is-invalid", show);
+                }
+
+                // --- Lógica de População de Endereço ---
+                const estados = [
+                    "AC",
+                    "AL",
+                    "AP",
+                    "AM",
+                    "BA",
+                    "CE",
+                    "DF",
+                    "ES",
+                    "GO",
+                    "MA",
+                    "MT",
+                    "MS",
+                    "MG",
+                    "PA",
+                    "PB",
+                    "PR",
+                    "PE",
+                    "PI",
+                    "RJ",
+                    "RN",
+                    "RS",
+                    "RO",
+                    "RR",
+                    "SC",
+                    "SP",
+                    "SE",
+                    "TO"
+                ];
+                estados.forEach((uf) => el.estado.add(new Option(uf, uf)));
+
+                const carregarCidades = async (uf, sel = null) => {
+                    if (!uf) return;
+                    el.cidade.innerHTML = '<option value="" disabled selected>...</option>';
                     try {
                         const res = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`);
                         const cidades = await res.json();
-                        cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione a Cidade</option>';
-                        cidades.sort((a, b) => a.nome.localeCompare(b.nome));
-                        cidades.forEach((c) => {
-                            const option = document.createElement("option");
-                            option.value = c.nome;
-                            option.textContent = c.nome;
-                            cidadeSelect.appendChild(option);
-                        });
-                        cidadeSelect.disabled = false;
-                    } catch {
-                        cidadeSelect.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
-                    } finally {
-                        atualizarEnderecoCompleto();
+                        el.cidade.innerHTML = '<option value="" disabled selected>Cidade</option>';
+                        cidades.sort((a, b) => a.nome.localeCompare(b.nome)).forEach((c) => el.cidade.add(new Option(c.nome, c.nome)));
+                        el.cidade.disabled = false;
+                        if (sel) el.cidade.value = sel;
+                    } catch (e) {
+                        console.error("Erro IBGE");
                     }
                 };
 
-                estadoSelect.addEventListener("change", (e) => carregarCidades(e.target.value));
+                el.estado.addEventListener("change", (e) => carregarCidades(e.target.value));
 
-                // CEP
-                const preencherCamposViaCep = (dados) => {
-                    if (dados.erro) {
-                        cepErrorDiv.textContent = "CEP não encontrado. Preencha manualmente.";
-                        ruaInput.readOnly = false;
-                        bairroInput.readOnly = false;
-                        estadoSelect.disabled = false;
-                        cidadeSelect.disabled = true;
-                        cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
-                        ruaInput.focus();
-                        return;
+                el.cep.addEventListener("input", async (e) => {
+                    let v = e.target.value.replace(/\D/g, "").replace(/^(\d{5})(\d)/, "$1-$2");
+                    e.target.value = v.substring(0, 9);
+                    if (v.length === 9) {
+                        document.body.classList.add("is-loading");
+                        try {
+                            const res = await fetch(`https://viacep.com.br/ws/${v.replace("-", "")}/json/`);
+                            const d = await res.json();
+                            if (!d.erro) {
+                                el.rua.value = d.logradouro || "";
+                                el.bairro.value = d.bairro || "";
+                                el.estado.value = d.uf || "";
+                                await carregarCidades(d.uf, d.localidade);
+                                el.numero.focus();
+                                showError("cep", false);
+                            } else {
+                                showError("cep", true);
+                            }
+                        } finally {
+                            document.body.classList.remove("is-loading");
+                        }
                     }
-                    ruaInput.value = dados.logradouro || "";
-                    ruaInput.readOnly = !!dados.logradouro;
-                    bairroInput.value = dados.bairro || "";
-                    bairroInput.readOnly = !!dados.bairro;
-                    estadoSelect.value = dados.uf || "";
-                    estadoSelect.disabled = !!dados.uf;
-
-                    if (dados.uf) {
-                        carregarCidades(dados.uf).then(() => {
-                            if (dados.localidade) {
-                                cidadeSelect.value = dados.localidade;
-                                cidadeSelect.disabled = true;
-                            } else cidadeSelect.disabled = false;
-                            numeroInput.focus();
-                            atualizarEnderecoCompleto();
-                        });
-                    } else {
-                        cidadeSelect.disabled = true;
-                        numeroInput.focus();
-                        atualizarEnderecoCompleto();
-                    }
-                };
-
-                // Busca CEP na ViaCEP
-
-                const buscarCep = async (cep) => {
-                    const cepLimpo = cep.replace(/\D/g, "");
-                    if (cepLimpo.length !== 8) return;
-
-                    // 1. MOSTRA O LOADER (A tela escurece e o spinner aparece)
-                    document.body.classList.add("is-loading");
-
-                    try {
-                        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-                        const dados = await res.json();
-
-                        // Preenche os dados (Rua, Bairro, UF...)
-                        preencherCamposViaCep(dados);
-                    } catch {
-                        cepErrorDiv.textContent = "Erro ao buscar CEP. Preencha manualmente.";
-                        ruaInput.readOnly = false;
-                        bairroInput.readOnly = false;
-                        estadoSelect.disabled = false;
-                        cidadeSelect.disabled = true;
-                        cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
-                        ruaInput.focus();
-                    } finally {
-                        // 2. ESCONDE O LOADER (Acontece sempre, dando certo ou errado)
-                        document.body.classList.remove("is-loading");
-                    }
-                };
-
-                // Debounce para busca do CEP
-                let debounceTimer;
-                cepInput.addEventListener("input", (e) => {
-                    let val = e.target.value.replace(/\D/g, "").replace(/^(\d{5})(\d)/, "$1-$2");
-                    e.target.value = val.substring(0, 9);
-                    clearTimeout(debounceTimer);
-                    if (val.replace(/\D/g, "").length === 8) debounceTimer = setTimeout(() => buscarCep(val), 500);
                 });
 
-                // Atualiza endereço completo
-                const atualizarEnderecoCompleto = () => {
-                    // 1. Cria um objeto com os dados
-                    const enderecoObj = {
-                        rua: ruaInput.value || "",
-                        numero: numeroInput.value || "",
-                        complemento: complementoInput.value || "",
-                        bairro: bairroInput.value || "",
-                        cidade: cidadeSelect.value || "",
-                        uf: estadoSelect.value || "",
-                        cep: cepInput.value || ""
-                    };
+                // --- Lógica de Envio e Prevenção de Campos Vazios ---
+                form.addEventListener("submit", (e) => {
+                    let isValid = true;
 
-                    // 2. Converte o objeto para uma String JSON
-                    const jsonEndereco = JSON.stringify(enderecoObj);
-
-                    // 3. Salva a String JSON no campo 'hidden' que vai para o back-end
-                    enderecoCompletoHidden.value = jsonEndereco;
-                };
-
-                // Validação checkbox termos
-                const completeForm = document.getElementById("completeRegisterForm");
-                const termsCheckbox = document.getElementById("termsComplete");
-                const termsErrorDiv = document.getElementById("termsError");
-                if (completeForm && termsCheckbox && termsErrorDiv) {
-                    completeForm.addEventListener("submit", (e) => {
-                        // ===============================================
-                        // === ADICIONE ESTA LINHA AQUI ===
-                        atualizarEnderecoCompleto();
-                        // ===============================================
-
-                        if (!termsCheckbox.checked) {
-                            e.preventDefault();
-                            termsErrorDiv.textContent = "Você deve aceitar os termos para continuar.";
-                            termsCheckbox.focus();
-                        } else termsErrorDiv.textContent = "";
+                    // Validar campos simples
+                    const camposObrigatórios = ["nome", "sobrenome", "telefone", "rua", "numero", "bairro", "cep", "cidade", "estado"];
+                    camposObrigatórios.forEach((id) => {
+                        if (!el[id].value.trim()) {
+                            showError(id, true);
+                            isValid = false;
+                        } else {
+                            showError(id, false);
+                        }
                     });
-                    termsCheckbox.addEventListener("change", () => {
-                        if (termsCheckbox.checked) termsErrorDiv.textContent = "";
-                    });
-                }
+
+                    // Validar CPF
+                    if (!validarCPF(el.cpf.value)) {
+                        showError("cpf", true);
+                        isValid = false;
+                    } else {
+                        showError("cpf", false);
+                    }
+
+                    // Validar Termos
+                    if (!el.terms.checked) {
+                        showError("terms", true);
+                        isValid = false;
+                    } else {
+                        showError("terms", false);
+                    }
+
+                    if (!isValid) {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    } else {
+                        // Se tudo ok, monta o JSON do endereço
+                        const obj = {
+                            rua: el.rua.value,
+                            numero: el.numero.value,
+                            complemento: el.compl.value,
+                            bairro: el.bairro.value,
+                            cidade: el.cidade.value,
+                            uf: el.estado.value,
+                            cep: el.cep.value
+                        };
+                        el.hidden.value = JSON.stringify(obj);
+                    }
+                });
             });
         </script>
     </body>
