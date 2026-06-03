@@ -3,6 +3,7 @@ package com.projeto.karteria.controller;
 import com.projeto.karteria.model.Anuncio;
 import com.projeto.karteria.model.Candidatura;
 import com.projeto.karteria.model.Notificacao;
+import com.projeto.karteria.model.StatusAnuncio;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
 import com.projeto.karteria.repository.CandidaturaRepository;
@@ -13,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -23,6 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class CandidaturaController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CandidaturaController.class);
 
     @Autowired 
     private CandidaturaRepository candidaturaRepository;
@@ -49,6 +54,16 @@ public class CandidaturaController {
         String email = authentication.getName();
         Usuario colaborador = usuarioRepository.findByEmail(email).orElseThrow();
         Anuncio anuncio = anuncioRepository.findById(anuncioId).orElseThrow();
+
+        if (anuncio.getStatus() != StatusAnuncio.ATIVO) {
+            redirectAttributes.addFlashAttribute("erro", "Esta vaga não está aberta para candidaturas.");
+            return "redirect:/anuncios/detalhes/" + anuncioId;
+        }
+
+        if (anuncio.getAnunciante() == null) {
+            redirectAttributes.addFlashAttribute("erro", "Não foi possível identificar o anunciante desta vaga.");
+            return "redirect:/anuncios/detalhes/" + anuncioId;
+        }
 
         // 1. Verificação de auto-candidatura
         if (colaborador.getId().equals(anuncio.getAnunciante().getId())) {
@@ -90,7 +105,7 @@ public class CandidaturaController {
             messagingTemplate.convertAndSend("/topic/notificacoes/" + empregador.getId(), payload);
 
         } catch (RuntimeException e) {
-            System.err.println("Erro ao processar notificação em tempo real: " + e.getMessage());
+            logger.warn("Erro ao processar notificação em tempo real", e);
         }
         
         redirectAttributes.addFlashAttribute("sucesso", "Candidatura realizada com sucesso!");

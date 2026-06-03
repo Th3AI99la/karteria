@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,10 +23,11 @@ import com.projeto.karteria.repository.PasswordResetTokenRepository;
 
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.SimpleMailMessage;
 
 @Service
 public class UsuarioService implements UserDetailsService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -68,7 +71,10 @@ public class UsuarioService implements UserDetailsService {
 
     // --- Registro de usuário ---
     public void registerUserBasic(Usuario usuario) {
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+        String email = usuario.getEmail() != null ? usuario.getEmail().trim().toLowerCase() : "";
+        usuario.setEmail(email);
+
+        if (usuarioRepository.findByEmail(email).isPresent()) {
             throw new IllegalStateException("E-mail já cadastrado.");
         }
         usuario.setSenha(passwordEncoder.encode(usuario.getPassword()));
@@ -211,10 +217,10 @@ public class UsuarioService implements UserDetailsService {
             helper.setText(htmlMsg, true);
 
             mailSender.send(mensagem);
-            System.out.println("E-mail HTML enviado com sucesso para: " + emailPara);
+            logger.info("E-mail de recuperação enviado com sucesso");
 
         } catch (Exception e) {
-            System.err.println("Erro ao enviar e-mail HTML: " + e.getMessage());
+            logger.warn("Erro ao enviar e-mail de recuperação", e);
         }
     }
 

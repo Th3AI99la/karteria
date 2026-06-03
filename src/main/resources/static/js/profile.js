@@ -43,7 +43,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const enderecoDisplayInput = document.getElementById('editEnderecoDisplay');
     const enderecoHiddenInput = document.getElementById('editEnderecoHidden');
 
-    const bootstrapModalEndereco = new bootstrap.Modal(modalEndereco);
+    if (
+        !cepInput ||
+        !ruaInput ||
+        !bairroInput ||
+        !cidadeSelect ||
+        !estadoSelect ||
+        !numeroInput ||
+        !complementoInput ||
+        !cepErrorDiv ||
+        !btnConfirmar
+    ) {
+        return;
+    }
 
     // ============================================================
     // POPULAÇÃO DOS ESTADOS (LISTA FIXA DE UF)
@@ -80,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // CARREGAMENTO DINÂMICO DE CIDADES (API IBGE)
     // ============================================================
     const carregarCidades = async (uf) => {
-        if (!uf || !cidadeSelect) {
+        if (!uf) {
             cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione o Estado</option>';
             cidadeSelect.disabled = true;
             return;
@@ -241,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btnConfirmar.addEventListener('click', () => {
         const formModal1 = document.querySelector('#modalEditarPerfil form');
         if (!formModal1) {
-            console.error('ERRO: Formulário principal #modalEditarPerfil não encontrado!');
             return;
         }
 
@@ -266,8 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btnConfirmar.innerHTML =
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
 
-        // Submete o formulário principal
-        console.log('Submetendo formulário principal (Modal 1) com o novo endereço...');
         formModal1.submit();
     });
 });

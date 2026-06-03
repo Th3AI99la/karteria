@@ -29,7 +29,12 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO request) {
-        Usuario usuario = usuarioRepository.findByEmail(request.getEmail()).orElse(null);
+        if (request == null || request.getEmail() == null || request.getSenha() == null) {
+            return ResponseEntity.badRequest().body("E-mail e senha são obrigatórios.");
+        }
+
+        String email = request.getEmail().trim();
+        Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
 
         if (usuario == null || !passwordEncoder.matches(request.getSenha(), usuario.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("E-mail ou senha inválidos.");

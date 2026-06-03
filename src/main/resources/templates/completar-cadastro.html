@@ -54,6 +54,8 @@
                 </header>
 
                 <form th:action="@{/completar-cadastro}" th:object="${usuario}" method="post" id="completeRegisterForm" data-aos="fade-up" data-aos-delay="400" novalidate>
+                    <div th:if="${erroCadastro}" class="alert alert-danger" th:text="${erroCadastro}"></div>
+
                     <h6 class="section-header-custom mb-3">
                         <i class="fas fa-user-circle me-2"></i>
                         Informações Pessoais

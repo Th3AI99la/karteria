@@ -2,6 +2,8 @@ package com.projeto.karteria.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.UsuarioRepository;
 
-@SuppressWarnings("unused")
 @Controller
 public class SegurancaController {
 
@@ -54,6 +55,11 @@ public class SegurancaController {
             return "redirect:/seguranca";
         }
 
+        if (novaSenha.length() < 6) {
+            redirectAttributes.addFlashAttribute("erroSenha", "A nova senha deve ter pelo menos 6 caracteres.");
+            return "redirect:/seguranca";
+        }
+
         // 3. Salva nova senha
         usuario.setSenha(passwordEncoder.encode(novaSenha));
         usuarioRepository.save(usuario);
@@ -74,17 +80,30 @@ public class SegurancaController {
 
         Usuario usuario = usuarioRepository.findByEmail(authentication.getName()).orElseThrow();
 
+        String emailNormalizado = email != null ? email.trim() : "";
+        String telefoneNormalizado = telefone != null ? telefone.trim() : "";
+
+        if (emailNormalizado.isEmpty() || telefoneNormalizado.isEmpty()) {
+            redirectAttributes.addFlashAttribute("erroDados", "E-mail e telefone são obrigatórios.");
+            return "redirect:/seguranca";
+        }
+
         // Verifica se o novo email já existe (se for diferente do atual)
-        if (!usuario.getEmail().equals(email) && usuarioRepository.findByEmail(email).isPresent()) {
+        if (!usuario.getEmail().equals(emailNormalizado) && usuarioRepository.findByEmail(emailNormalizado).isPresent()) {
             redirectAttributes.addFlashAttribute("erroDados", "Este e-mail já está em uso por outro usuário.");
             return "redirect:/seguranca";
         }
 
-        usuario.setEmail(email);
-        usuario.setTelefone(telefone);
+        usuario.setEmail(emailNormalizado);
+        usuario.setTelefone(telefoneNormalizado);
         usuarioRepository.save(usuario);
 
-        // Atualiza o nome de usuário na autenticação atual
+        UsernamePasswordAuthenticationToken novaAutenticacao = new UsernamePasswordAuthenticationToken(
+                usuario,
+                authentication.getCredentials(),
+                usuario.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(novaAutenticacao);
+
         redirectAttributes.addFlashAttribute("sucessoDados", "Dados de segurança atualizados.");
         return "redirect:/seguranca";
     }

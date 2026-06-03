@@ -43,7 +43,7 @@ public class NotificacaoController {
      */
     @PostMapping("/notificacoes/marcar-lida/{id}")
     @ResponseBody
-    public ResponseEntity<?> marcarComoLida(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<Void> marcarComoLida(@PathVariable Long id, Authentication authentication) {
         Usuario usuario = getUsuarioLogado(authentication);
         Optional<Notificacao> notificacaoOpt = notificacaoRepository.findById(id);
 
@@ -55,7 +55,7 @@ public class NotificacaoController {
 
         // Segurança: garante que a notificação pertence ao usuário
         if (!notificacao.getUsuarioDestinatario().getId().equals(usuario.getId())) {
-            return ResponseEntity.status(403).body("Acesso negado");
+            return ResponseEntity.status(403).build();
         }
 
         notificacao.setLida(true);
@@ -114,17 +114,25 @@ public class NotificacaoController {
     /// ETAPA 5: Redirecionar ao clicar na notificação (marcar como lida +
     /// redirecionar)
     @GetMapping("/notificacoes/ir/{id}")
-    public String redirecionarNotificacao(@PathVariable Long id) {
+    public String redirecionarNotificacao(
+            @PathVariable Long id,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+        Usuario usuario = getUsuarioLogado(authentication);
         Notificacao notificacao = notificacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Notificação não encontrada"));
+
+        if (!notificacao.getUsuarioDestinatario().getId().equals(usuario.getId())) {
+            redirectAttributes.addFlashAttribute("erro", "Não foi possível abrir esta notificação.");
+            return "redirect:/notificacoes";
+        }
 
         // Marca como lida
         notificacao.setLida(true);
         notificacaoRepository.save(notificacao);
 
         // Pega o link original (ex: /anuncios/gerenciar/10) e redireciona
-        String destino = notificacao.getLink();
-        return "redirect:" + (destino != null ? destino : "/home");
+        return "redirect:" + normalizarDestino(notificacao.getLink());
     }
 
     /**
@@ -150,22 +158,21 @@ public class NotificacaoController {
     // ETAPA 7: Marcar TODAS as notificações como lidas (sem excluir, só marcar)
     
     @PostMapping("/notificacoes/marcar-todas-lidas")
+    @Transactional
     public String marcarTodasComoLidas(Authentication authentication) {
         Usuario usuario = getUsuarioLogado(authentication);
 
-        // Busca todas as notificações pendentes do usuário atual
-        List<Notificacao> naoLidas = notificacaoRepository
-                .findByUsuarioDestinatarioAndLidaIsFalseOrderByDataCriacaoDesc(usuario);
-
-        // Altera o status de cada uma para lida
-        for (Notificacao notificacao : naoLidas) {
-            notificacao.setLida(true);
-        }
-
-        // Salva as alterações no banco de dados
-        notificacaoRepository.saveAll(naoLidas);
+        notificacaoRepository.marcarTodasComoLidas(usuario);
 
         // Redireciona o usuário para a página central de notificações
         return "redirect:/notificacoes";
+    }
+
+    private String normalizarDestino(String destino) {
+        if (destino == null || destino.isBlank() || !destino.startsWith("/") || destino.startsWith("//")) {
+            return "/home";
+        }
+
+        return destino;
     }
 }

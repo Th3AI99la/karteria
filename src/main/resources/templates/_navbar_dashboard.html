@@ -8,7 +8,7 @@
         <link rel="stylesheet" th:href="@{/css/pages/notification.css}" />
     </head>
     <body>
-        <nav th:fragment="dashboard_nav" class="sidenav">
+        <nav th:fragment="dashboard_nav" class="sidenav" th:data-user-id="${usuarioLogadoId}">
             <div class="sidenav-header">
                 <a class="sidenav-brand brand-text" th:href="@{/home}">
                     <i class="fas fa-handshake"></i>
@@ -47,6 +47,10 @@
                     </form>
                 </li>
             </ul>
+
+            <script defer src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+            <script defer src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+            <script defer th:src="@{/js/websocket.js}"></script>
         </nav>
 
         <div th:fragment="global_loader" id="global-loader">

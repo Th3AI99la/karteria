@@ -9,50 +9,40 @@
         initAnimations();
         initInteractions();
         initAccessibility();
-        initGlobalLoader(); // Loader de Página (Tela Cheia)
+        initGlobalLoader();
     });
 
-    // Função do Loader de Página (Tela Cheia) com Debugs
+    // Loader de pagina em navegacoes internas.
     function initGlobalLoader() {
         const globalLoader = document.getElementById('global-loader');
         if (!globalLoader) {
-            console.log('DEBUG (Loader): #global-loader NÃO encontrado no HTML desta página.');
             return;
         }
-        console.log('DEBUG (Loader): initGlobalLoader() executado com sucesso.');
 
         document.querySelectorAll('a').forEach((link) => {
-            link.addEventListener('click', (e) => {
+            link.addEventListener('click', () => {
                 const href = link.getAttribute('href');
 
-                // Filtros para NÃO mostrar o loader
                 if (!href || href.startsWith('#') || link.getAttribute('data-bs-toggle')) {
-                    console.log('DEBUG (Loader): Link ignorado (âncora, modal ou dropdown).');
                     return;
                 }
                 if (link.getAttribute('target') === '_blank') {
-                    console.log('DEBUG (Loader): Link ignorado (nova aba).');
                     return;
                 }
                 if (href.startsWith('javascript:')) {
-                    console.log('DEBUG (Loader): Link ignorado (javascript).');
                     return;
                 }
 
-                // Se passou, MOSTRA o loader
-                console.log('DEBUG (Loader): NAVEGAÇÃO DETECTADA! Mostrando loader...');
                 document.body.classList.add('is-loading');
             });
         });
 
         window.addEventListener('load', () => {
-            console.log('DEBUG (Loader): Página carregada (load). Escondendo loader.');
             document.body.classList.remove('is-loading');
         });
 
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) {
-                console.log('DEBUG (Loader): Página restaurada do cache (pageshow). Escondendo loader.');
                 document.body.classList.remove('is-loading');
             }
         });
@@ -125,8 +115,11 @@
 
         document.querySelectorAll('a[href^="#"]').forEach((link) => {
             link.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || href === '#') return;
+
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                const target = document.querySelector(href);
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
@@ -208,13 +201,14 @@
 
     function createRipple(event) {
         const button = event.currentTarget;
+        const rect = button.getBoundingClientRect();
         const circle = document.createElement('span');
         const diameter = Math.max(button.clientWidth, button.clientHeight);
         const radius = diameter / 2;
 
         circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
-        circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+        circle.style.left = `${event.clientX - rect.left - radius}px`;
+        circle.style.top = `${event.clientY - rect.top - radius}px`;
         circle.classList.add('ripple');
 
         const ripple = button.getElementsByClassName('ripple')[0];
@@ -348,6 +342,7 @@
         const skipLink = document.createElement('a');
         skipLink.href = '#main-content';
         skipLink.className = 'skip-link';
+        skipLink.textContent = 'Pular para o conteúdo';
         document.body.insertBefore(skipLink, document.body.firstChild);
 
         const liveRegion = document.createElement('div');
@@ -374,18 +369,6 @@
     }
 
     function initPerformanceMonitoring() {
-        if ('PerformanceObserver' in window) {
-            const observer = new PerformanceObserver((list) => {
-                list.getEntries().forEach((entry) => {
-                    if (entry.entryType === 'largest-contentful-paint') {
-                        console.log('LCP:', entry.startTime);
-                    }
-                });
-            });
-
-            observer.observe({ entryTypes: ['largest-contentful-paint'] });
-        }
-
         window.addEventListener('error', function (e) {
             console.error('JavaScript Error:', e.error);
         });

@@ -44,6 +44,7 @@
     padding: 1rem 1rem !important; /* Padding do p-3 */
     display: block !important; /* Garante que o <a> ocupe espaço */
     text-decoration: none; /* Remove sublinhado padrão do <a> */
+    animation: fadeInUp 0.3s ease-out;
 }
 .notification-item:last-child {
     border-bottom: none !important; /* Remove borda do último item */
@@ -142,11 +143,6 @@
 }
 .notification-list-container::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
-}
-
-/* Animação (da tag style) */
-.notification-item {
-    animation: fadeInUp 0.3s ease-out;
 }
 
 @keyframes fadeInUp {

@@ -585,6 +585,7 @@ body.dashboard-layout {
 /* Adiciona variável RGB para sombra do form-control no dark mode */
 :root {
     --karteria-green-500-rgb: 34, 197, 94;
+    --karteria-gray-950-rgb: 3, 7, 18;
 }
 
 /* ========================================
@@ -631,7 +632,7 @@ body.dashboard-layout {
     z-index: 9999; /* Garante que fique no topo */
 
     /* Controla a exibição */
-    opacity: 1;  /* APENAS TESTE, APOS TERMINAR DEIXE EM 0 */
+    opacity: 0;
     visibility: hidden;
     transition:
         opacity 0.3s ease,
@@ -640,7 +641,7 @@ body.dashboard-layout {
 
 /* Classe que será adicionada ao <body> via JS */
 body.is-loading #global-loader {
-    opacity: 0;
+    opacity: 1;
     visibility: visible;
 }
 
@@ -649,12 +650,6 @@ body.is-loading #global-loader {
     width: 60px;
     height: 60px;
 }
-
-/* Variável RGB para o fallback do background */
-:root {
-    --karteria-gray-950-rgb: 3, 7, 18;
-}
-
 
 /* ========================================
    LOADER SPINNER (Para Botões)
