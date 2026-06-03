@@ -1,6 +1,3 @@
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
 
 ## **KARTERIA** 
 
@@ -62,24 +59,15 @@ Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Labo
 
 ## **1.3 Cronograma de Implantação** 
 
-|||||
-|---|---|---|---|
-|**Atividade**|**Responsável**|**Data**|**Tempo Estimado**|
-|||||
-|Análise e revisão do código|Dev Backend|21/05/2026|14 dias|
-|||||
-|Preparação do ambiente de<br>produção (Docker/VPS)|DevOps|23/05/2026|3 dias|
-|||||
-|Configuração do banco<br>PostgreSQL|DBA|24/05/2026|1 dia|
-|||||
-|Testes funcionais integrados|QA / Equipe|26/05/2026|3 dias|
-|||||
-|Início da fase piloto|Toda a equipe|29/05/2026|7 dias|
-|||||
-|Coleta de feedback e<br>correções|Dev Full-stack|12/06/2026|7 dias|
-|||||
-|Lançamento oficial (Go-Live)|Toda a equipe|16/06/2026|–|
-
+| Atividade | Responsável | Data de Início | Tempo Estimado |
+| :--- | :--- | :--- | :--- |
+| Análise e revisão do código | Dev Backend | 20/05/2026 | 4 dias |
+| Preparação do ambiente de produção (Docker/VPS) | DevOps | 22/05/2026 | 2 dias |
+| Configuração do banco PostgreSQL | DBA | 24/05/2026 | 1 dia |
+| Testes funcionais integrados | QA / Equipe | 25/05/2026 | 2 dias |
+| Início da fase piloto | Toda a equipe | 27/05/2026 | 4 dias |
+| Coleta de feedback e correções | Dev Full-stack | 31/05/2026 | 3 dias |
+| Lançamento oficial (Go-Live) | Toda a equipe | 03/06/2026 | – |
 
 
 ## **1.4 Recursos Necessários** 
