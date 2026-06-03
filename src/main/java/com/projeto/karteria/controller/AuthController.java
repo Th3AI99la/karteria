@@ -36,39 +36,41 @@ public class AuthController {
       RedirectAttributes redirectAttributes) {
 
     // 1. Validação básica (poderia ser mais robusta)
-    if (email == null || email.isEmpty() || senha == null || senha.isEmpty()) {
+    String emailNormalizado = email != null ? email.trim() : "";
+
+    if (emailNormalizado.isEmpty() || senha == null || senha.isEmpty()) {
       redirectAttributes.addFlashAttribute("registrationError", "Email e senha são obrigatórios.");
       return "redirect:/register";
     }
     if (senha.length() < 6) {
       redirectAttributes.addFlashAttribute(
           "registrationError", "A senha deve ter pelo menos 6 caracteres.");
-      redirectAttributes.addFlashAttribute("email", email); // Devolve email para preencher
+      redirectAttributes.addFlashAttribute("email", emailNormalizado); // Devolve email para preencher
       return "redirect:/register";
     }
     if (!senha.equals(confirmarSenha)) {
       redirectAttributes.addFlashAttribute("registrationError", "As senhas não coincidem.");
-      redirectAttributes.addFlashAttribute("email", email); // Devolve email para preencher
+      redirectAttributes.addFlashAttribute("email", emailNormalizado); // Devolve email para preencher
       return "redirect:/register";
     }
 
     // 2. Tenta registrar (UsuarioService precisa ser ajustado)
     try {
       Usuario novoUsuario = new Usuario();
-      novoUsuario.setEmail(email);
+      novoUsuario.setEmail(emailNormalizado);
       novoUsuario.setSenha(senha); // Service vai encodar
 
       usuarioService.registerUserBasic(novoUsuario);
 
       // 3. Guarda email na sessão para a próxima etapa
-      session.setAttribute("registrationEmail", email);
+      session.setAttribute("registrationEmail", emailNormalizado);
 
       // 4. Redireciona para completar o cadastro
       return "redirect:/completar-cadastro";
 
     } catch (IllegalStateException e) {
       redirectAttributes.addFlashAttribute("registrationError", e.getMessage());
-      redirectAttributes.addFlashAttribute("email", email); // Devolve email
+      redirectAttributes.addFlashAttribute("email", emailNormalizado); // Devolve email
       return "redirect:/register";
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute(

@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,7 +27,7 @@ public class Avaliacao {
     @JoinColumn(name = "avaliado_id")
     private Usuario avaliado; // Quem recebe a nota (Colaborador)
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "anuncio_id")
     private Anuncio anuncio; // Qual serviço foi realizado
 

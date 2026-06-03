@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
     const dropdown = document.querySelector('.notification-dropdown');
     
     if (dropdown) {
@@ -28,13 +28,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function marcarComoLida(id, buttonElement) {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (csrfHeader && csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
         try {
             const response = await fetch(`/notificacoes/marcar-lida/${id}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    [csrfHeader]: csrfToken
-                }
+                headers
             });
 
             if (response.ok) {
@@ -57,24 +62,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function atualizarContagemBadge() {
-        const badges = document.querySelectorAll('.notification-badge');
+        const badges = document.querySelectorAll('.notification-badge, [data-notification-badge]');
         
         badges.forEach(badge => {
             let contagemAtual = parseInt(badge.textContent, 10);
             if (contagemAtual > 0) {
                 contagemAtual--;
-                badge.textContent = contagemAtual;
+                setBadgeCount(badge, contagemAtual);
                 
                 if (contagemAtual === 0) {
                     badge.style.display = 'none';
-                     
-                    if (badge.parentElement.classList.contains('notification-header')) {
-                        badge.style.display = 'none';
-                    } else {
-                        badge.parentElement.style.display = 'none';
-                    }
                 }
             }
         });
+    }
+
+    function setBadgeCount(badge, count) {
+        badge.textContent = String(count);
+
+        const srText = document.createElement('span');
+        srText.className = 'visually-hidden';
+        srText.textContent = 'notificações não lidas';
+        badge.appendChild(srText);
     }
 });

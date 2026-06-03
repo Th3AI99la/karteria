@@ -153,8 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
     capitalizeFirstLetter(document.getElementById('complementoInput'));
     capitalizeFirstLetter(document.getElementById('bairroInput'));
 
-    console.log('Máscaras e validações de tipo aplicadas.');
-
     // === ANEXA VALIDAÇÃO DE CPF EM TEMPO REAL ===
     // (Este bloco estava fora do DOMContentLoaded no arquivo original)
 
@@ -195,10 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 cpfInput.closest('.input-group').classList.remove('error', 'success');
             }
         });
-
-        console.log('Validação de CPF em tempo real anexada com sucesso.');
-    } else {
-        console.warn('Campos de CPF (cpf ou cpfError) não encontrados para anexar validação.');
     }
 
     // === ANEXA CAPITALIZAÇÃO (CAMPOS DO ANUNCIO-FORM) ===

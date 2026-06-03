@@ -32,7 +32,7 @@
         <main class="dashboard-content">
             <div class="container">
                 <div
-                    class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+                    class="dashboard-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                     <div>
                         <h1 class="h2" th:text="${anuncio?.titulo}">Nome da
                             Vaga</h1>
@@ -40,7 +40,12 @@
                             th:text="#{emp.dashboard.subtitle}">Gerencie as
                             candidaturas recebidas.</p>
                     </div>
-                    <div>
+                    <div class="d-flex flex-wrap gap-2 justify-content-end">
+                        <a th:href="@{/home}"
+                            class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Voltar
+                        </a>
                         <a th:href="@{/anuncios/editar/{id}(id=${anuncio?.id})}"
                             class="btn btn-outline-secondary">
                             <i class="fas fa-pencil-alt me-2"></i>

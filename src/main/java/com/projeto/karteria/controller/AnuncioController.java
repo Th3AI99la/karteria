@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,8 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/anuncios")
 public class AnuncioController {
+
+  private static final Logger logger = LoggerFactory.getLogger(AnuncioController.class);
 
   @Autowired
   private AnuncioRepository anuncioRepository;
@@ -269,8 +273,7 @@ public class AnuncioController {
 
   // ================= GERENCIAR VAGA =================
   @GetMapping("/gerenciar/{id}")
-  // 1. Permitir acesso para ambos os perfis na anotação de segurança
-  @PreAuthorize("hasAnyAuthority('EMPREGADOR', 'COLABORADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('COLABORADOR')")
+  @PreAuthorize("hasAuthority('EMPREGADOR') or @activeProfileSecurityService.hasActiveRole('EMPREGADOR')")
   public String showGerenciarVaga(
       @PathVariable Long id,
       Model model,
@@ -280,6 +283,11 @@ public class AnuncioController {
     Anuncio anuncio = anuncioRepository
         .findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido:" + id));
+
+    if (!isAnunciante(anuncio, authentication)) {
+      redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para gerenciar esta vaga.");
+      return "redirect:/home";
+    }
 
     List<Candidatura> candidaturas = candidaturaRepository.findByAnuncioOrderByDataCandidaturaDesc(anuncio);
     model.addAttribute("anuncio", anuncio);
@@ -292,8 +300,6 @@ public class AnuncioController {
   @GetMapping("/detalhes/{id}")
   public String showAnuncioDetalhes(
       @PathVariable Long id, Model model, Authentication authentication, HttpSession session) {
-    System.out.println("DEBUG: Entrando em showAnuncioDetalhes para ID: " + id);
-
     Anuncio anuncio = anuncioRepository
         .findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Anúncio inválido: " + id));
@@ -301,25 +307,16 @@ public class AnuncioController {
     boolean isAnunciante = false;
     String nomeUsuarioLogado = null;
     boolean jaCandidatado = false;
-    boolean countedView = false;
 
     if (authentication != null && authentication.isAuthenticated()) {
       String emailUsuarioLogado = authentication.getName();
-      System.out.println("DEBUG: Usuário autenticado: " + emailUsuarioLogado);
 
       Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado).orElse(null);
 
       if (usuarioLogado != null) {
-        System.out.println(
-            "DEBUG: Objeto Usuario encontrado: ID="
-                + usuarioLogado.getId()
-                + ", TipoRegistro="
-                + usuarioLogado.getTipo());
-
         if (anuncio.getAnunciante() != null
             && anuncio.getAnunciante().getId().equals(usuarioLogado.getId())) {
 
-          System.out.println("DEBUG: Usuário é o anunciante deste anúncio.");
           isAnunciante = true;
           nomeUsuarioLogado = usuarioLogado.getNome();
 
@@ -335,36 +332,14 @@ public class AnuncioController {
             anuncio.setVisualizacoes(anuncio.getVisualizacoes() + 1);
             anuncioRepository.save(anuncio);
             viewedAnnouncements.add(id);
-            countedView = true;
-            System.out.println("DEBUG: View contada para anúncio ID=" + id);
-          } else {
-            System.out.println("DEBUG: View JÁ contada nesta sessão para anúncio ID=" + id);
           }
 
-          System.out.println(
-              "DEBUG: Verificando candidatura existente para Colaborador ID="
-                  + usuarioLogado.getId()
-                  + " e Anuncio ID="
-                  + anuncio.getId());
           jaCandidatado = candidaturaRepository.existsByColaboradorAndAnuncio(usuarioLogado, anuncio);
-          System.out.println("DEBUG: Resultado de existsByColaboradorAndAnuncio: " + jaCandidatado);
         }
       } else {
-        System.out.println(
-            "WARN: Objeto Usuario NÃO encontrado para o email autenticado: " + emailUsuarioLogado);
+        logger.warn("Usuário autenticado não encontrado para o e-mail {}", emailUsuarioLogado);
       }
-
-    } else {
-      System.out.println("DEBUG: Usuário não autenticado (anônimo?).");
     }
-
-    System.out.println(
-        "DEBUG: Enviando para o Model - isAnunciante="
-            + isAnunciante
-            + ", jaCandidatado="
-            + jaCandidatado
-            + ", countedView="
-            + countedView);
 
     model.addAttribute("anuncio", anuncio);
     model.addAttribute("isAnunciante", isAnunciante);

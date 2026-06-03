@@ -1,5 +1,5 @@
 /**
- * Lógica específica do Dashboard do Empregador (com Debugging)
+ * Lógica específica do Dashboard do Empregador.
  */
 document.addEventListener('DOMContentLoaded', () => {
     // Seletores (garantir que estão corretos)
@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica de Busca ---
     let debounceTimer;
     searchInput.addEventListener('input', () => {
-        console.log('Input detectado:', searchInput.value); // DEBUG
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(filterCards, 300);   // Debounce de 300ms
     });
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tabs.forEach((tabButton) => {
         tabButton.addEventListener('shown.bs.tab', (event) => {
             const activeTabPaneId = event.target.getAttribute('data-bs-target');
-            console.log('Evento shown.bs.tab disparado para:', activeTabPaneId); // DEBUG
             const activeTabPane = document.querySelector(activeTabPaneId);
             if (activeTabPane) {
                 // Ao mudar de aba, sempre re-filtramos E atualizamos a contagem
@@ -49,8 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Erro em filterCards: Aba ativa não encontrada.');
             return;
         }
-        console.log('Filtrando cards na aba:', activeTabPane.id, 'com termo:', searchTerm); // DEBUG
-
         const cardColumns = activeTabPane.querySelectorAll('.vaga-card-column');
         const emptyState = activeTabPane.querySelector('.empty-state');
         let visibleCount = 0;
@@ -93,8 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const tabId = activeTabPane.id;
         let statusText = 'vagas';
 
-        console.log('UpdateVagasCountInfo - Aba:', tabId, 'Visíveis:', visibleCount, 'Total na Aba:', totalNaAba); // DEBUG
-
         if (tabId === 'ativas-content') {
             statusText = 'ativas';
         } else if (tabId === 'pausadas-content') {
@@ -112,12 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             vagasCountInfo.textContent = `Exibindo ${visibleCount} de ${totalNaAba} vagas ${statusText} correspondentes à busca.`;
         }
-        console.log('Texto final da contagem:', vagasCountInfo.textContent); // DEBUG
     }
 
     const initialActiveTabPane = tabContent.querySelector('.tab-pane.active');
     if (initialActiveTabPane) {
-        console.log('Chamada inicial para a aba:', initialActiveTabPane.id); // DEBUG
         filterCards(); // Chama filterCards que por sua vez chama updateVagasCountInfo
     } else {
         console.error('Erro: Nenhuma aba ativa encontrada na carga inicial.');

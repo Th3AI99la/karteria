@@ -7,13 +7,14 @@
 
     // Roda o script quando o DOM estiver pronto
     document.addEventListener('DOMContentLoaded', () => {
+        initThemeToggle();
+
         // Inicializa todas as funcionalidades em todos os formulários da página
         const forms = document.querySelectorAll('form');
         forms.forEach((form) => {
-            initThemeToggle();
             initPasswordToggle(form);
             initFormValidation(form);
-            initSubmissionHandler(form); // Loader de Botão
+            initSubmissionHandler(form);
             if (form.id === 'registerForm') {
                 initPasswordStrength(form);
             }
@@ -156,7 +157,7 @@
             errorMessage = 'Este campo é obrigatório.';
         }
         // Validação de e-mail
-        else if (input.type === 'email' && !/^[\S+@]+\.[\S+@]+$/.test(input.value)) {
+        else if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
             isValid = false;
             errorMessage = 'Por favor, insira um e-mail válido.';
         }
@@ -177,39 +178,36 @@
     }
 
     /**
-     * Controla o estado de "loading" do botão de envio (COM DEBUG)
+     * Controla o estado de "loading" do botão de envio.
      */
     function initSubmissionHandler(form) {
         form.addEventListener('submit', function (event) {
+            if (event.defaultPrevented) return;
+
             const submitButton = form.querySelector('button[type="submit"]');
             if (!submitButton) {
-                console.log('DEBUG (Botão): Formulário enviado, mas NENHUM botão [type="submit"] foi encontrado.');
                 return;
             }
-            console.log('DEBUG (Botão): Evento "submit" capturado no formulário:', form.id);
 
             // Usamos setTimeout(..., 0) para garantir que a validação do navegador
             // rode ANTES de desabilitarmos o botão.
             setTimeout(() => {
                 // Dupla verificação de validade (HTML5)
                 if (!form.checkValidity()) {
-                    console.log('DEBUG (Botão): Envio bloqueado. Formulário inválido.');
                     return;
                 }
 
-                console.log('DEBUG (Botão): Formulário VÁLIDO. Desabilitando botão e mostrando loader.');
                 submitButton.disabled = true;
 
                 const originalContent = submitButton.innerHTML;
                 submitButton.setAttribute('data-original-content', originalContent);
 
                 window.addEventListener('pageshow', () => {
-                    console.log('DEBUG (Botão): Evento "pageshow" (clique em Voltar). Restaurando botão.');
                     submitButton.disabled = false;
                     if (submitButton.getAttribute('data-original-content')) {
                         submitButton.innerHTML = originalContent;
                     }
-                });
+                }, { once: true });
 
                 // Substitui o conteúdo do botão pelo seu novo loader
                 submitButton.innerHTML = '<span class="loader"></span>';

@@ -149,7 +149,7 @@ public class SecurityConfig {
                         // =========================
                         // 5. COMUM AUTENTICADO
                         // =========================
-                        .requestMatchers("/notificacoes/**", "/ws/**")
+                        .requestMatchers("/notificacoes/**")
                         .authenticated()
 
                         .anyRequest().authenticated()

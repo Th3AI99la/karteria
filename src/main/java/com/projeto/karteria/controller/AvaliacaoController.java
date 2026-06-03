@@ -13,6 +13,7 @@ import com.projeto.karteria.model.StatusAnuncio;
 import com.projeto.karteria.model.Usuario;
 import com.projeto.karteria.repository.AnuncioRepository;
 import com.projeto.karteria.repository.AvaliacaoRepository;
+import com.projeto.karteria.repository.CandidaturaRepository;
 import com.projeto.karteria.repository.UsuarioRepository;
 
 @Controller
@@ -24,6 +25,8 @@ public class AvaliacaoController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private AnuncioRepository anuncioRepository;
+    @Autowired
+    private CandidaturaRepository candidaturaRepository;
 
     @PostMapping("/avaliar/salvar")
     public String salvarAvaliacao(
@@ -38,6 +41,26 @@ public class AvaliacaoController {
         Usuario avaliador = usuarioRepository.findByEmail(authentication.getName()).orElseThrow();
         Usuario avaliado = usuarioRepository.findById(candidatoId).orElseThrow();
         Anuncio anuncio = anuncioRepository.findById(anuncioId).orElseThrow();
+
+        if (anuncio.getAnunciante() == null || !anuncio.getAnunciante().getId().equals(avaliador.getId())) {
+            redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para avaliar esta vaga.");
+            return "redirect:/home";
+        }
+
+        if (!candidaturaRepository.existsByColaboradorAndAnuncio(avaliado, anuncio)) {
+            redirectAttributes.addFlashAttribute("erro", "Este colaborador não se candidatou a esta vaga.");
+            return "redirect:/anuncios/gerenciar/" + anuncioId;
+        }
+
+        if (nota == null || nota < 1 || nota > 5) {
+            redirectAttributes.addFlashAttribute("erro", "A nota deve estar entre 1 e 5.");
+            return "redirect:/anuncios/gerenciar/" + anuncioId;
+        }
+
+        if (avaliacaoRepository.existsByAnuncio(anuncio)) {
+            redirectAttributes.addFlashAttribute("erro", "Esta vaga já possui uma avaliação registrada.");
+            return "redirect:/anuncios/gerenciar/" + anuncioId;
+        }
 
         // 4. LÓGICA DE VALIDAÇÃO: Verifica se o código bate
         String codigoCorreto = avaliado.getCodigoValidacao();
@@ -55,10 +78,11 @@ public class AvaliacaoController {
         avaliacao.setAvaliado(avaliado);
         avaliacao.setAnuncio(anuncio);
         avaliacao.setNota(nota);
-        avaliacao.setComentario(comentario);
+        avaliacao.setComentario(comentario != null ? comentario.trim() : "");
 
         avaliacaoRepository.save(avaliacao);
 
+        anuncio.setAvaliacao(avaliacao);
         anuncio.setStatus(StatusAnuncio.CONCLUIDO);
         anuncioRepository.save(anuncio);
 

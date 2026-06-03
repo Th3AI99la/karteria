@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/anuncios")
@@ -22,10 +21,9 @@ public class AnuncioRestController {
 
     @GetMapping
     public ResponseEntity<List<AnuncioResponseDTO>> listarAnunciosAtivos() {
-        List<Anuncio> todosAnuncios = anuncioRepository.findAll();
+        List<Anuncio> anunciosAtivos = anuncioRepository.findByStatusOrderByDataPostagemDesc(StatusAnuncio.ATIVO);
 
-        List<AnuncioResponseDTO> response = todosAnuncios.stream()
-                .filter(anuncio -> anuncio.getStatus() == StatusAnuncio.ATIVO)
+        List<AnuncioResponseDTO> response = anunciosAtivos.stream()
                 .map(anuncio -> new AnuncioResponseDTO(
                         anuncio.getId(),
                         anuncio.getTitulo(),
@@ -36,7 +34,7 @@ public class AnuncioRestController {
                         anuncio.getTipoPagamento(),
                         anuncio.getAnunciante() != null ? anuncio.getAnunciante().getNome() : "Desconhecido",
                         anuncio.getDataPostagem()))
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(response);
     }

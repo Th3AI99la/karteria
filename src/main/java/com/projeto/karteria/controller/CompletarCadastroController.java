@@ -48,12 +48,6 @@ public class CompletarCadastroController {
 
     String email = (String) session.getAttribute("registrationEmail");
 
-    // Verifica sessão
-    if (bindingResult.hasErrors()) {
-      // Agora 'model' está disponível aqui
-      model.addAttribute("userEmail", email);
-      return "completar-cadastro";
-    }
     // Verifica sessão novamente
     if (email == null || email.isEmpty()) {
       redirectAttributes.addFlashAttribute(
@@ -68,6 +62,16 @@ public class CompletarCadastroController {
       return "completar-cadastro";
     }
 
+    if (isBlank(usuarioForm.getNome())
+        || isBlank(usuarioForm.getSobrenome())
+        || isBlank(usuarioForm.getTelefone())
+        || isBlank(usuarioForm.getCpf())
+        || isBlank(usuarioForm.getEndereco())) {
+      model.addAttribute("userEmail", email);
+      model.addAttribute("erroCadastro", "Preencha todos os campos obrigatórios para finalizar o cadastro.");
+      return "completar-cadastro";
+    }
+
     // Busca o usuário que fez o registro básico
     Usuario usuarioExistente = usuarioRepository.findByEmail(email).orElse(null);
 
@@ -79,12 +83,12 @@ public class CompletarCadastroController {
     }
 
     // Atualiza os dados do usuário existente com os dados do formulário
-    usuarioExistente.setNome(usuarioForm.getNome());
-    usuarioExistente.setSobrenome(usuarioForm.getSobrenome());
-    usuarioExistente.setTelefone(usuarioForm.getTelefone());
-    usuarioExistente.setTelefone2(usuarioForm.getTelefone2());
-    usuarioExistente.setCpf(usuarioForm.getCpf());
-    usuarioExistente.setEndereco(usuarioForm.getEndereco());
+    usuarioExistente.setNome(usuarioForm.getNome() != null ? usuarioForm.getNome().trim() : null);
+    usuarioExistente.setSobrenome(usuarioForm.getSobrenome() != null ? usuarioForm.getSobrenome().trim() : null);
+    usuarioExistente.setTelefone(usuarioForm.getTelefone() != null ? usuarioForm.getTelefone().trim() : null);
+    usuarioExistente.setTelefone2(usuarioForm.getTelefone2() != null ? usuarioForm.getTelefone2().trim() : null);
+    usuarioExistente.setCpf(usuarioForm.getCpf() != null ? usuarioForm.getCpf().trim() : null);
+    usuarioExistente.setEndereco(usuarioForm.getEndereco() != null ? usuarioForm.getEndereco().trim() : null);
     usuarioExistente.setCadastroCompleto(true);
 
     // Salva as alterações
@@ -97,5 +101,9 @@ public class CompletarCadastroController {
     redirectAttributes.addFlashAttribute(
         "registrationSuccess", "Cadastro completo! Faça o login para continuar.");
     return "redirect:/login";
+  }
+
+  private boolean isBlank(String valor) {
+    return valor == null || valor.trim().isEmpty();
   }
 }

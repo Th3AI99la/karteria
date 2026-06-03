@@ -1,41 +1,55 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. Pega o ID do usuário escondido no HTML
     const userIdMeta = document.querySelector('meta[name="user-id"]');
-    const userId = userIdMeta ? userIdMeta.getAttribute('content') : null;
+    const userIdFromNav = document.querySelector('[data-user-id]')?.dataset.userId;
+    const userId = userIdMeta?.getAttribute('content') || userIdFromNav;
 
-    if (userId) {
-        // 2. Conecta no servidor Spring Boot
-        const socket = new SockJS('/ws');
-        const stompClient = Stomp.over(socket);
-        
-        // Esconde os logs técnicos do STOMP no console do navegador
-        stompClient.debug = null;
-
-        stompClient.connect({}, function (frame) {
-            console.log('✅ Conectado ao WebSocket! Escutando o canal do usuário: ' + userId);
-
-            // 3. Fica "ouvindo" apenas as notificações deste usuário
-            stompClient.subscribe('/topic/notificacoes/' + userId, function (mensagem) {
-                const notificacao = JSON.parse(mensagem.body);
-                
-                // Atualiza o sininho
-                atualizarSininho();
-
-                // Exibe a notificação flutuante na tela (Estilo "Ifood" / "Uber")
-                mostrarToastFlutuante(notificacao.mensagem);
-            });
-        });
+    if (!userId || userId === 'null' || typeof SockJS === 'undefined' || typeof Stomp === 'undefined') {
+        return;
     }
 
-    function atualizarSininho() {
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+    stompClient.debug = null;
+
+    stompClient.connect({}, function () {
+        stompClient.subscribe('/topic/notificacoes/' + userId, function (mensagem) {
+            let notificacao;
+            try {
+                notificacao = JSON.parse(mensagem.body);
+            } catch (error) {
+                return;
+            }
+
+            atualizarSininho();
+            mostrarToastFlutuante(notificacao.mensagem);
+        });
+    });
+
+    function atualizarSininho() { 
         let bolinha = document.querySelector('.notification-badge');
         if (bolinha) {
-            let count = parseInt(bolinha.innerText) || 0;
-            bolinha.innerText = count + 1;
-        } else {
-            // Se a bolinha não existia, recarrega a página silenciosamente
-            // ou cria o elemento dinamicamente.
+            const count = parseInt(bolinha.innerText, 10) || 0;
+            setBadgeCount(bolinha, count + 1);
+            bolinha.style.display = '';
+            return;
         }
+
+        const notificationButton = document.getElementById('notificationDropdown');
+        if (notificationButton) {
+            bolinha = document.createElement('span');
+            bolinha.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge';
+            setBadgeCount(bolinha, 1);
+            notificationButton.appendChild(bolinha);
+        }
+    }
+
+    function setBadgeCount(badge, count) {
+        badge.textContent = String(count);
+
+        const srText = document.createElement('span');
+        srText.className = 'visually-hidden';
+        srText.textContent = 'notificações não lidas';
+        badge.appendChild(srText);
     }
 
     function mostrarToastFlutuante(mensagem) {
@@ -49,34 +63,62 @@ document.addEventListener("DOMContentLoaded", function () {
             document.body.appendChild(toastContainer);
         }
         
-        // Formata a mensagem para destacar o nome do usuário igual você fez no HTML
-        let mensagemFormatada = mensagem;
-        if (mensagemFormatada.includes(' se candidatou')) {
-            mensagemFormatada = mensagemFormatada.replace(/^(.*?)( se candidatou para sua vaga )/, '<strong class="brand-text">$1</strong>$2');
-        }
-        mensagemFormatada = mensagemFormatada.replace(/'(.*?)'/g, '<strong class="brand-text">($1)</strong>');
-
-        // Gera o HTML do Toast (Card verde do Bootstrap)
         const toastId = 'toast-' + Date.now();
-        const toastHTML = `
-            <div id="${toastId}" class="toast align-items-center text-bg-success border-0 shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
-              <div class="d-flex">
-                <div class="toast-body" style="color: white !important;">
-                  <i class="fas fa-bell me-2"></i> ${mensagemFormatada}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-              </div>
-            </div>
-        `;
-        
-        toastContainer.insertAdjacentHTML('beforeend', toastHTML);
-        
-        // Ativa e exibe o Toast
-        const toastElement = document.getElementById(toastId);
+        const toastElement = document.createElement('div');
+        toastElement.id = toastId;
+        toastElement.className = 'toast align-items-center text-bg-success border-0 shadow-lg mb-2';
+        toastElement.setAttribute('role', 'alert');
+        toastElement.setAttribute('aria-live', 'assertive');
+        toastElement.setAttribute('aria-atomic', 'true');
+        toastElement.setAttribute('data-bs-delay', '6000');
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'd-flex';
+
+        const body = document.createElement('div');
+        body.className = 'toast-body';
+        body.style.color = 'white';
+
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-bell me-2';
+        body.appendChild(icon);
+        appendMensagemFormatada(body, mensagem);
+
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close btn-close-white me-2 m-auto';
+        closeButton.setAttribute('data-bs-dismiss', 'toast');
+        closeButton.setAttribute('aria-label', 'Fechar');
+
+        contentWrapper.appendChild(body);
+        contentWrapper.appendChild(closeButton);
+        toastElement.appendChild(contentWrapper);
+        toastContainer.appendChild(toastElement);
+
+        if (typeof bootstrap === 'undefined') return;
+
         const toast = new bootstrap.Toast(toastElement);
         toast.show();
-        
-        // Remove do DOM após sumir para não acumular lixo
+
         toastElement.addEventListener('hidden.bs.toast', () => toastElement.remove());
+    }
+
+    function appendMensagemFormatada(container, mensagem) {
+        const marker = ' se candidatou para sua vaga ';
+        const markerIndex = mensagem.indexOf(marker);
+
+        if (markerIndex === -1) {
+            container.appendChild(document.createTextNode(mensagem));
+            return;
+        }
+
+        const nome = mensagem.slice(0, markerIndex);
+        const restante = mensagem.slice(markerIndex);
+        const strong = document.createElement('strong');
+        strong.className = 'brand-text';
+        strong.textContent = nome;
+
+        container.appendChild(strong);
+        container.appendChild(document.createTextNode(restante));
     }
 });

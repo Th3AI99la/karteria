@@ -108,7 +108,7 @@
                                     readonly>
 
                                 <button class="btn btn-outline-secondary"
-                                    type="button" onclick="copiarCodigo()">
+                                    type="button" id="copyValidationCode">
                                     <i class="fas fa-copy"></i> Copiar
                                 </button>
                             </div>
@@ -419,20 +419,30 @@
 
         <!-- SCRIPT DO CÓDIGO DE VALIDAÇÃO -->
         <script>
-                            function copiarCodigo() {
-                                const copyText = document.getElementById("meuCodigoValidacao");
-                                copyText.select();
-                                navigator.clipboard.writeText(copyText.value);
-                                // Feedback visual simples (opcional: usar toast no futuro)
-                                const btn = event.currentTarget;
-                                const originalHtml = btn.innerHTML;
-                                btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-                                btn.classList.replace('btn-outline-secondary', 'btn-success');
-                                setTimeout(() => {
-                                    btn.innerHTML = originalHtml;
-                                    btn.classList.replace('btn-success', 'btn-outline-secondary');
-                                }, 2000);
-                            }
+            document.addEventListener("DOMContentLoaded", () => {
+                const btn = document.getElementById("copyValidationCode");
+                const copyText = document.getElementById("meuCodigoValidacao");
+
+                if (!btn || !copyText) return;
+
+                btn.addEventListener("click", async () => {
+                    copyText.select();
+
+                    try {
+                        await navigator.clipboard.writeText(copyText.value);
+                    } catch (error) {
+                        document.execCommand("copy");
+                    }
+
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                    btn.classList.replace("btn-outline-secondary", "btn-success");
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.classList.replace("btn-success", "btn-outline-secondary");
+                    }, 2000);
+                });
+            });
                         </script>
 
         <script th:inline="javascript">
