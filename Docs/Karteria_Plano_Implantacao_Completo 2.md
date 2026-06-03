@@ -51,11 +51,6 @@ A implantação piloto foi selecionada pelos seguintes motivos:
 
 Fase piloto sugerida: 35 dias com 20 empregadores e 50 colaboradores voluntários, monitorando logs, candidaturas, avaliações e notificações. 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
 
 ## **1.3 Cronograma de Implantação** 
 
@@ -118,12 +113,6 @@ Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Labo
 
 - Conexão mínima de 10 Mbps para o servidor 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
-
 - Domínio ou IP público para acesso externo 
 
 - Serviço SMTP configurado (Gmail com STARTTLS na porta 587) para envio de e- mails de recuperação de senha 
@@ -138,11 +127,6 @@ Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Labo
 
 - Chave JWT configurada no application.properties (256 bits hexadecimal) 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
 
 ## **2. Configuração do Ambiente** 
 
@@ -224,13 +208,6 @@ O servidor embutido Tomcat é iniciado automaticamente pelo Spring Boot. As conf
 |**spring.datasource.url**|jdbc:postgresql://localhost:5432/postgres|
 
 
-
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
-
 **spring.datasource.driver** org.postgresql.Driver **spring.jpa.ddl-auto** update **jwt.expiration** 86400000 ms (1 dia) **smtp.host** smtp.gmail.com : 587 (STARTTLS) 
 
 ## **2.4 Criação de Usuários e Perfis** 
@@ -255,12 +232,6 @@ Rotas públicas liberadas: /, /login, /register, /esqueci-senha, /resetar-senha,
 
 WebSocket configurado no endpoint /ws para notificações em tempo real (STOMP sobre SockJS). 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
-
 ## **3. Script de Banco de Dados** 
 
 ## **3.1 Script de Criação das Tabelas** 
@@ -269,13 +240,10 @@ O Hibernate cria as tabelas automaticamente. Abaixo o script SQL equivalente par
 
 ```
 -- Tabela de usuários
-```
 
-```
+
 CREATE TABLE IF NOT EXISTS usuarios (
-```
 
-```
     id                BIGSERIAL PRIMARY KEY,
     nome              VARCHAR(255),
     sobrenome         VARCHAR(255),
@@ -290,11 +258,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     data_cadastro     TIMESTAMP,
     codigo_validacao  VARCHAR(255) UNIQUE,
     reset_token       VARCHAR(255),
-    reset_token_expiry TIMESTAMP
-```
-
-```
-);
+    reset_token_expiry TIMESTAMP);
 ```
 
 ```
@@ -314,6 +278,9 @@ CREATE TABLE IF NOT EXISTS anuncios (
     permitir_contato BOOLEAN DEFAULT TRUE,
     anunciante_id    BIGINT REFERENCES usuarios(id)
 );
+```
+
+```
 -- Tabela de candidaturas
 CREATE TABLE IF NOT EXISTS candidaturas (
     id               BIGSERIAL PRIMARY KEY,
@@ -322,13 +289,6 @@ CREATE TABLE IF NOT EXISTS candidaturas (
     data_candidatura TIMESTAMP
 );
 ```
-
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
-
 ```
 -- Tabela de avaliações
 CREATE TABLE IF NOT EXISTS avaliacoes (
@@ -338,11 +298,7 @@ CREATE TABLE IF NOT EXISTS avaliacoes (
     anuncio_id      BIGINT REFERENCES anuncios(id),
     nota            INTEGER,
     comentario      TEXT,
-    data_avaliacao  TIMESTAMP
-```
-
-```
-);
+    data_avaliacao  TIMESTAMP);
 ```
 
 ## **3.2 Inserts Iniciais (Dados de Teste)** 
@@ -389,12 +345,6 @@ docker exec karteria-db pg_dump -U postgres postgres > backup_karteria_$(date
 ```
 docker exec -i karteria-db psql -U postgres postgres < backup_karteria_YYYYMMDD.sql
 ```
-
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
 
 ## **4. Manual do Usuário** 
 
@@ -458,7 +408,6 @@ Após o cadastro inicial, o sistema solicitará o preenchimento de dados complem
 
 - Atribua uma nota de 1 a 5 estrelas e insira um comentário opcional. 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
 
 **KARTERIA  |  Plano de Implantação e Documentação Técnica** 20/05/2026 
 
@@ -492,11 +441,6 @@ O sistema envia notificações em tempo real via WebSocket. O ícone de sino no 
 
 - O link de recuperação expira após um período definido pelo sistema. 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
 
 ## **5. Manual Técnico** 
 
@@ -561,12 +505,6 @@ Tabelas e relacionamentos principais:
 
 - anuncios (1) → (N) candidaturas – Um anúncio pode ter múltiplos candidatos 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
-
 - avaliacoes (N) → (1) avaliador [usuario] e (N) → (1) avaliado [usuario] 
 
 - anuncios (1) → (1) avaliacoes – Cada anúncio pode ter uma avaliação associada 
@@ -578,10 +516,6 @@ Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Labo
 - GET /api/anuncios – Listagem de anúncios (autenticado via JWT) 
 
 - WebSocket /ws – Endpoint para conexão STOMP (notificações em tempo real) 
-
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 20/05/2026 
 
 ## **6. Plano de Backup e Recuperação** 
 
@@ -645,11 +579,6 @@ Para simular uma restauração em ambiente de teste:
 
 - Configurar temporariamente spring.datasource.url para o banco de teste e iniciar a aplicação para validação. 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
 
 ## **7. Plano de Segurança** 
 
@@ -701,12 +630,6 @@ As permissões são baseadas no tipo de usuário (EMPREGADOR ou COLABORADOR):
 
 - Mínimo de 8 caracteres (definido nas validações do frontend) 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
-
 - Senhas armazenadas exclusivamente com BCrypt 
 
 - Recuperação de senha via link temporário enviado ao e-mail cadastrado 
@@ -723,12 +646,6 @@ Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Labo
 
 - O Spring Boot Actuator pode ser integrado com ferramentas como Prometheus + Grafana para monitoramento em tempo real. 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
-
 ## **8. Treinamento dos Usuários** 
 
 ## **8.1 Plano de Treinamento** 
@@ -738,10 +655,6 @@ O Karteria atua como um Marketplace Matchmaker de serviços informais - uma vitr
 O usuário simplesmente acessa a URL da plataforma pelo navegador, realiza seu próprio cadastro de forma autônoma, escolhe seu perfil (Empregador ou Colaborador) e já começa a utilizar todos os recursos disponíveis. Não é necessário suporte técnico presencial para que o usuário comum inicie o uso do sistema. 
 
 Portanto, o treinamento aqui descrito não se trata de capacitação para implantação, mas sim de uma apresentação demonstrativa das funcionalidades da plataforma, voltada para divulgação e familiarização dos primeiros usuários com a interface e os fluxos do sistema deconexão. 
-
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 20/05/2026 
 
 ## **9. Implantação em Ambiente Real ou Simulado** 
 
@@ -796,11 +709,6 @@ volumes:
   karteria_data:
 Executar: docker-compose up -d
 ```
-
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 20/05/2026 
-
 ## **10. Termo de Entrega e Encerramento** 
 
 ## **10.1 Identificação do Projeto** 
@@ -825,11 +733,11 @@ Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Labo
 
 ## **10.2 Nome da Equipe e Integrantes** 
 
-Equipe Karteria – Disciplina de Práticas de Laboratório 2 
 
-- Desenvolvedor Principal: Th3AI99la (GitHub) 
-
-- Demais integrantes: Ítalo Gabriel Stfaisk, Gustavo Abreu da Silva, Nathan Lopes D Souza e Thalles Henrique Alves de Souza. 
+- Ítalo Gabriel Stfaisk
+-  Gustavo Abreu da Silva
+-  Nathan Lopes D Souza
+-   Thalles Henrique Alves de Souza. 
 
 ## **10.3 Funcionalidades Entregues** 
 
@@ -865,11 +773,6 @@ Equipe Karteria – Disciplina de Práticas de Laboratório 2
 
 - A plataforma não se responsabiliza por problemas interpessoais entre empregador e colaborador, se limitando apenas em matchmaker. 
 
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
-
-**KARTERIA  |  Plano de Implantação e Documentação Técnica** 
-
-20/05/2026 
 
 ## **10.5 Pendências** 
 
@@ -879,15 +782,4 @@ Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Labo
 
 - Implementação de rate limiting na API REST 
 
-## **10.6 Aceite Final** 
-
-Declaro que o sistema Karteria foi entregue conforme os requisitos estabelecidos para a disciplina de Práticas de Laboratório 2, com todas as funcionalidades previstas implementadas e documentadas. 
-
-Goiânia, 20 de maio de 2026. 
-
-**Assinatura do Cliente (fictício): Assinatura da Equipe:** _________________________________Karteria Soluções Digitais Ltda. _________________________________Equipe Karteria – Práticas Lab. 2 
-
-- _Fim do Documento —_ 
-
-Karteria – Plataforma de Conexão de Serviços Informais  |  Práticas de Laboratório 2 
 
