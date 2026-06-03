@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="tailwind">
+            <script>
+                window.tailwind = {
+                    config: {
+                        prefix: "tw-",
+                        corePlugins: {
+                            preflight: false
+                        },
+                        theme: {
+                            extend: {
+                                colors: {
+                                    karteria: {
+                                        50: "#ecfdf5",
+                                        100: "#d1fae5",
+                                        500: "#22c55e",
+                                        600: "#16a34a",
+                                        700: "#15803d",
+                                        900: "#14532d"
+                                    },
+                                    ink: "#0f172a"
+                                },
+                                boxShadow: {
+                                    soft: "0 18px 45px rgba(15, 23, 42, 0.12)"
+                                }
+                            }
+                        }
+                    }
+                };
+            </script>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </th:block>
+    </body>
+</html>
